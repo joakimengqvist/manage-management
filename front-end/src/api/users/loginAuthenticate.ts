@@ -1,7 +1,8 @@
 export const loginAuthenticate = async (email : string, password : string) => {
+    console.log(password)
     const payload = {
           email: email,
-          password: password
+          password: "password"
     };
 
     const headers = new Headers();

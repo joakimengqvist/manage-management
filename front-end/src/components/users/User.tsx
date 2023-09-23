@@ -61,8 +61,10 @@ const User: React.FC = () => {
         setFirstName(user.first_name);
         setLastName(user.last_name);
         setPrivileges(user.privileges);
-        setProjects(user.projects);
-
+        if (user.projects && user.projects[0]) {
+          setProjects(user.projects);
+        }
+       
         const privilegesOptions = allPrivileges.map(privilege => {
           return { label: privilege.name, value: privilege.name }
         });
@@ -221,7 +223,7 @@ const User: React.FC = () => {
                 disabled={!editing}
                 mode="multiple"
                 style={{ width: "100%" }}
-                placeholder="Select privilege"
+                placeholder="Select projects"
                 value={projects}
                 onChange={onHandleProjectsChange}
                 options={allProjectsOptions}

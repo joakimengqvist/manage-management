@@ -65,12 +65,8 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	logpayload.Password = ""
 
 	app.logItemViaRPC(w, logpayload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[broker-service] - Authenticate call recieved"})
-	app.AuthenticateCall(w, requestPayload)
-}
 
-func (app *Config) AuthenticateCall(w http.ResponseWriter, authPayload AuthPayload) {
-
-	jsonData, _ := json.MarshalIndent(authPayload, "", "")
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	request, err := http.NewRequest("POST", "http://authentication-service/auth/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
@@ -114,7 +110,7 @@ func (app *Config) AuthenticateCall(w http.ResponseWriter, authPayload AuthPaylo
 	payload.Message = "Authenticated"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, authPayload, RPCLogData{Action: "Authenticate success [/auth/authenticate]", Name: "[broker-service]"})
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate success [/auth/authenticate]", Name: "[broker-service]"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

@@ -1,11 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"net/rpc"
 	"project-service/cmd/data"
 )
 
@@ -13,11 +11,41 @@ type NewProject struct {
 	Name string `json:"name"`
 }
 
+type ProjectIdPayload struct {
+	Id string `json:"id"`
+}
+
+type UpdateProject struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// -------------------------------------------
+// --------- START OF CREATE PROJECT  --------
+// -------------------------------------------
+
 func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+
+	privilegePayload := Privilege{
+		UserId: userId,
+		Action: "project_write",
+	}
+
+	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	if !authorized {
+		app.errorJSON(w, errors.New("could not create projects: Unauthorized"), http.StatusUnauthorized)
+		return
+	}
 
 	var requestPayload NewProject
 
-	err := app.readJSON(w, r, &requestPayload)
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -43,15 +71,36 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-type UpdateProject struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
+// -------------------------------------------
+// --------- END OF CREATE PROJECT  ----------
+// -------------------------------------------
+
+// -------------------------------------------
+// --------- START OF UPDATE PROJECT  --------
+// -------------------------------------------
 
 func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+
+	privilegePayload := Privilege{
+		UserId: userId,
+		Action: "project_write",
+	}
+
+	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	if !authorized {
+		app.errorJSON(w, errors.New("could not update project: Unauthorized"), http.StatusUnauthorized)
+		return
+	}
+
 	var requestPayload UpdateProject
 
-	err := app.readJSON(w, r, &requestPayload)
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -78,15 +127,36 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-type ProjectIdPayload struct {
-	Id string `json:"id"`
-}
+// -------------------------------------------
+// --------- END OF UPDATE PROJECT  ----------
+// -------------------------------------------
+
+// -------------------------------------------
+// --------- START OF DELETE PROJECT  --------
+// -------------------------------------------
 
 func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 
+	userId := r.Header.Get("X-User-Id")
+
+	privilegePayload := Privilege{
+		UserId: userId,
+		Action: "project_sudo",
+	}
+
+	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	if !authorized {
+		app.errorJSON(w, errors.New("could not delete project: Unauthorized"), http.StatusUnauthorized)
+		return
+	}
+
 	var requestPayload ProjectIdPayload
 
-	err := app.readJSON(w, r, &requestPayload)
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -114,10 +184,36 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+// -------------------------------------------
+// --------- END OF DELETE PROJECT  ----------
+// -------------------------------------------
+
+// -------------------------------------------
+// --------- START OF GET PROJECT  -----------
+// -------------------------------------------
+
 func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+
+	privilegePayload := Privilege{
+		UserId: userId,
+		Action: "project_read",
+	}
+
+	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	if !authorized {
+		app.errorJSON(w, errors.New("could not get project: Unauthorized"), http.StatusUnauthorized)
+		return
+	}
+
 	var requestPayload ProjectIdPayload
 
-	err := app.readJSON(w, r, &requestPayload)
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
@@ -141,7 +237,33 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+// -------------------------------------------
+// --------- END OF GET PROJECT  -------------
+// -------------------------------------------
+
+// -------------------------------------------
+// --------- START OF GET ALL PROJECTS  ------
+// -------------------------------------------
+
 func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+
+	privilegePayload := Privilege{
+		UserId: userId,
+		Action: "project_read",
+	}
+
+	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	if !authorized {
+		app.errorJSON(w, errors.New("could not get all projects: Unauthorized"), http.StatusUnauthorized)
+		return
+	}
+
 	projects, err := app.Models.Project.GetAll()
 	if err != nil {
 		app.logItemViaRPC(w, err, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
@@ -158,36 +280,6 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 	app.writeJSONFromSlice(w, http.StatusAccepted, projectSlice)
 }
 
-type RPCPayload struct {
-	Action string
-	Name   string
-	Data   string
-}
-
-type RPCLogData struct {
-	Action string
-	Name   string
-}
-
-func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
-
-	jsonData, _ := json.MarshalIndent(payload, "", "")
-
-	client, err := rpc.Dial("tcp", "logger-service:5001")
-	if err != nil {
-		app.errorJSON(w, err)
-		return
-	}
-
-	rpcPayload := RPCPayload{
-		Action: logData.Action,
-		Name:   logData.Name,
-		Data:   string(jsonData),
-	}
-
-	err = client.Call("RPCServer.LogInfo", rpcPayload, nil)
-	if err != nil {
-		app.errorJSON(w, err)
-		return
-	}
-}
+// -------------------------------------------
+// --------- END OF GET ALL PROJECTS  --------
+// -------------------------------------------

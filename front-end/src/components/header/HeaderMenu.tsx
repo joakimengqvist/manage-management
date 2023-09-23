@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../types/state';
 import { LoginOutlined } from '@ant-design/icons';
 import { logout } from "../../redux/userDataSlice";
-import { selectProject } from '../../redux/applicationDataSlice';
+import { clearData, selectProject } from '../../redux/applicationDataSlice';
 import { Button, Space, Typography, Select } from "antd"
 
 const { Text } = Typography;
@@ -19,6 +19,7 @@ const HeaderMenu: React.FC = () => {
     const OnLoginButtonClick = (isAuth: boolean) => {
         if (isAuth) {
             dispatch(logout())
+            dispatch(clearData())
         } else {
             navigate("/login")
         }

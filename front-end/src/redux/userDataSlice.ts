@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from '@reduxjs/toolkit';
-import { applicationStateName } from './applicationDataSlice';
 
 export const userSlice = createSlice({
   name: 'user',
@@ -46,7 +45,6 @@ export const userSlice = createSlice({
           lastName: "",
           id: ""
       }
-      localStorage.removeItem(applicationStateName)
       localStorage.setItem("userReduxData", JSON.stringify(updatedData))
         return updatedData
     },

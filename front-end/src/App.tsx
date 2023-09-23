@@ -16,7 +16,7 @@ import PrivilegesDetails from './routes/Privileges';
 import PrivilegeDetails from './routes/Privilege';
 import { Layout } from 'antd';
 import { getAllPrivileges } from './api/privileges/getAll';
-import { fetchPrivileges, fetchProjects, fetchUsers, initiateApplicationData } from './redux/applicationDataSlice';
+import { clearData, fetchPrivileges, fetchProjects, fetchUsers, initiateApplicationData } from './redux/applicationDataSlice';
 import {initiateUser } from './redux/userDataSlice'
 import { getAllUsers } from './api/users/getAll';
 import { getAllProjects } from './api/projects/getAll';
@@ -36,6 +36,7 @@ const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   if (!authenticated) {
+    dispatch(clearData())
     navigate('/login')
   }
 

@@ -37,7 +37,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/auth/update-privilege", app.UpdatePrivilege)
 	mux.Post("/auth/delete-privilege", app.DeletePrivilege)
 
-	mux.Post("/auth/checkPrivilege", app.CheckPrivilege)
+	mux.Post("/auth/check-privilege", app.CheckPrivilege)
 
 	return mux
 }

@@ -325,6 +325,12 @@ type CheckPrivilegeResponse struct {
 func (app *Config) CheckPrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload CheckPrivilegePayload
 
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
 	user, err := app.Models.User.GetUserById(requestPayload.UserId)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)

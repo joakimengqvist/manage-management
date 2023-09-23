@@ -9,15 +9,20 @@ import (
 	"time"
 )
 
-type ProjectIdPayload struct {
-	Id string `json:"id"`
-}
-
 type Project struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type ProjectIdPayload struct {
+	Id string `json:"id"`
+}
+
+type UpdateProject struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type NewProject struct {
@@ -29,6 +34,7 @@ type NewProject struct {
 // -------------------------------------------
 
 func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
+
 	var requestPayload NewProject
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -37,10 +43,9 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[broker-service] - Create project request recieved"})
-	app.CreateProjectCall(w, requestPayload)
-}
 
-func (app *Config) CreateProjectCall(w http.ResponseWriter, requestPayload NewProject) {
+	userId := r.Header.Get("X-User-Id")
+
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	request, err := http.NewRequest("POST", "http://project-service/project/create-project", bytes.NewBuffer(jsonData))
@@ -48,6 +53,8 @@ func (app *Config) CreateProjectCall(w http.ResponseWriter, requestPayload NewPr
 		app.errorJSON(w, err)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 
@@ -98,13 +105,8 @@ func (app *Config) CreateProjectCall(w http.ResponseWriter, requestPayload NewPr
 // --------- START OF UPDATE PROJECT  --------
 // -------------------------------------------
 
-type ProjectPayload struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectPayload
+	var requestPayload UpdateProject
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -112,10 +114,9 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[broker-service] - Update project request recieved"})
-	app.UpdateProjectCall(w, requestPayload)
-}
 
-func (app *Config) UpdateProjectCall(w http.ResponseWriter, requestPayload ProjectPayload) {
+	userId := r.Header.Get("X-User-Id")
+
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	request, err := http.NewRequest("POST", "http://project-service/project/update-project", bytes.NewBuffer(jsonData))
@@ -123,6 +124,8 @@ func (app *Config) UpdateProjectCall(w http.ResponseWriter, requestPayload Proje
 		app.errorJSON(w, err)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 
@@ -166,11 +169,11 @@ func (app *Config) UpdateProjectCall(w http.ResponseWriter, requestPayload Proje
 }
 
 // -------------------------------------------
-// --------- END OF UPDATE PROJECT  -------------
+// --------- END OF UPDATE PROJECT  ----------
 // -------------------------------------------
 
 // -------------------------------------------
-// --------- START OF DELETE PROJECTS  ----------
+// --------- START OF DELETE PROJECTS  -------
 // -------------------------------------------
 
 func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
@@ -182,10 +185,9 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[broker-service] - Delete project request recieved"})
-	app.DeleteProjectCall(w, requestPayload)
-}
 
-func (app *Config) DeleteProjectCall(w http.ResponseWriter, requestPayload ProjectIdPayload) {
+	userId := r.Header.Get("X-User-Id")
+
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	request, err := http.NewRequest("POST", "http://project-service/project/delete-project", bytes.NewBuffer(jsonData))
@@ -193,6 +195,8 @@ func (app *Config) DeleteProjectCall(w http.ResponseWriter, requestPayload Proje
 		app.errorJSON(w, err)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 
@@ -254,6 +258,8 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userId := r.Header.Get("X-User-Id")
+
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	request, err := http.NewRequest("POST", "http://project-service/project/get-project-by-id", bytes.NewBuffer(jsonData))
@@ -261,6 +267,8 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		app.errorJSON(w, err)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 
@@ -314,11 +322,15 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/project/get-all-projects]", Name: "[broker-service]"})
 
+	userId := r.Header.Get("X-User-Id")
+
 	request, err := http.NewRequest("GET", "http://project-service/project/get-all-projects", nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 

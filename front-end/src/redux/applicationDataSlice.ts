@@ -94,6 +94,20 @@ export const staticDataSlice = createSlice({
       state.selectedProject = payload.payload
       return state;
     },
+    clearData: state => {
+      const updatedData = {
+          ...state,
+          selectedProject: {
+            name: '',
+            id: 0,
+          },
+          privileges: [],
+          users: [],
+          projects: []
+      }
+      localStorage.setItem(applicationStateName, JSON.stringify(updatedData))
+        return updatedData
+    },
   }
 })
 
@@ -112,6 +126,7 @@ export const {
   appendProject,
   popProject,
   selectProject,
+  clearData,
 } = staticDataSlice.actions
 
 export default staticDataSlice.reducer

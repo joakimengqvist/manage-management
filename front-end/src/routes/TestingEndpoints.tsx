@@ -5,6 +5,8 @@ import { State } from '../types/state';
 import { sendEmail } from '../api/email/send';
 import { testBroker } from '../api/test/testBroker'
 import { getAllUsers } from '../api/users/getAll';
+import { getAllProjects } from '../api/projects/getAll';
+import { getAllPrivileges } from '../api/privileges/getAll';
 
 const TestingEndpoints: React.FC = () => {
     const userId = useSelector((state : State) => state.user.id)
@@ -43,14 +45,36 @@ const TestingEndpoints: React.FC = () => {
         })
     }
 
+    const testGetAllPrivilegesButton = () => {
+        getAllPrivileges(userId)
+        .then(response => {
+        setReceivedPayload(JSON.stringify(response, undefined, 4))
+        })
+        .catch(error => {
+        setReceivedPayload(error)
+        })
+    }
+
+    const testGetAllProjectsButton = () => {
+        getAllProjects(userId)
+        .then(response => {
+        setReceivedPayload(JSON.stringify(response, undefined, 4))
+        })
+        .catch(error => {
+        setReceivedPayload(error)
+        })
+    }
+
 
 
     return (
         <>
         <Space style={{ padding: '16px', paddingBottom: '0px'}}>
-            <Button onClick={testBrokerButton}>Test logger</Button>
-            <Button onClick={testEmailButton}>Test Mail</Button>
-            <Button onClick={testGetAllUsersButton}>Test Get all users</Button>
+            <Button onClick={testBrokerButton}>logger</Button>
+            <Button onClick={testEmailButton}>Mail</Button>
+            <Button onClick={testGetAllUsersButton}>Get all users</Button>
+            <Button onClick={testGetAllProjectsButton}>Get all projects</Button>
+            <Button onClick={testGetAllPrivilegesButton}>Get all privileges</Button>
         </Space>
         <Row gutter={16} style={{ padding: '16px'}}>
             <Col span={10}>

@@ -1,10 +1,10 @@
 export const createUser = async (
-  userId : number,
+  userId : string,
   firstName : string,
   lastName : string,
   email : string,
   privileges : Array<string>, 
-  projects : Array<number>,
+  projects : Array<string>,
   password : string
   ) => {
     const payload = {

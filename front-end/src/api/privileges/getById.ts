@@ -1,4 +1,4 @@
-export const getPrivilegeById = async (userId : number, id : number) => {
+export const getPrivilegeById = async (userId : string, id : string) => {
     const payload = {
       id: id,
     };

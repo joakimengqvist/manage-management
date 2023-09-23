@@ -8,7 +8,7 @@ import (
 )
 
 type PrivilegePayload struct {
-	Id          int    `json:"id"`
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	CreatedAt   string `json:"created_at"`
@@ -21,17 +21,17 @@ type NewPrivilege struct {
 }
 
 type UpdatePrivilege struct {
-	Id          int    `json:"id"`
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
 type PrivilegeIdPayload struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 }
 
 type CheckUserPrivilegePayload struct {
-	UserId int
+	UserId string
 	Action string
 }
 

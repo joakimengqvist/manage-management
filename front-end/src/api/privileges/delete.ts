@@ -1,4 +1,4 @@
-export const deletePrivilege = async (userId : number, id : number) => {
+export const deletePrivilege = async (userId : string, id : string) => {
     const payload = {
             id: id,
     };

@@ -33,7 +33,7 @@ const CreateUser: React.FC = () => {
     const [privilegesOptions, setPrivilegesOptions] = useState<SelectProps['options']>([]);
     const [selectedPrivilegesOptions, setSelectedPrivilegesOptions] = useState<Array<string>>([]);
     const [projectsOptions, setProjectsOptions] = useState<SelectProps['options']>([]);
-    const [selectedProjectsOptions, setSelectedProjectsOptions] = useState<Array<number>>([]);
+    const [selectedProjectsOptions, setSelectedProjectsOptions] = useState<Array<string>>([]);
 
     useEffect(() => {
         const optionsPrivileges: SelectProps['options'] = [];

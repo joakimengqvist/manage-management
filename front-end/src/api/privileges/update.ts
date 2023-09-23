@@ -1,4 +1,4 @@
-export const updatePrivilege = async (userId : number, id : number, name : string, description : string) => {
+export const updatePrivilege = async (userId : string, id : string, name : string, description : string) => {
     const payload = {
       id: id,
       name: name,

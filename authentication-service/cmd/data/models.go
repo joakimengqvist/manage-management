@@ -31,7 +31,7 @@ type Models struct {
 }
 
 type User struct {
-	ID         int       `json:"id"`
+	ID         string    `json:"id"`
 	Email      string    `json:"email"`
 	FirstName  string    `json:"first_name,omitempty"`
 	LastName   string    `json:"last_name,omitempty"`
@@ -44,12 +44,12 @@ type User struct {
 }
 
 type ReturnedUser struct {
-	ID         int       `json:"id"`
+	ID         string    `json:"id"`
 	Email      string    `json:"email"`
 	FirstName  string    `json:"first_name,omitempty"`
 	LastName   string    `json:"last_name,omitempty"`
 	Privileges []string  `json:"privileges"`
-	Projects   []int     `json:"projects"`
+	Projects   []string  `json:"projects"`
 	Password   string    `json:"-"`
 	Active     int       `json:"active"`
 	CreatedAt  time.Time `json:"created_at"`
@@ -57,7 +57,7 @@ type ReturnedUser struct {
 }
 
 type Privilege struct {
-	ID          int       `json:"id"`
+	ID          string    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -138,7 +138,7 @@ func (u *User) GetUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (u *User) GetUserById(id int) (*User, error) {
+func (u *User) GetUserById(id string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -214,7 +214,7 @@ func (u *User) DeleteUser() error {
 	return nil
 }
 
-func (u *User) DeleteUserByID(id int) error {
+func (u *User) DeleteUserByID(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -228,16 +228,16 @@ func (u *User) DeleteUserByID(id int) error {
 	return nil
 }
 
-func (u *User) InsertUser(user User) (int, error) {
+func (u *User) InsertUser(user User) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	var newID int
+	var newID string
 	stmt := `insert into users (email, first_name, last_name, privileges, projects, password, user_active, created_at, updated_at)
 		values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
 
@@ -254,7 +254,7 @@ func (u *User) InsertUser(user User) (int, error) {
 	).Scan(&newID)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return newID, nil
@@ -333,11 +333,11 @@ func (p *Privilege) GetAllPrivileges() ([]*Privilege, error) {
 	return privileges, nil
 }
 
-func (p *Privilege) InsertPrivilege(privilege Privilege) (int, error) {
+func (p *Privilege) InsertPrivilege(privilege Privilege) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	var newID int
+	var newID string
 	stmt := `insert into privileges (name, description, created_at, updated_at)
 		values ($1, $2, $3, $4) returning id`
 
@@ -349,13 +349,13 @@ func (p *Privilege) InsertPrivilege(privilege Privilege) (int, error) {
 	).Scan(&newID)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return newID, nil
 }
 
-func (p *Privilege) GetPrivilegeById(id int) (*Privilege, error) {
+func (p *Privilege) GetPrivilegeById(id string) (*Privilege, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 

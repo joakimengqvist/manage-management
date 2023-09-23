@@ -27,7 +27,7 @@ const { Text, Title } = Typography;
 
 interface Project {
   label : string,
-  value : number,
+  value : string,
 }
 
 const User: React.FC = () => {
@@ -38,7 +38,7 @@ const User: React.FC = () => {
   const { id } = useParams(); // user id
   const userId = id || '';
   const users = useSelector((state: State) => state.application.users);
-  const user = users.find((u : any) => u.id === Number(userId));
+  const user = users.find((u : any) => u.id === userId);
   const allProjects = useSelector((state: State) => state.application.projects);
   const loggedInUserId = useSelector((state: State) => state.user.id);
   const userPrivileges = useSelector((state: State) => state.user.privileges);
@@ -49,7 +49,7 @@ const User: React.FC = () => {
   const [lastName, setLastName] = useState("");
   const [privilegesOptions, setPrivilegesOptions] = useState<Array<any>>([]);
   const [privileges, setPrivileges] = useState<Array<any>>([]);
-  const [projects, setProjects] = useState<Array<number>>([]);
+  const [projects, setProjects] = useState<Array<any>>([]);
   const [allProjectsOptions, setAllProjectsOptions] = useState<Array<Project>>([]);
   const [editing, setEditing] = useState(false);
 
@@ -93,7 +93,7 @@ const User: React.FC = () => {
   const onSaveEdittedUser = async () => {
     await updateUserCall(
       loggedInUserId,
-      Number(userId),
+      userId,
       firstName,
       lastName,
       email,
@@ -128,7 +128,7 @@ const User: React.FC = () => {
       });
   };
 
-  const onClickdeleteUser = async (id: number) => {
+  const onClickdeleteUser = async (id: string) => {
     await deleteUser(loggedInUserId, id)
       .then(response => {
         if (response?.error) {
@@ -245,7 +245,7 @@ const User: React.FC = () => {
                 placement="top"
                 title="Are you sure?"
                 description={`Do you want to delete user ${firstName}`}
-                onConfirm={() => onClickdeleteUser(Number(userId))}
+                onConfirm={() => onClickdeleteUser(userId)}
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
                 okText="Yes"
                 cancelText="No"

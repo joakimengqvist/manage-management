@@ -1,4 +1,4 @@
-export const getUserById = async (userId : number, id : number) => {
+export const getUserById = async (userId : string, id : string) => {
     const payload = {
             id: id,
     };

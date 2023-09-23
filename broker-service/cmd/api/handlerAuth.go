@@ -15,12 +15,12 @@ type AuthPayload struct {
 }
 
 type User struct {
-	ID         int       `json:"id"`
+	ID         string    `json:"id"`
 	Email      string    `json:"email"`
 	FirstName  string    `json:"first_name,omitempty"`
 	LastName   string    `json:"last_name,omitempty"`
 	Privileges []string  `json:"privileges"`
-	Projects   []int     `json:"projects"`
+	Projects   []string  `json:"projects"`
 	Password   string    `json:"-"`
 	Active     int       `json:"active"`
 	CreatedAt  time.Time `json:"created_at"`
@@ -28,7 +28,7 @@ type User struct {
 }
 
 type UserIdPayload struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 }
 
 type NewUser struct {
@@ -36,16 +36,16 @@ type NewUser struct {
 	FirstName  string   `json:"first_name"`
 	LastName   string   `json:"last_name"`
 	Privileges []string `json:"privileges"`
-	Projects   []int    `json:"projects"`
+	Projects   []string `json:"projects"`
 	Password   string   `json:"-"`
 }
 
 type UserUpdatePayload struct {
-	ID         int      `json:"id"`
+	ID         string   `json:"id"`
 	Email      string   `json:"email"`
 	FirstName  string   `json:"first_name"`
 	Privileges []string `json:"privileges"`
-	Projects   []int    `json:"projects"`
+	Projects   []string `json:"projects"`
 	LastName   string   `json:"last_name"`
 }
 

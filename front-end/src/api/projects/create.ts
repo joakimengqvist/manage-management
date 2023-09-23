@@ -1,4 +1,4 @@
-export const createProject = async (userId : number, name : string) => {
+export const createProject = async (userId : string, name : string) => {
     const payload = {
             name: name,
     };

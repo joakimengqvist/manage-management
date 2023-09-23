@@ -44,7 +44,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 }
 
 type UpdateProject struct {
-	Id   int    `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -79,7 +79,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 }
 
 type ProjectIdPayload struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 }
 
 func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {

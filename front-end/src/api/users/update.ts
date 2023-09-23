@@ -1,11 +1,11 @@
 export const updateUserCall = async (
-  userId : number, 
-  id : number, 
+  userId : string, 
+  id : string, 
   firstName : string, 
   lastName : string, 
   email : string, 
   privileges : Array<string>,
-  projects : Array<number>
+  projects : Array<string>
   ) => {
     const payload = {
         id: id,

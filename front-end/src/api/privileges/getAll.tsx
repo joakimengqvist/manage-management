@@ -1,4 +1,4 @@
-export const getAllPrivileges = async (userId : number) => {
+export const getAllPrivileges = async (userId : string) => {
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");

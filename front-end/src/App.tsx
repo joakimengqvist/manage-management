@@ -29,19 +29,22 @@ const { Header, Sider, Content } = Layout;
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isInitiated, setIsInitiated] = useState(false);
   const authenticated = useSelector((state : State) => state.user.authenticated);
   const loggedInUserId = useSelector((state : State) => state.user.id);
   const userPrivileges = useSelector((state : State) => state.user.privileges)
   const [collapsed, setCollapsed] = useState(false);
 
-  console.log('loggedInUserId', loggedInUserId);
   if (!authenticated) {
     navigate('/login')
   }
 
   useEffect(() => {
-    dispatch(initiateUser());
-    dispatch(initiateApplicationData());
+    if (!isInitiated) {
+      dispatch(initiateUser());
+      dispatch(initiateApplicationData());
+      setIsInitiated(true);
+    }
 
     if (loggedInUserId && authenticated) {
       if (hasPrivilege(userPrivileges, PRIVILEGES.privilege_read)) {

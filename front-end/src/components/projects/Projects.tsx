@@ -11,7 +11,7 @@ import { PRIVILEGES } from '../../enums/privileges';
 
 
 interface Project {
-    id: number;
+    id: string;
     name: string;
     created_at: string;
     updated_at: string
@@ -41,7 +41,7 @@ const Projects: React.FC = () => {
 
     const navigateToProject = (id : string) => navigate(`/project/${id}`);
 
-    const onClickdeleteProject = async (id : number) => {
+    const onClickdeleteProject = async (id : string) => {
         await deleteProject(userId, id)
             .then(response => {
                 if (response?.error) {

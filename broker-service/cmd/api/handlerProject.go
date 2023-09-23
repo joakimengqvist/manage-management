@@ -9,14 +9,12 @@ import (
 	"time"
 )
 
-// Project is the structure which holds one project from the database.
-
 type ProjectIdPayload struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 }
 
 type Project struct {
-	ID        int       `json:"id"`
+	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -101,7 +99,7 @@ func (app *Config) CreateProjectCall(w http.ResponseWriter, requestPayload NewPr
 // -------------------------------------------
 
 type ProjectPayload struct {
-	ID   int    `json:"id"`
+	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 

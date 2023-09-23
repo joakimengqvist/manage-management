@@ -27,7 +27,7 @@ const Project: React.FC = () => {
     const projectId = id || ''
 
     useEffect(() => {
-        const project = projects.find((p : any) => p.id === Number(projectId));
+        const project = projects.find((p : any) => p.id === projectId);
         if (project) {
           try {
             setName(project.name);
@@ -45,7 +45,7 @@ const Project: React.FC = () => {
     const onHandleNameChange = (event : any) => setName(event.target.value);
 
     const onSaveEdittedProject = () => {
-        updateProject(loggedInUserId, Number(projectId), name)
+        updateProject(loggedInUserId, projectId, name)
         .then(response => {
           if (response?.error) {
             api.error({
@@ -75,7 +75,7 @@ const Project: React.FC = () => {
     }
 
     const onClickdeleteProject = async () => {
-        await deleteProject(loggedInUserId, Number(projectId))
+        await deleteProject(loggedInUserId, projectId)
           .then(response => {
             if (response?.error) {
               api.error({
@@ -92,7 +92,7 @@ const Project: React.FC = () => {
               placement: "bottom",
               duration: 1.2,
             });
-            dispatch(popProject(Number(projectId)));
+            dispatch(popProject(projectId));
             setTimeout(() => {
               navigate("/projects");
             }, 1000);

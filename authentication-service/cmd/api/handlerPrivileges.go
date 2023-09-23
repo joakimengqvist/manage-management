@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
 )
 
 type NewPrivilege struct {
@@ -14,11 +13,11 @@ type NewPrivilege struct {
 }
 
 type PrivilegeIdPayload struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 }
 
 type UpdatePrivilege struct {
-	Id          int    `json:"id"`
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -26,8 +25,7 @@ type UpdatePrivilege struct {
 func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "privilege_read")
+	err := app.CheckUserPrivilege(w, userId, "privilege_read")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -62,8 +60,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewPrivilege
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "privilege_write")
+	err := app.CheckUserPrivilege(w, userId, "privilege_write")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -100,8 +97,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload PrivilegeIdPayload
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "privilege_read")
+	err := app.CheckUserPrivilege(w, userId, "privilege_read")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -133,8 +129,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdatePrivilege
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "privilege_write")
+	err := app.CheckUserPrivilege(w, userId, "privilege_write")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -172,8 +167,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload PrivilegeIdPayload
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "privilege_sudo")
+	err := app.CheckUserPrivilege(w, userId, "privilege_sudo")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return

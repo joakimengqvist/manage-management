@@ -1,4 +1,4 @@
-export const deleteProject = async (userId : number, id : number) => {
+export const deleteProject = async (userId : string, id : string) => {
     const payload = {
             id: id,
     };

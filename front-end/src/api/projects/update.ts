@@ -1,4 +1,4 @@
-export const updateProject = async (userId : number, id : number, name : string) => {
+export const updateProject = async (userId : string, id : string, name : string) => {
     const payload = {
       id: id,
       name: name

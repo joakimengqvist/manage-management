@@ -12,7 +12,7 @@ import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 
 interface User {
-    id: number;
+    id: string;
     email: string;
     first_name: string;
     last_name: string;
@@ -60,7 +60,7 @@ const Users: React.FC = () => {
 
     const navigateToUser = (id : string) => navigate(`/user/${id}`);
 
-    const onClickdeleteUser = async (id : number) => {
+    const onClickdeleteUser = async (id : string) => {
         await deleteUser(loggedInUserId, id)
             .then(response => {
                 if (response?.error) {

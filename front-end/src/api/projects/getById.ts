@@ -1,4 +1,4 @@
-export const getProjectById = async (userId : number, id : number) => {
+export const getProjectById = async (userId : string, id : string) => {
     const payload = {
       id: id,
     };

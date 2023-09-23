@@ -5,7 +5,7 @@ export type State = {
         darkMode: boolean
     }
 user: {
-    id: number,
+    id: string,
     authenticated: boolean,
     firstName: string,
     lastName: string,

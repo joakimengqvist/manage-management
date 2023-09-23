@@ -1,4 +1,4 @@
-export const sendEmail = async (userId : number, to : string, from : string, subject : string, message : string) => {
+export const sendEmail = async (userId : string, to : string, from : string, subject : string, message : string) => {
     const payload = {
       action: "mail",
       mail: {

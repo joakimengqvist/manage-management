@@ -24,7 +24,7 @@ type Models struct {
 }
 
 type Project struct {
-	ID        int       `json:"id"`
+	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
@@ -87,7 +87,7 @@ func (u *Project) GetProjectByName(name string) (*Project, error) {
 	return &project, nil
 }
 
-func (u *Project) GetProjectById(id int) (*Project, error) {
+func (u *Project) GetProjectById(id string) (*Project, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -147,7 +147,7 @@ func (u *Project) Delete() error {
 	return nil
 }
 
-func (u *Project) DeleteByID(id int) error {
+func (u *Project) DeleteByID(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -161,11 +161,11 @@ func (u *Project) DeleteByID(id int) error {
 	return nil
 }
 
-func (u *Project) Insert(project Project) (int, error) {
+func (u *Project) Insert(project Project) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	var newID int
+	var newID string
 	stmt := `insert into projects (name, created_at, updated_at)
 		values ($1, $2, $3) returning id`
 
@@ -176,7 +176,7 @@ func (u *Project) Insert(project Project) (int, error) {
 	).Scan(&newID)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return newID, nil

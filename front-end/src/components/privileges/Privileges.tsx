@@ -37,7 +37,7 @@ const Privileges: React.FC = () => {
 
     const navigateToPrivilege = (id : string) => navigate(`/privilege/${id}`);
 
-    const onClickdeletePrivilege = async (id : number) => {
+    const onClickdeletePrivilege = async (id : string) => {
         await deletePrivilege(userId, id)
             .then(response => {
                 if (response?.error) {

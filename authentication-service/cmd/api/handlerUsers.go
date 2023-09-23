@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
 )
 
 type NewUser struct {
@@ -14,7 +13,7 @@ type NewUser struct {
 	LastName   string   `json:"last_name"`
 	Password   string   `json:"-"`
 	Privileges []string `json:"privileges"`
-	Projects   []int    `json:"projects"`
+	Projects   []string `json:"projects"`
 }
 
 type Authenticate struct {
@@ -23,16 +22,16 @@ type Authenticate struct {
 }
 
 type UpdateUser struct {
-	Id         int      `json:"id"`
+	Id         string   `json:"id"`
 	Email      string   `json:"email"`
 	FirstName  string   `json:"first_name"`
 	LastName   string   `json:"last_name"`
 	Privileges []string `json:"privileges"`
-	Projects   []int    `json:"projects"`
+	Projects   []string `json:"projects"`
 }
 
 type UserIdPayload struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 }
 
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +66,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		Email:      user.Email,
 		FirstName:  user.FirstName,
 		Privileges: app.parsePostgresArray(user.Privileges),
-		Projects:   app.parsePostgresArrayInteger(user.Projects),
+		Projects:   app.parsePostgresArray(user.Projects),
 		LastName:   user.LastName,
 	}
 
@@ -85,8 +84,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewUser
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "user_write")
+	err := app.CheckUserPrivilege(w, userId, "user_write")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -103,7 +101,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 		FirstName:  requestPayload.FirstName,
 		LastName:   requestPayload.LastName,
 		Privileges: app.convertToPostgresArray(requestPayload.Privileges),
-		Projects:   app.convertToPostgresArrayInteger(requestPayload.Projects),
+		Projects:   app.convertToPostgresArray(requestPayload.Projects),
 		Password:   requestPayload.Password,
 	}
 
@@ -126,8 +124,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateUser
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "user_write")
+	err := app.CheckUserPrivilege(w, userId, "user_write")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -144,12 +141,9 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		Email:      requestPayload.Email,
 		FirstName:  requestPayload.FirstName,
 		Privileges: app.convertToPostgresArray(requestPayload.Privileges),
-		Projects:   app.convertToPostgresArrayInteger(requestPayload.Projects),
+		Projects:   app.convertToPostgresArray(requestPayload.Projects),
 		LastName:   requestPayload.LastName,
 	}
-
-	fmt.Println("----------- requestPayload.Projects --------", requestPayload.Projects)
-	fmt.Println("------ updatedUser -------", updatedUser)
 
 	err = updatedUser.UpdateUser()
 	if err != nil {
@@ -181,8 +175,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UserIdPayload
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "user_sudo")
+	err := app.CheckUserPrivilege(w, userId, "user_sudo")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -220,8 +213,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UserIdPayload
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "user_read")
+	err := app.CheckUserPrivilege(w, userId, "user_read")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -245,7 +237,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 		FirstName:  user.FirstName,
 		LastName:   user.LastName,
 		Privileges: app.parsePostgresArray(user.Privileges),
-		Projects:   app.parsePostgresArrayInteger(user.Projects),
+		Projects:   app.parsePostgresArray(user.Projects),
 		Password:   "",
 		Active:     user.Active,
 		CreatedAt:  user.CreatedAt,
@@ -265,8 +257,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-	userIdInteger, _ := strconv.Atoi(userId)
-	err := app.CheckUserPrivilege(w, userIdInteger, "user_read")
+	err := app.CheckUserPrivilege(w, userId, "user_read")
 	if err != nil {
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
@@ -288,7 +279,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 			FirstName:  user.FirstName,
 			LastName:   user.LastName,
 			Privileges: app.parsePostgresArray(user.Privileges),
-			Projects:   app.parsePostgresArrayInteger(user.Projects),
+			Projects:   app.parsePostgresArray(user.Projects),
 			Password:   user.Password,
 			Active:     user.Active,
 			CreatedAt:  user.CreatedAt,
@@ -302,7 +293,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	app.writeUsersJSONFromSlice(w, http.StatusAccepted, userSlice)
 }
 
-func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId int, action string) error {
+func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId string, action string) error {
 
 	user, err := app.Models.User.GetUserById(userId)
 	if err != nil {
@@ -319,4 +310,40 @@ func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId int, action 
 	}
 
 	return nil
+}
+
+type CheckPrivilegePayload struct {
+	UserId string `json:"userId"`
+	Action string `json:"action"`
+}
+
+type CheckPrivilegeResponse struct {
+	Authenticated bool   `json:"authenticated"`
+	Message       string `json:"message"`
+}
+
+func (app *Config) CheckPrivilege(w http.ResponseWriter, r *http.Request) {
+	var requestPayload CheckPrivilegePayload
+
+	user, err := app.Models.User.GetUserById(requestPayload.UserId)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
+		return
+	}
+
+	privileges := app.parsePostgresArray(user.Privileges)
+	isAuthenticated := app.containsString(privileges, requestPayload.Action)
+
+	if !isAuthenticated {
+		app.errorJSON(w, errors.New("Unauthorized"), http.StatusUnauthorized)
+		return
+	}
+
+	payload := CheckPrivilegeResponse{
+		Authenticated: true,
+		Message:       "Authenticated",
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
+	app.writeJSON(w, http.StatusAccepted, payload)
 }

@@ -28,7 +28,7 @@ const Privilege: React.FC = () => {
     const privilegeId = id || '';
 
     useEffect(() => {
-        const privilege = privileges.find((p : any) => p.id === Number(id));
+        const privilege = privileges.find((p : any) => p.id === id);
         if (privilege) {
           try {
             setName(privilege.name);
@@ -48,7 +48,7 @@ const Privilege: React.FC = () => {
     const onHandleDescriptionChange = (event : any) => setDescription(event.target.value);
 
     const onSaveEdittedPrivilege = async () => {
-        await updatePrivilege(loggedInUserId, Number(privilegeId), name, description)
+        await updatePrivilege(loggedInUserId, privilegeId, name, description)
             .then(response => {
               if (response?.error) {
                 api.error({
@@ -78,7 +78,7 @@ const Privilege: React.FC = () => {
     };
 
     const onClickdeletePrivilege = async () => {
-        await deletePrivilege(loggedInUserId, Number(privilegeId))
+        await deletePrivilege(loggedInUserId, privilegeId)
           .then(response => {
             if (response?.error) {
               api.error({
@@ -95,7 +95,7 @@ const Privilege: React.FC = () => {
               placement: "bottom",
               duration: 1.2,
             });
-            dispatch(popPrivilege(Number(privilegeId)));
+            dispatch(popPrivilege(privilegeId));
             setTimeout(() => {
               navigate("/privileges");
             }, 1000);

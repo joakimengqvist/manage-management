@@ -29,5 +29,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/project/update-project", app.UpdateProject)
 	mux.Post("/project/delete-project", app.DeleteProject)
 
+	mux.Post("/project/update-project-notes", app.UpdateProjectNotes)
+
 	return mux
 }

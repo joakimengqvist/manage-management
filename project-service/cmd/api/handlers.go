@@ -7,17 +7,20 @@ import (
 	"project-service/cmd/data"
 )
 
-type NewProject struct {
-	Name string `json:"name"`
-}
-
 type ProjectIdPayload struct {
 	Id string `json:"id"`
 }
 
 type UpdateProject struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+	Id     string   `json:"id"`
+	Name   string   `json:"name"`
+	Status string   `json:"status"`
+	Notes  []string `json:"notes"`
+}
+
+type UpdateProjectNote struct {
+	NoteId    string `json:"noteId"`
+	ProjectId string `json:"projectId"`
 }
 
 // -------------------------------------------
@@ -35,28 +38,33 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	authorized, err := app.CheckPrivilege(w, privilegePayload)
 	if err != nil {
+		fmt.Println("------- authorized, err", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 	if !authorized {
+		fmt.Println("------- !authorized")
 		app.errorJSON(w, errors.New("could not create projects: Unauthorized"), http.StatusUnauthorized)
 		return
 	}
 
-	var requestPayload NewProject
+	var requestPayload data.NewProject
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		fmt.Println("-------  app.readJSON", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	Project := data.Project{
-		Name: requestPayload.Name,
+	Project := data.NewProject{
+		Name:   requestPayload.Name,
+		Status: requestPayload.Status,
 	}
 
 	response, err := app.Models.Project.Insert(Project)
 	if err != nil {
+		fmt.Println("-------  response", err)
 		app.errorJSON(w, errors.New("could not create project: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -106,9 +114,11 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedProject := data.Project{
-		ID:   requestPayload.Id,
-		Name: requestPayload.Name,
+	updatedProject := data.PostgresProject{
+		ID:     requestPayload.Id,
+		Name:   requestPayload.Name,
+		Status: requestPayload.Status,
+		Notes:  app.convertToPostgresArray(requestPayload.Notes),
 	}
 
 	err = updatedProject.Update()
@@ -227,6 +237,13 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	returnedProject := data.Project{
+		ID:     project.ID,
+		Name:   project.Name,
+		Status: project.Status,
+		Notes:  app.parsePostgresArray(project.Notes),
+	}
+
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Fetched project: %s", project.Name),
@@ -234,7 +251,7 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Successfuly fetched project"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, returnedProject)
 }
 
 // -------------------------------------------
@@ -273,7 +290,18 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	var projectSlice []data.Project
 	for _, projectPtr := range projects {
-		projectSlice = append(projectSlice, *projectPtr)
+		project := *projectPtr
+
+		returnProject := data.Project{
+			ID:        project.ID,
+			Name:      project.Name,
+			Status:    project.Status,
+			Notes:     app.parsePostgresArray(project.Notes),
+			CreatedAt: project.CreatedAt,
+			UpdatedAt: project.UpdatedAt,
+		}
+
+		projectSlice = append(projectSlice, returnProject)
 	}
 
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Successfuly fetched all projects"})
@@ -282,4 +310,91 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 // -------------------------------------------
 // --------- END OF GET ALL PROJECTS  --------
+// -------------------------------------------
+
+// -------------------------------------------
+// --------- START OF UPDATE PROJECT NOTES ---
+// -------------------------------------------
+
+func (app *Config) UpdateProjectNotes(w http.ResponseWriter, r *http.Request) {
+
+	/*
+		userId := r.Header.Get("X-User-Id")
+
+		privilegePayload := Privilege{
+			UserId: userId,
+			Action: "project_write",
+		}
+
+		authorized, err := app.CheckPrivilege(w, privilegePayload)
+		if err != nil {
+			app.errorJSON(w, err, http.StatusBadRequest)
+			return
+		}
+		if !authorized {
+			app.errorJSON(w, errors.New("could not delete project: Unauthorized"), http.StatusUnauthorized)
+			return
+		}
+
+	*/
+
+	var requestPayload UpdateProjectNote
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("------- requestPayload", requestPayload)
+
+	project, err := app.Models.Project.GetProjectById(requestPayload.ProjectId)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("------- project", project)
+
+	notesSlice := app.parsePostgresArray(project.Notes)
+	fmt.Println("------- notesSlice", notesSlice)
+
+	updatedNotes := append(notesSlice, requestPayload.NoteId)
+	fmt.Println("------- updatedNotes", updatedNotes)
+
+	updatedProject := data.PostgresProject{
+		ID:     requestPayload.ProjectId,
+		Name:   project.Name,
+		Status: project.Status,
+		Notes:  app.convertToPostgresArray(updatedNotes),
+	}
+
+	fmt.Println("------- updatedProject", updatedProject)
+
+	err = updatedProject.Update()
+	if err != nil {
+		fmt.Println("------- err", err)
+		app.errorJSON(w, errors.New("could not update project: "+err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	returnedProject := data.Project{
+		ID:     requestPayload.ProjectId,
+		Name:   project.Name,
+		Status: project.Status,
+		Notes:  updatedNotes,
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("updated project with Id: %s", fmt.Sprint(updatedProject.ID)),
+		Data:    returnedProject,
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// -------------------------------------------
+// --------- END OF DELETE PROJECT  ----------
 // -------------------------------------------

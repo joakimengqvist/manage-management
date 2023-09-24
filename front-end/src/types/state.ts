@@ -19,3 +19,9 @@ application: {
     users: Array<any>
 }
 }
+
+export type NoteAuthor = {
+    id: string,
+    name: string,
+    email: string
+}

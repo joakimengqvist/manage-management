@@ -4,6 +4,7 @@ PROJECT_BINARY=projectApp
 LOGGER_BINARY=loggerApp
 MAIL_BINARY=mailerApp
 LISTENER_BINARY=listenerApp
+NOTES_BINARY=notesApp
 
 
 ## up: starts all containers in the background without forcing build
@@ -13,7 +14,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_broker build_auth build_project build_logger build_mail build_listener
+up_build: build_broker build_auth build_project build_notes build_logger build_mail build_listener
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -38,10 +39,16 @@ build_auth:
 	cd ../authentication-service && env GOOS=linux CGO_ENABLED=0 go build -o ${AUTH_BINARY} ./cmd/api
 	@echo "Done!"
 
-## build_auth: builds the broker binary as a linux executable
+## build_auth: builds the project binary as a linux executable
 build_project:
 	@echo "Building project binary..."
 	cd ../project-service && env GOOS=linux CGO_ENABLED=0 go build -o ${PROJECT_BINARY} ./cmd/api
+	@echo "Done!"
+
+## build_auth: builds the notes binary as a linux executable
+build_notes:
+	@echo "Building notes binary..."
+	cd ../notes-service && env GOOS=linux CGO_ENABLED=0 go build -o ${NOTES_BINARY} ./cmd/api
 	@echo "Done!"
 
 ## build_logger: builds the broker binary as a linux executable

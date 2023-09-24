@@ -2,18 +2,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProject } from '../../api/projects/delete';
-import { Table, Button, Popconfirm, notification, Tag, Typography } from 'antd';
+import { Table, Button, Popconfirm, notification } from 'antd';
 import { State } from '../../types/state';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-
-const { Text } = Typography;
-
+import { RenderProjectStatus } from './../tags/ProjectStatus';
 interface Project {
     id: string;
     name: string;
+    status: string;
+    notes: Array<string>
     created_at: string;
     updated_at: string
     delete_project: any
@@ -80,10 +80,7 @@ const Projects: React.FC = () => {
     const projectsData: Array<any> = projects.map((project : Project) => {
         return {                    
             name: <Button type="link" onClick={() => navigateToProject(project.id.toString())}>{project.name}</Button>,
-            status: (
-                <Tag color="green">
-                    <Text style={{color: '#389e0d'}}>project.status TODO</Text>
-                </Tag>),
+            status: <RenderProjectStatus status={project.status} />,
             operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Button type="link" onClick={() => navigateToProject(project.id.toString())}>Edit</Button>
                 {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&

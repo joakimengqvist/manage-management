@@ -44,6 +44,11 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/project/get-project-by-id", app.GetProjectById)
 	mux.Get("/project/get-all-projects", app.GetAllProjects)
 
+	mux.Post("/notes/create-project-note", app.CreateProjectNote)
+	mux.Get("/notes/get-project-note-by-id", app.GetProjectNoteById)
+	mux.Post("/notes/update-project-note", app.UpdateProjectNote)
+	mux.Post("/notes/get-all-notes-by-project-id", app.GetAllNotesByProductId)
+
 	mux.Post("/email/send", app.SendEmail)
 
 	return mux

@@ -126,6 +126,11 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) er
 
 func (app *Config) parsePostgresArray(postgresArray string) []string {
 	postgresArray = strings.Trim(postgresArray, "{}")
+
+	if len(postgresArray) < 4 {
+		return []string{}
+	}
+
 	arrayElements := strings.Split(postgresArray, ",")
 
 	return arrayElements

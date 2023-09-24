@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"project-service/cmd/data"
+	"strings"
 )
 
 type jsonResponse struct {
@@ -94,4 +95,23 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) er
 	payload.Message = err.Error()
 
 	return app.writeJSON(w, statusCode, payload)
+}
+
+func (app *Config) parsePostgresArray(postgresArray string) []string {
+
+	postgresArray = strings.Trim(postgresArray, "{}")
+
+	if len(postgresArray) < 4 {
+		return []string{}
+	}
+
+	arrayElements := strings.Split(postgresArray, ",")
+
+	return arrayElements
+}
+
+func (app *Config) convertToPostgresArray(arrayElements []string) string {
+	postgresArray := strings.Join(arrayElements, ",")
+	postgresArray = "{" + postgresArray + "}"
+	return postgresArray
 }

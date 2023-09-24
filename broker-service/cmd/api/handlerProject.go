@@ -12,6 +12,8 @@ import (
 type Project struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
+	Status    string    `json:"status"`
+	Notes     []string  `json:"notes"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -21,12 +23,15 @@ type ProjectIdPayload struct {
 }
 
 type UpdateProject struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID     string   `json:"id"`
+	Status string   `json:"status"`
+	Notes  []string `json:"notes"`
+	Name   string   `json:"name"`
 }
 
 type NewProject struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
 }
 
 // -------------------------------------------

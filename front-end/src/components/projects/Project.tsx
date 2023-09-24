@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Card, Space, Input, Typography, notification, Popconfirm } from 'antd';
+import { Button, Card, Space, Input, Typography, notification, Popconfirm, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProject } from '../../api/projects/update';
@@ -11,18 +11,26 @@ import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { RenderProjectStatus } from '../tags/ProjectStatus';
+import { createProjectNote } from '../../api/notes/createProjectNote';
+import { getAllProjectNotesByProjectId } from '../../api/notes/getAllProjectNotesByProductId';
 
 const { Text, Title } = Typography;
+const { TextArea } = Input;
 
 const Project: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUserId = useSelector((state : State) => state.user.id)
+    const loggedInUser = useSelector((state : State) => state.user)
     const userPrivileges = useSelector((state : State) => state.user.privileges);
     const projects = useSelector((state : State) => state.application.projects)
     const [name, setName] = useState('');
-    const [editing, setEditing] = useState(false)
+    const [projectStatus, setProjectStatus] = useState('')
+    const [noteTitle, setNoteTitle] = useState('');
+    const [note, setNote] = useState('');
+    const [editing, setEditing] = useState(false);
+    const [projectNotes, setProjectNotes] = useState([])
     const { id } =  useParams();
     const projectId = id || ''
 
@@ -31,6 +39,7 @@ const Project: React.FC = () => {
         if (project) {
           try {
             setName(project.name);
+            setProjectStatus(project.status)
             } catch (error : any) {
               api.error({
                 message: `Error fetching privilege`,
@@ -40,12 +49,22 @@ const Project: React.FC = () => {
               });
             }
         }
+        if (projectNotes && projectNotes.length === 0 && loggedInUser?.id) {
+          getAllProjectNotesByProjectId(loggedInUser.id, projectId).then(response => {
+            setProjectNotes(response)
+          }).catch(error => {
+            console.log('error fetching project notes', error)
+          })
+        }
       }, [projects]);
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
+    const onHandleProjectStatusChange = (event : any) => setProjectStatus(event.target.value);
+    const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
+    const onHandleNoteChange = (event : any) => setNote(event.target.value);
 
     const onSaveEdittedProject = () => {
-        updateProject(loggedInUserId, projectId, name)
+        updateProject(loggedInUser.id, projectId, name)
         .then(response => {
           if (response?.error) {
             api.error({
@@ -75,7 +94,7 @@ const Project: React.FC = () => {
     }
 
     const onClickdeleteProject = async () => {
-        await deleteProject(loggedInUserId, projectId)
+        await deleteProject(loggedInUser.id, projectId)
           .then(response => {
             if (response?.error) {
               api.error({
@@ -107,10 +126,41 @@ const Project: React.FC = () => {
           });
       };
 
+      const clearNoteFields = () => {
+        setNoteTitle('');
+        setNote('');
+      }
+
+      const onSubmitProjectNote = () => {
+        const user = {
+          id: loggedInUser.id,
+          name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+          email: loggedInUser.email
+
+        }
+        createProjectNote(user, projectId, noteTitle, note).then(() => {
+          api.info({
+            message: `Created note`,
+            description: "Succesfully created note.",
+            placement: "bottom",
+            duration: 1.2,
+          });
+        }).catch(error => {
+          api.error({
+            message: `Error creating note`,
+            description: error.toString(),
+            placement: "bottom",
+            duration: 1.4,
+          });
+        })
+      }
+
     return (
-        <Card style={{maxWidth: '400px'}}>
+      <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
+        <Card style={{width: '400px', height: 'fit-content'}}>
             {contextHolder}
             <Title level={4}>Project information</Title>
+            <Divider style={{marginTop: '0px', marginBottom: '12px'}}/>
             <Space direction="vertical" style={{width: '100%'}}>
                 <Text strong>Project name</Text>
                 {editing ? (
@@ -118,7 +168,13 @@ const Project: React.FC = () => {
                 ) : (
                     <Text>{name}</Text>
                 )}
-                <div style={{display: 'flex', justifyContent: editing ? 'space-between' : 'flex-end', paddingTop: '18px'}}>
+                <Text strong>Status</Text>
+                {editing ? (
+                    <Input value={projectStatus} onChange={onHandleProjectStatusChange}/>
+                ) : (
+                    <RenderProjectStatus status={projectStatus} />
+                )}
+                <div style={{display: 'flex', justifyContent: editing ? 'space-between' : 'flex-end', paddingTop: '4px'}}>
                     {editing && hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) && (
                         <Popconfirm
                             placement="top"
@@ -139,8 +195,37 @@ const Project: React.FC = () => {
                 </div>
             </Space>
         </Card>
-    )
-
+        <Card style={{width: '400px', height: 'fit-content'}}>
+        <Title level={4}>Create note</Title>
+        <Divider style={{marginTop: '0px', marginBottom: '12px'}}/>
+        <Text strong>Title</Text>
+        <Input value={noteTitle} onChange={onHandleNoteTitleChange} />
+        <Text strong>Note</Text>
+        <TextArea value={note} onChange={onHandleNoteChange}/>
+        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px'}}>
+          <Button onClick={clearNoteFields}>Clear</Button>
+          <Button type="primary" disabled={!note || !noteTitle} onClick={onSubmitProjectNote}>Submit</Button>
+        </div>
+        </Card>
+        {projectNotes && (
+        <Card style={{width: '400px', height: 'fit-content'}}>
+        <Title level={4}>Notes</Title>
+        <Divider style={{marginTop: '0px', marginBottom: '8px'}}/>
+        {projectNotes.length > 0 && projectNotes.map((note : any) => (
+          <div style={{width: '100%'}}>
+            <Title level={5} style={{margin: '0px'}}>{note.title}</Title>
+            <Text>{note.note}</Text>
+            <div style={{display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', marginTop: '4px'}}>
+            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_name}</Text>
+            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_email}</Text>
+            <Text type="secondary" style={{textAlign: 'right'}}>{note.created_at}</Text>
+            </div>
+            <Divider style={{marginTop: '8px', marginBottom: '8px'}}/>
+          </div>
+          ))}
+        </Card>
+        )}
+    </div>)
 }
 
 export default Project;

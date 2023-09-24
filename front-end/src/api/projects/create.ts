@@ -1,6 +1,7 @@
-export const createProject = async (userId : string, name : string) => {
+export const createProject = async (userId : string, name : string, status : string) => {
     const payload = {
-            name: name,
+      name: name,
+      status: status,
     };
 
     const headers = new Headers();

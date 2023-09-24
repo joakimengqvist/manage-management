@@ -40,6 +40,7 @@ const User: React.FC = () => {
   const userId = id || '';
   const users = useSelector((state: State) => state.application.users);
   const user = users.find((u : any) => u.id === userId);
+
   const allProjects = useSelector((state: State) => state.application.projects);
   const loggedInUserId = useSelector((state: State) => state.user.id);
   const userPrivileges = useSelector((state: State) => state.user.privileges);
@@ -62,9 +63,15 @@ const User: React.FC = () => {
         setFirstName(user.first_name);
         setLastName(user.last_name);
         setPrivileges(user.privileges);
-        if (user.projects && user.projects[0]) {
-          setProjects(user.projects);
-        }
+
+        const userProjects : Array<any> = [];
+        allProjects.forEach(project => {
+          if (user.projects.includes(project.id)) {
+            userProjects.push({ label: project.name, value: project.id})
+          }
+        });
+
+        setProjects(userProjects);
        
         const privilegesOptions = allPrivileges.map(privilege => {
           return { label: privilege.name, value: privilege.name }
@@ -85,7 +92,7 @@ const User: React.FC = () => {
           });
         }
     }
-  }, [users]);
+  }, [users, allProjects]);
 
   const onHandleEmailChange = (event: any) => setEmail(event.target.value);
   const onHandleFirstNameChange = (event: any) => setFirstName(event.target.value);

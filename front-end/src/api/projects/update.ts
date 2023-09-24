@@ -1,7 +1,8 @@
-export const updateProject = async (userId : string, id : string, name : string) => {
+export const updateProject = async (userId : string, id : string, name : string, status : string) => {
     const payload = {
       id: id,
-      name: name
+      name: name,
+      status: status
     };
 
     const headers = new Headers();

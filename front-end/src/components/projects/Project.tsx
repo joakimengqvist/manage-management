@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Card, Space, Input, Typography, notification, Popconfirm, Divider } from 'antd';
+import { Button, Card, Space, Input, Typography, notification, Popconfirm, Divider, Select } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProject } from '../../api/projects/update';
@@ -59,12 +59,12 @@ const Project: React.FC = () => {
       }, [projects]);
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
-    const onHandleProjectStatusChange = (event : any) => setProjectStatus(event.target.value);
+    const onHandleProjectStatusChange = (value : any) => setProjectStatus(value);
     const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
     const onHandleNoteChange = (event : any) => setNote(event.target.value);
 
     const onSaveEdittedProject = () => {
-        updateProject(loggedInUser.id, projectId, name)
+        updateProject(loggedInUser.id, projectId, name, projectStatus)
         .then(response => {
           if (response?.error) {
             api.error({
@@ -170,7 +170,16 @@ const Project: React.FC = () => {
                 )}
                 <Text strong>Status</Text>
                 {editing ? (
-                    <Input value={projectStatus} onChange={onHandleProjectStatusChange}/>
+                  <Select
+                    style={{width: '100%'}}
+                    options={[
+                        {value: 'ongoing', label: 'ongoing'},
+                        {value: 'cancelled', label: 'cancelled'},
+                        {value: 'completed', label: 'completed'}
+                    ]}
+                    onChange={onHandleProjectStatusChange}
+                    value={projectStatus}
+                  />
                 ) : (
                     <RenderProjectStatus status={projectStatus} />
                 )}

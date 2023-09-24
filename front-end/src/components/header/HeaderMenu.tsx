@@ -54,7 +54,7 @@ const HeaderMenu: React.FC = () => {
                 {user.authenticated ? (
                     <Space direction="horizontal">
                         <Text>{user.firstName} {user.lastName}</Text>
-                        <Text onClick={() => navigate(`user/${user.id}`)} underline italic style={{ marginRight: '4px', cursor: 'pointer' }}>{user.email}</Text>
+                        <Text onClick={() => navigate('/my-details')} underline italic style={{ marginRight: '4px', cursor: 'pointer' }}>{user.email}</Text>
                         <Link to="/login">
                             <Button type="primary" onClick={() => OnLoginButtonClick(user.authenticated)}>
                                 Log out

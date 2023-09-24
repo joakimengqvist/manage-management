@@ -8,6 +8,8 @@ import type { SelectProps } from 'antd';
 import { createUser } from '../../api/users/create'
 import { State } from '../../types/state';
 import { appendUser } from '../../redux/applicationDataSlice';
+import { BlueTags } from '../tags/BlueTags';
+import { PurpleTags } from '../tags/DefaultTags';
 
 const { Title, Text } = Typography;
 
@@ -134,6 +136,7 @@ const CreateUser: React.FC = () => {
                     mode="multiple"
                     style={{ width: '100%' }}
                     placeholder="Select privileges"
+                    tagRender={BlueTags}
                     onChange={onHandlePrivilegeChange}
                     options={privilegesOptions}
                 />
@@ -142,6 +145,7 @@ const CreateUser: React.FC = () => {
                     mode="multiple"
                     style={{ width: '100%' }}
                     placeholder="Select projects"
+                    tagRender={PurpleTags}
                     defaultValue={[]}
                     onChange={onHandleProjectsChange}
                     options={projectsOptions}

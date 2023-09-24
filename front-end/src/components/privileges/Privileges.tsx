@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePrivilege } from '../../api/privileges/delete';
-import { Table, Button, Popconfirm, notification } from 'antd';
+import { Table, Button, Popconfirm, notification, Tag } from 'antd';
 import { State } from '../../types/state';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -69,9 +69,9 @@ const Privileges: React.FC = () => {
 
     const privilegesData: Array<any> = privileges.map((privilege : any) => {
         return {                    
-            name: <Button type="link" onClick={() => navigateToPrivilege(privilege.id)}>{privilege.name}</Button>,
+            name: <Tag color="blue" style={{cursor: 'pointer'}} onClick={() => navigateToPrivilege(privilege.id)}>{privilege.name}</Tag>,
             description: privilege.description,
-            operations: (<>
+            operations: (<div style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Button type="link" onClick={() => navigateToPrivilege(privilege.id)}>Details</Button>
                 {hasPrivilege(userPrivileges, PRIVILEGES.privilege_sudo) &&
                     <Popconfirm
@@ -86,7 +86,7 @@ const Privileges: React.FC = () => {
                         <Button danger type="link">Delete</Button>
                     </Popconfirm>
                 }
-            </>)
+            </div>)
         }
     })
 

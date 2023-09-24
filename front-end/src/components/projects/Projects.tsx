@@ -2,13 +2,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProject } from '../../api/projects/delete';
-import { Table, Button, Popconfirm, notification } from 'antd';
+import { Table, Button, Popconfirm, notification, Tag, Typography } from 'antd';
 import { State } from '../../types/state';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 
+const { Text } = Typography;
 
 interface Project {
     id: string;
@@ -23,6 +24,11 @@ const columns = [
         title: 'Name',
         dataIndex: 'name',
         key: 'name'
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status'
     },
     {
         title: '',
@@ -74,7 +80,11 @@ const Projects: React.FC = () => {
     const projectsData: Array<any> = projects.map((project : Project) => {
         return {                    
             name: <Button type="link" onClick={() => navigateToProject(project.id.toString())}>{project.name}</Button>,
-            operations: (<>
+            status: (
+                <Tag color="green">
+                    <Text style={{color: '#389e0d'}}>project.status TODO</Text>
+                </Tag>),
+            operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Button type="link" onClick={() => navigateToProject(project.id.toString())}>Edit</Button>
                 {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&
                 <Popconfirm
@@ -89,7 +99,7 @@ const Projects: React.FC = () => {
                     <Button danger type="link">Delete</Button>
                 </Popconfirm>
                 }
-            </>)
+            </div>)
         }
     })
 

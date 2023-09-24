@@ -11,6 +11,7 @@ user: {
     lastName: string,
     email: string,
     privileges: Array<string>,
+    projects: Array<string>,
 }
 application: {
     privileges: Array<any>

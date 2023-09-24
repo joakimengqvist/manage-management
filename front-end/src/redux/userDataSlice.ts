@@ -10,6 +10,7 @@ export const userSlice = createSlice({
     lastName: '',
     id: "",
     privileges: [],
+    projects: [],
   },
   reducers: {
     initiateUser: (state : any) => {
@@ -43,7 +44,8 @@ export const userSlice = createSlice({
           email: "",
           firstName: "",
           lastName: "",
-          id: ""
+          id: "",
+          projects: [],
       }
       localStorage.setItem("userReduxData", JSON.stringify(updatedData))
         return updatedData

@@ -23,6 +23,7 @@ import { getAllProjects } from './api/projects/getAll';
 import { State } from './types/state';
 import { hasPrivilege } from './helpers/hasPrivileges';
 import { PRIVILEGES } from './enums/privileges';
+import MyPage from './routes/myPage';
 
 const { Header, Sider, Content } = Layout;
 
@@ -73,8 +74,11 @@ const App: React.FC = () => {
         <Content style={{ borderRadius: '4px', padding: 0, minHeight: 700 }}>
           <Routes>
             <Route index element={<div>Home</div>} />
+
+            <Route path="/my-details" element={<MyPage />} />
             <Route path="/test-endpoints" element={<TestingEndpoints />} />
             <Route path="/login" element={<Login />} />
+
             <Route path="/user/:id" element={<UserDetails />} />
             <Route path="/users" element={<UsersDetails />} />
 

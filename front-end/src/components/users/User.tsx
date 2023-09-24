@@ -22,9 +22,10 @@ import { updateUser, popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
+import { BlueTags } from "../tags/BlueTags";
+import { PurpleTags } from "../tags/DefaultTags";
 
 const { Text, Title } = Typography;
-
 interface Project {
   label : string,
   value : string,
@@ -212,6 +213,7 @@ const User: React.FC = () => {
                 style={{ width: "100%" }}
                 placeholder="Select privilege"
                 value={privileges}
+                tagRender={BlueTags}
                 onChange={onHandlePrivilegeChange}
                 options={privilegesOptions}
               />
@@ -224,6 +226,7 @@ const User: React.FC = () => {
                 mode="multiple"
                 style={{ width: "100%" }}
                 placeholder="Select projects"
+                tagRender={PurpleTags}
                 value={projects}
                 onChange={onHandleProjectsChange}
                 options={allProjectsOptions}
@@ -282,3 +285,4 @@ const User: React.FC = () => {
 };
 
 export default User;
+

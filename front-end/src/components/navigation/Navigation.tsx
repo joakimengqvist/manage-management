@@ -4,7 +4,6 @@ import {
   FunctionOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  LoginOutlined,
   UsergroupDeleteOutlined,
   UnlockOutlined,
   ProjectOutlined,
@@ -40,26 +39,19 @@ type NavigationProps = {
 }
 
 const Navigation: React.FC<NavigationProps> = (props) => {
-    const { isCollapsed, setCollapsed, authenticated } = props;
+    const { isCollapsed, setCollapsed } = props;
     const navigate = useNavigate();
 
   const itemsLoggedIn: MenuItem[] = useMemo(() => ([
     getItem(isCollapsed ? 'Expand' : 'Minimize', '0', isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />, () => setCollapsed(!isCollapsed)),
-    getItem('Login', '1', <LoginOutlined />, () => navigate("/login")),
-    getItem('People', '2', <UsergroupDeleteOutlined />, () => {}, [
+    getItem('People', '1', <UsergroupDeleteOutlined />, () => {}, [
       getItem('Users', 'sub1-1', <UsergroupDeleteOutlined />, () => navigate("/users")),
       getItem('Privileges', 'sub1-2', <UnlockOutlined />, () => navigate("/privileges")),
     ]),
-    getItem('Projects', '3', <ProjectOutlined />, () => {}, [
+    getItem('Projects', '2', <ProjectOutlined />, () => {}, [
       getItem('Projects', 'sub2-1', <FundProjectionScreenOutlined />, () => navigate("/projects")),
   ]),
-    getItem('Testing', '4', <FunctionOutlined />, () => navigate("/test-endpoints")),
-// eslint-disable-next-line react-hooks/exhaustive-deps
-]), [isCollapsed])
-
-const itemsLoggedOut: MenuItem[] = useMemo(() => ([
-  getItem(isCollapsed ? 'Expand' : 'Minimize', '0', isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />, () => setCollapsed(!isCollapsed)),
-  getItem('Login', '1', <LoginOutlined />, () => navigate("/login")),
+    getItem('Testing', '3', <FunctionOutlined />, () => navigate("/test-endpoints")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 
@@ -70,7 +62,7 @@ const itemsLoggedOut: MenuItem[] = useMemo(() => ([
         mode="inline"
         theme={'dark'}
         inlineCollapsed={isCollapsed}
-        items={authenticated ? itemsLoggedIn : itemsLoggedOut}
+        items={itemsLoggedIn}
         style={{borderRight: '1px solid #d9d9d9', height: '100%'}}
         inlineIndent={10}
       />

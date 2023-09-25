@@ -26,6 +26,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/notes/create-project-note", app.CreateProjectNote)
 	mux.Get("/notes/get-project-note-by-id", app.GetProjectNoteById)
 	mux.Post("/notes/update-project-note", app.UpdateProjectNote)
+	mux.Post("/notes/delete-project-note-by-id", app.DeleteProjectNoteById)
 	mux.Post("/notes/get-all-notes-by-project-id", app.GetAllNotesByProductId)
 
 	return mux

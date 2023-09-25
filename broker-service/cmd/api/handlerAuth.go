@@ -110,7 +110,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "Authenticated"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate success [/auth/authenticate]", Name: "[broker-service]"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate success [/auth/authenticate]", Name: "[broker-service]"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
@@ -181,7 +181,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "create user successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create user successfully [/auth/create-user]", Name: "[broker-service] - Successfully authenticated"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create user successfully [/auth/create-user]", Name: "[broker-service] - Successfully authenticated"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
@@ -252,7 +252,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "update user successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Updated user successfully [/auth/update-user]", Name: "[broker-service] - Successfully updated user"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated user successfully [/auth/update-user]", Name: "[broker-service] - Successfully updated user"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
@@ -323,7 +323,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "delete user successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete user successfully [/auth/delete-user]", Name: "[broker-service] - Successfully deleteted user"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete user successfully [/auth/delete-user]", Name: "[broker-service] - Successfully deleteted user"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
@@ -339,8 +339,6 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UserIdPayload
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get user by id [/auth/get-user-by-id]", Name: "[broker-service]"})
-
 	userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -348,6 +346,8 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 		app.errorJSON(w, err)
 		return
 	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get user by id [/auth/get-user-by-id]", Name: "[broker-service]"})
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
@@ -395,7 +395,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "get user by id successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get user by id successfully [/auth/get-user-by-id]", Name: "[broker-service] - Successfully fetched user"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get user by id successfully [/auth/get-user-by-id]", Name: "[broker-service] - Successfully fetched user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -441,7 +441,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all users success [/auth/get-all-users]", Name: "[broker-service]"})
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all users success [/auth/get-all-users]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 

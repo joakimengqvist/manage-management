@@ -64,13 +64,17 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <Navigation authenticated={authenticated} isCollapsed={collapsed} setCollapsed={setCollapsed} />
-      </Sider>
+      {authenticated && (
+        <Sider trigger={null} collapsible collapsed={collapsed}>
+          <Navigation authenticated={authenticated} isCollapsed={collapsed} setCollapsed={setCollapsed} />
+        </Sider>
+      )}
       <Layout>
-        <Header style={{ padding: 0, height: '48px'}}>
-          <HeaderMenu />
-        </Header>
+        {authenticated && (
+          <Header style={{ padding: 0, height: '48px'}}>
+            <HeaderMenu />
+          </Header>
+        )}
         <Content style={{ borderRadius: '4px', padding: 0, minHeight: 700 }}>
           <Routes>
             <Route index element={<div>Home</div>} />

@@ -109,7 +109,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "create project note successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project note successfully [/notes/create-project-note]", Name: "[broker-service] - Successfully created project note"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project note successfully [/notes/create-project-note]", Name: "[broker-service] - Successfully created project note"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
@@ -180,7 +180,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "update project note successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Updated project note successfully [/notes/update-project-note]", Name: "[broker-service] - Successfully updated project note"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated project note successfully [/notes/update-project-note]", Name: "[broker-service] - Successfully updated project note"})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
@@ -196,8 +196,6 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NoteIdPayload
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-project-note-by-id]", Name: "[broker-service]"})
-
 	userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -205,6 +203,8 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 		app.errorJSON(w, err)
 		return
 	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-project-note-by-id]", Name: "[broker-service]"})
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
@@ -252,7 +252,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "get project note by id successful"
 	payload.Data = jsonFromService.Data
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id successfully [/notes/get-project-note-by-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project note by id successfully [/notes/get-project-note-by-id]", Name: "[broker-service] - Successfully fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -267,8 +267,6 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ProjectIdNotesPayload
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-all-notes-by-project-id]", Name: "[broker-service]"})
-
 	// userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -276,6 +274,8 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 		app.errorJSON(w, err)
 		return
 	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-all-notes-by-project-id]", Name: "[broker-service]"})
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
@@ -319,4 +319,55 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 
 // -------------------------------------------
 // --- END OF GET PROJECT NOTES (projectId) --
+// -------------------------------------------
+
+// -------------------------------------------
+// --- START OF DELETE PROJECT NOTE (id) -----
+// -------------------------------------------
+
+func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request) {
+	var requestPayload NoteIdPayload
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://notes-service/notes/delete-project-note-by-id", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not delete project note"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - delete project note by id"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling notes service - delete project note by id"))
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "get project note by id successful"
+	payload.Data = nil
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// -------------------------------------------
+// --- END OF DELETE PROJECT NOTE (id) -------
 // -------------------------------------------

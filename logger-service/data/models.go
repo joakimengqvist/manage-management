@@ -30,12 +30,6 @@ type LogEntry struct {
 	Action    string    `bson:"action" json:"action"`
 	Name      string    `bson:"name" json:"name"`
 	Data      string    `bson:"data" json:"data"`
-	From      string    `bson:"from" json:"from"`
-	To        string    `bson:"to" json:"to"`
-	Subject   string    `bson:"subject" json:"subject"`
-	Message   string    `bson:"message" json:"message"`
-	Email     string    `bson:"email" json:"email"`
-	Password  string    `bson:"password" json:"password"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
@@ -45,14 +39,8 @@ func (l *LogEntry) Insert(entry *LogEntry) error {
 
 	_, err := collection.InsertOne(context.TODO(), LogEntry{
 		Action:    entry.Action,
-		Data:      entry.Data,
 		Name:      entry.Name,
-		From:      entry.From,
-		To:        entry.To,
-		Subject:   entry.Subject,
-		Message:   entry.Subject,
-		Email:     entry.Email,
-		Password:  entry.Password,
+		Data:      entry.Data,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
@@ -148,12 +136,6 @@ func (l *LogEntry) Update() (*mongo.UpdateResult, error) {
 				{"action", l.Action},
 				{"name", l.Name},
 				{"data", l.Data},
-				{"from", l.From},
-				{"to", l.To},
-				{"subject", l.Subject},
-				{"message", l.Message},
-				{"email", l.Email},
-				{"password", l.Password},
 				{"updated_at", time.Now()},
 			}},
 		},

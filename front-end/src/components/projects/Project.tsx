@@ -14,6 +14,7 @@ import { PRIVILEGES } from '../../enums/privileges';
 import { RenderProjectStatus } from '../tags/ProjectStatus';
 import { createProjectNote } from '../../api/notes/createProjectNote';
 import { getAllProjectNotesByProjectId } from '../../api/notes/getAllProjectNotesByProductId';
+import { deleteProjectNoteById } from '../../api/notes/deleteProjectNoteById';
 
 const { Text, Title } = Typography;
 const { TextArea } = Input;
@@ -155,6 +156,35 @@ const Project: React.FC = () => {
         })
       }
 
+      const onClickdeleteNote = async (noteId : string) => {
+        await deleteProjectNoteById(loggedInUser.id, noteId)
+          .then(response => {
+            if (response?.error) {
+              api.error({
+                  message: `Deleted project project note`,
+                  description: response.message,
+                  placement: 'bottom',
+                  duration: 1.4
+                });
+              return
+            }
+            api.info({
+              message: `Deleted project`,
+              description: "Succesfully deleted project note.",
+              placement: "bottom",
+              duration: 1.2,
+            });
+          })
+          .catch((error) => {
+            api.error({
+              message: `Error deleting project note`,
+              description: error.toString(),
+              placement: "bottom",
+              duration: 1.4,
+            });
+          });
+      };
+
     return (
       <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
         <Card style={{width: '400px', height: 'fit-content'}}>
@@ -183,7 +213,7 @@ const Project: React.FC = () => {
                 ) : (
                     <RenderProjectStatus status={projectStatus} />
                 )}
-                <div style={{display: 'flex', justifyContent: editing ? 'space-between' : 'flex-end', paddingTop: '4px'}}>
+                <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '4px'}}>
                     {editing && hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) && (
                         <Popconfirm
                             placement="top"
@@ -194,13 +224,11 @@ const Project: React.FC = () => {
                             okText="Yes"
                             cancelText="No"
                         >
-                            <Button danger>Delete</Button>
+                            <Button danger type="link">Delete</Button>
                         </Popconfirm>
                     )}
-                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px'}}>
                     <Button type={editing ? "default" : "primary"} onClick={() => setEditing(!editing)}>{editing ? 'Close' : 'Edit'}</Button>
                     {editing && (<Button type="primary" onClick={onSaveEdittedProject}>Save</Button>)}
-                    </div>
                 </div>
             </Space>
         </Card>
@@ -212,7 +240,7 @@ const Project: React.FC = () => {
         <Text strong>Note</Text>
         <TextArea value={note} onChange={onHandleNoteChange}/>
         <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px'}}>
-          <Button onClick={clearNoteFields}>Clear</Button>
+          <Button onClick={clearNoteFields} type="link">Clear</Button>
           <Button type="primary" disabled={!note || !noteTitle} onClick={onSubmitProjectNote}>Submit</Button>
         </div>
         </Card>
@@ -222,7 +250,20 @@ const Project: React.FC = () => {
         <Divider style={{marginTop: '0px', marginBottom: '8px'}}/>
         {projectNotes.length > 0 && projectNotes.map((note : any) => (
           <div style={{width: '100%'}}>
-            <Title level={5} style={{margin: '0px'}}>{note.title}</Title>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Title level={5} style={{margin: '0px'}}>{note.title}</Title>
+              <Popconfirm
+                  placement="top"
+                  title="Are you sure?"
+                  description={`Do you want to delete note ${note.title}`}
+                  onConfirm={() => onClickdeleteNote(note.id)}
+                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                  okText="Yes"
+                  cancelText="No"
+              >
+                  <Button danger type="link">Delete note</Button>
+              </Popconfirm>
+            </div>
             <Text>{note.note}</Text>
             <div style={{display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', marginTop: '4px'}}>
             <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_name}</Text>

@@ -137,6 +137,34 @@ func (n *Note) UpdateProjectNote() error {
 	return nil
 }
 
+func (n *Note) DeleteProjectNote() error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `delete from project_notes where id = $1`
+
+	_, err := db.ExecContext(ctx, stmt, n.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteProjectNoteById(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `delete from project_notes where id = $1`
+
+	_, err := db.ExecContext(ctx, stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (u *Note) InsertProjectNote(note Note) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()

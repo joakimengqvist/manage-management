@@ -8,10 +8,10 @@ import { authenticate } from "../../redux/userDataSlice";
 const { Title } = Typography;
 
 const LoginForm: React.FC = () => {
+  const dispatch = useDispatch();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [loginErrorFeedback, setLoginErrorFeedback] = useState('');
-  const dispatch = useDispatch();
 
   const Login = () => {
     loginAuthenticate(userName, password).then(response => {
@@ -21,13 +21,14 @@ const LoginForm: React.FC = () => {
       }
       setLoginErrorFeedback('');
       dispatch(authenticate(response))
+
     }).catch(error => {
       setLoginErrorFeedback(error)
     })
   }
 
   return (
-    <Card style={{ padding: '0px 20px 12px 8px', borderRadius: '4px' }}>
+    <Card style={{marginTop: '180px', padding: '0px 20px 12px 8px', borderRadius: '4px', maxWidth: '400px', height: 'fit-content'}}>
       <Space direction="vertical">
         <Title level={3}>Login</Title>
         <Input

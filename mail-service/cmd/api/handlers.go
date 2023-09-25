@@ -42,7 +42,7 @@ func (app *Config) SendMail(w http.ResponseWriter, r *http.Request) {
 		Message: "Email is sent to " + requestPayload.To,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Send email success [/email/send]", Name: "[mail-service] - Successfully sent mail"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Send email success [/email/send]", Name: "[mail-service] - Successfully sent mail"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 

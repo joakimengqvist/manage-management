@@ -76,7 +76,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedUser,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[authentication-service] - Successful authentication"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[authentication-service] - Successful authentication"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -166,7 +166,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedData,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -205,7 +205,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -289,7 +289,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		userSlice = append(userSlice, returnedUser)
 	}
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[authentication-service] - Successfuly fetched all users"})
+	app.logItemViaRPC(w, userSlice, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[authentication-service] - Successfuly fetched all users"})
 	app.writeUsersJSONFromSlice(w, http.StatusAccepted, userSlice)
 }
 
@@ -350,6 +350,6 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, r *http.Request) {
 		Message:       "Authenticated",
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

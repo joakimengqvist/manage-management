@@ -65,7 +65,7 @@ func (app *Config) sendMail(w http.ResponseWriter, rpl RequestPayload) {
 	payload.Error = false
 	payload.Message = "Message sent to " + rpl.Mail.To
 
-	app.logItemViaRPC(w, jsonData, RPCLogData{Action: "Send email success [/email/send]", Name: "[broker-service] - succesfully sent email"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Send email success [/email/send]", Name: "[broker-service] - succesfully sent email"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 

@@ -75,7 +75,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		Data:    response,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[project-service] - Successfully created new project"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[project-service] - Successfully created new project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -133,7 +133,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		Data:    updatedProject,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -190,7 +190,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[project-service] - Successful deleted project"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[project-service] - Successful deleted project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -225,14 +225,14 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
+		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to read JSON payload: " + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	project, err := app.Models.Project.GetProjectById(requestPayload.Id)
 	if err != nil {
-		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to get project by id" + err.Error()})
+		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to get project by id: " + err.Error()})
 		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
 		return
 	}
@@ -283,7 +283,7 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	projects, err := app.Models.Project.GetAll()
 	if err != nil {
-		app.logItemViaRPC(w, err, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
+		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -304,7 +304,7 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 		projectSlice = append(projectSlice, returnProject)
 	}
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Successfuly fetched all projects"})
+	app.logItemViaRPC(w, projectSlice, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Successfuly fetched all projects"})
 	app.writeJSONFromSlice(w, http.StatusAccepted, projectSlice)
 }
 
@@ -391,7 +391,7 @@ func (app *Config) UpdateProjectNotes(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedProject,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 

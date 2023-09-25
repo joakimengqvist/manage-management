@@ -82,6 +82,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		app.errorJSON(w, err)
+		data.DeleteProjectNoteById(response)
 		return
 	}
 
@@ -90,7 +91,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	projectUpdateResponse, err := client.Do(request)
 	if err != nil {
 		app.errorJSON(w, err)
-		// delete project note here
+		data.DeleteProjectNoteById(response)
 		return
 	}
 
@@ -98,11 +99,11 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	if projectUpdateResponse.StatusCode == http.StatusUnauthorized {
 		app.errorJSON(w, errors.New("status unauthorized - update project with new project note"))
-		// delete project note here
+		data.DeleteProjectNoteById(response)
 		return
 	} else if projectUpdateResponse.StatusCode != http.StatusAccepted {
 		app.errorJSON(w, errors.New("error calling project service - update project with new project note"))
-		// delete project note here
+		data.DeleteProjectNoteById(response)
 		return
 	}
 
@@ -152,7 +153,7 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all project notes by project id [/notes/get-all-notes-by-project-id]", Name: "[notes-service] - Successfuly fetched all notes by project id"})
+	app.logItemViaRPC(w, noteSlice, RPCLogData{Action: "Get all project notes by project id [/notes/get-all-notes-by-project-id]", Name: "[notes-service] - Successfuly fetched all notes by project id"})
 	app.writeJSON(w, http.StatusAccepted, noteSlice)
 }
 
@@ -198,7 +199,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateNote
 
-	//VuserId := r.Header.Get("X-User-Id")
+	//userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -228,6 +229,33 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedNote,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/notes/update-project-note]", Name: "[notes-service] - Successful updated project-note"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Project notes [/notes/update-project-note]", Name: "[notes-service] - Successful updated project-note"})
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request) {
+	var requestPayload NoteIdPayload
+
+	//userId := r.Header.Get("X-User-Id")
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = data.DeleteProjectNoteById(requestPayload.Id)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("deleted note with Id: %s", fmt.Sprint(requestPayload.Id)),
+		Data:    nil,
+	}
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project note [/notes/delete-project-note-by-id]", Name: "[notes-service] - Successful deleted project-note by id"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

@@ -52,7 +52,7 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 		privilegesSlice = append(privilegesSlice, returnedSlice)
 	}
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[authentication-service] - Successfuly fetched all privileges"})
+	app.logItemViaRPC(w, privilegesSlice, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[authentication-service] - Successfuly fetched all privileges"})
 	app.writePrivilegesJSONFromSlice(w, http.StatusAccepted, privilegesSlice)
 }
 
@@ -89,7 +89,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 		Data:    response,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create privilege [/auth/create-privilege]", Name: "[authentication-service] - Successfuly created new privilege"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create privilege [/auth/create-privilege]", Name: "[authentication-service] - Successfuly created new privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -159,7 +159,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 		Data:    updatedPrivilege,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update privilege [/auth/update-privilege]", Name: "[authentication-service] - Successful updated privilege"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update privilege [/auth/update-privilege]", Name: "[authentication-service] - Successful updated privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -197,6 +197,6 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete privilege [/auth/delete-privilege]", Name: "[authentication-service] - Successful deleted privilege"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete privilege [/auth/delete-privilege]", Name: "[authentication-service] - Successful deleted privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { getAllUsers } from '../../api/users/getAll';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { cardShadow } from '../../enums/styles';
 
 interface User {
     id: string;
@@ -114,7 +115,7 @@ const Users: React.FC = () => {
         }
     });
 
-    return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={usersData} /></>
+    return  <>{contextHolder}<Table style={{boxShadow: cardShadow, borderTopLeftRadius: '8px', borderTopRightRadius: '8px'}} size="small" bordered columns={columns} dataSource={usersData} /></>
 }
 
 export default Users;

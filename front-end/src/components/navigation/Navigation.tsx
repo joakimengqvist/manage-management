@@ -7,7 +7,10 @@ import {
   UsergroupDeleteOutlined,
   UnlockOutlined,
   ProjectOutlined,
-  FundProjectionScreenOutlined
+  FundProjectionScreenOutlined,
+  ReconciliationOutlined,
+  DollarOutlined,
+  FundOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -50,8 +53,13 @@ const Navigation: React.FC<NavigationProps> = (props) => {
     ]),
     getItem('Projects', '2', <ProjectOutlined />, () => {}, [
       getItem('Projects', 'sub2-1', <FundProjectionScreenOutlined />, () => navigate("/projects")),
+    ]),
+    getItem('Economics', '3', <DollarOutlined />, () => {}, [
+      getItem('Expenses', 'sub3-1', <ReconciliationOutlined />, () => navigate("/expenses")),
+      getItem('Incomes', 'sub3-2', <FundOutlined />, () => navigate("/incomes")),
   ]),
-    getItem('Testing', '3', <FunctionOutlined />, () => navigate("/test-endpoints")),
+    getItem('Testing', '4', <FunctionOutlined />, () => navigate("/test-endpoints")),
+    getItem('Services', '5', <FunctionOutlined />, () => navigate("/services")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 

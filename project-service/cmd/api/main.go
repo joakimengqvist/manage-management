@@ -89,17 +89,17 @@ func connectToDB() *sql.DB {
 	}
 }
 
-type Privilege struct {
+type PrivilegeCheckPayload struct {
 	UserId string `json:"userId"`
 	Action string `json:"action"`
 }
 
-type CheckPrivilegeResponse struct {
-	Authenticated bool   `json:"authenticated"`
-	Message       string `json:"message"`
-}
+func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privilege string) (bool, error) {
 
-func (app *Config) CheckPrivilege(w http.ResponseWriter, payload Privilege) (bool, error) {
+	payload := PrivilegeCheckPayload{
+		UserId: userId,
+		Action: privilege,
+	}
 
 	jsonData, _ := json.MarshalIndent(payload, "", "")
 

@@ -104,6 +104,45 @@ func (n *Note) GetProjectNotesByProjectId(id string) ([]*Note, error) {
 	return notes, nil
 }
 
+func (n *Note) GetProjectNotesByAuthorId(id string) ([]*Note, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `select id, author_id, author_name, author_email, project, title, note, created_at, updated_at from project_notes where author_id = $1`
+
+	rows, err := db.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var notes []*Note
+
+	for rows.Next() {
+		var note Note
+		err := rows.Scan(
+			&note.ID,
+			&note.AuthorId,
+			&note.AuthorName,
+			&note.AuthorEmail,
+			&note.Project,
+			&note.Title,
+			&note.Note,
+			&note.CreatedAt,
+			&note.UpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("Error scanning", err)
+			return nil, err
+		}
+
+		notes = append(notes, &note)
+	}
+
+	return notes, nil
+}
+
 func (n *Note) UpdateProjectNote() error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()

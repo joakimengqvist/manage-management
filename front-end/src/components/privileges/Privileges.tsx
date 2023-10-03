@@ -8,6 +8,7 @@ import { popPrivilege } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { cardShadow } from '../../enums/styles';
 
 const columns = [
     {
@@ -90,7 +91,7 @@ const Privileges: React.FC = () => {
         }
     })
 
-    return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={privilegesData} /></>
+    return  <>{contextHolder}<Table style={{boxShadow: cardShadow, borderTopLeftRadius: '8px', borderTopRightRadius: '8px'}} size="small" bordered columns={columns} dataSource={privilegesData} /></>
 }
 
 export default Privileges;

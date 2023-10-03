@@ -15,7 +15,7 @@ func (app *Config) routes() http.Handler {
 	mux.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "X-User-Id"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
@@ -29,7 +29,8 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/project/update-project", app.UpdateProject)
 	mux.Post("/project/delete-project", app.DeleteProject)
 
-	mux.Post("/project/update-project-notes", app.UpdateProjectNotes)
+	mux.Post("/project/add-project-note", app.AddProjectNote)
+	mux.Post("/project/delete-project-note", app.RemoveProjectNote)
 
 	return mux
 }

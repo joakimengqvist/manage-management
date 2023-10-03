@@ -12,8 +12,10 @@ import {
   Typography,
   notification,
   Popconfirm,
+  Divider,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { getAllProjectNotesByUserId } from '../../api/notes/getAllProjectNotesByUserId';
 import { useEffect, useState } from "react";
 import { updateUserCall } from "../../api/users/update";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -24,6 +26,8 @@ import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
 import { BlueTags } from "../tags/BlueTags";
 import { PurpleTags } from "../tags/DefaultTags";
+import { cardShadow } from "../../enums/styles";
+import { deleteProjectNoteById } from "../../api/notes/deleteProjectNoteById";
 
 const { Text, Title } = Typography;
 interface Project {
@@ -35,6 +39,7 @@ const User: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
+  const [userNotes, setUserNotes] = useState([])
 
   const { id } = useParams(); // user id
   const userId = id || '';
@@ -92,7 +97,17 @@ const User: React.FC = () => {
           });
         }
     }
+
+    if (userNotes.length === 0 && user?.id) {
+      getAllProjectNotesByUserId(loggedInUserId, userId).then(response => {
+        setUserNotes(response)
+      }).catch((error : any) => {
+        console.log('error fetching project notes', error)
+      })
+    }
   }, [users, allProjects]);
+
+  console.log('userNotes', userNotes)
 
   const onHandleEmailChange = (event: any) => setEmail(event.target.value);
   const onHandleFirstNameChange = (event: any) => setFirstName(event.target.value);
@@ -171,16 +186,45 @@ const User: React.FC = () => {
       });
   };
 
+  const onClickdeleteNote = async (noteId : string, authorId : string, projectId : string) => {
+    await deleteProjectNoteById(loggedInUserId, noteId, authorId, projectId)
+      .then(response => {
+        if (response?.error) {
+          api.error({
+              message: `Deleted project project note`,
+              description: response.message,
+              placement: 'bottom',
+              duration: 1.4
+            });
+          return
+        }
+        api.info({
+          message: `Deleted project`,
+          description: "Succesfully deleted project note.",
+          placement: "bottom",
+          duration: 1.2,
+        });
+      })
+      .catch((error) => {
+        api.error({
+          message: `Error deleting project note`,
+          description: error.toString(),
+          placement: "bottom",
+          duration: 1.4,
+        });
+      });
+  };
+
   return (
-    <Card style={{ padding: "0px" }}>
+    <>
       {contextHolder}
       <Row>
-        <Col style={{ marginRight: "16px" }}>
-          <Card>
+        <Col span={16}>
+          <Card bordered={false} style={{boxShadow: cardShadow, borderRadius: 0, width: '98%'}}>
+          <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
+            <div style={{paddingRight: '16px'}}>
             <Title level={4}>User information</Title>
             <Space direction="vertical">
-                <>
-                  <Space direction="vertical">
                     <Text strong>First name</Text>
                     <Input
                       value={firstName}
@@ -188,8 +232,6 @@ const User: React.FC = () => {
                       onChange={onHandleFirstNameChange}
                       style={{ width: 210 }}
                     />
-                  </Space>
-                  <Space direction="vertical">
                     <Text strong>Last name</Text>
                     <Input
                       value={lastName}
@@ -197,7 +239,6 @@ const User: React.FC = () => {
                       onChange={onHandleLastNameChange}
                       style={{ width: 210 }}
                     />
-                  </Space>
                   <Text strong>Email</Text>
                   <Input
                     value={email}
@@ -205,13 +246,9 @@ const User: React.FC = () => {
                     onChange={onHandleEmailChange}
                     style={{ width: 320 }}
                   />
-                </>
             </Space>
-          </Card>
-        </Col>
-        <Col>
-          <Card style={{ width: "460px" }}>
-            <Space direction="vertical" style={{ width: "100%" }}>
+            </div>
+            <Space direction="vertical" style={{paddingRight: '24px'}}>
               <Title level={4} style={{marginBottom: '0px'}}>User Privileges</Title>
               <Text strong>Privileges connected to the user</Text>
               <Select
@@ -224,32 +261,26 @@ const User: React.FC = () => {
                 onChange={onHandlePrivilegeChange}
                 options={privilegesOptions}
               />
-            </Space>
-            <Space direction="vertical" style={{ width: "100%" }}>
               <Title level={4} style={{marginTop: '24px', marginBottom: '0px'}}>Projects</Title>
-              <Text strong>Projects connected to the user</Text>
-              <Select
-                disabled={!editing}
-                mode="multiple"
-                style={{ width: "100%" }}
-                placeholder="Select projects"
-                tagRender={PurpleTags}
-                value={projects}
-                onChange={onHandleProjectsChange}
-                options={allProjectsOptions}
-              />
+                <Text strong>Projects connected to the user</Text>
+                <Select
+                  disabled={!editing}
+                  mode="multiple"
+                  style={{ width: "100%" }}
+                  placeholder="Select projects"
+                  tagRender={PurpleTags}
+                  value={projects}
+                  onChange={onHandleProjectsChange}
+                  options={allProjectsOptions}
+                />
             </Space>
-          </Card>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={16}>
-          <div
+            </div>
+            <Divider />
+            <div
             style={{
               display: "flex",
-              justifyContent: "flex-start",
-              gap: "12px",
-              paddingTop: "24px",
+              justifyContent: "flex-end",
+              gap: "8px",
             }}
           >
             {editing && hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) && (
@@ -285,11 +316,43 @@ const User: React.FC = () => {
               )}
             </div>
           </div>
+          </Card>
         </Col>
+        <Col span={8}>
+        {userNotes && userNotes.length > 0 && (
+        <Card bordered={false} style={{width: '400px', borderRadius: 0, height: 'fit-content', boxShadow: cardShadow}}>
+        <Title level={4}>User notes</Title>
+        <Divider style={{marginTop: '0px', marginBottom: '8px'}}/>
+        {userNotes.length > 0 && userNotes.map((note : any) => (
+          <div style={{width: '100%'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Title level={5} style={{margin: '0px'}}>{note.title}</Title>
+              <Popconfirm
+                  placement="top"
+                  title="Are you sure?"
+                  description={`Do you want to delete note ${note.title}`}
+                  onConfirm={() => onClickdeleteNote(note.id, note.author_id, note.project)}
+                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                  okText="Yes"
+                  cancelText="No"
+              >
+                  <Button danger type="link">Delete note</Button>
+              </Popconfirm>
+            </div>
+            <Text>{note.note}</Text>
+            <div style={{display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', marginTop: '4px'}}>
+            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_name}</Text>
+            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_email}</Text>
+            <Text type="secondary" style={{textAlign: 'right'}}>{note.created_at}</Text>
+            </div>
+            <Divider style={{marginTop: '8px', marginBottom: '8px'}}/>
+          </div>
+          ))}
+        </Card>
+        )}</Col>
       </Row>
-    </Card>
+    </>
   );
 };
 
 export default User;
-

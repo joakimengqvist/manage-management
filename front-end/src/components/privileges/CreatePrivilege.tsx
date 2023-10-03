@@ -6,6 +6,7 @@ import { Button, Input, Space, Card, notification } from 'antd';
 import { createPrivilege } from '../../api/privileges/create'
 import { State } from '../../types/state';
 import { appendPrivilege } from '../../redux/applicationDataSlice';
+import { cardShadow } from '../../enums/styles';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -52,7 +53,7 @@ const CreatePrivilege: React.FC = () => {
     };
 
   return (
-        <Card style={{maxWidth: '400px'}}>
+        <Card bordered={false} style={{maxWidth: '400px', borderRadius: 0, boxShadow: cardShadow}}>
             {contextHolder}
             <Space direction="vertical" style={{width: '100%'}}>
                 <Title level={4}>Create privilege</Title>

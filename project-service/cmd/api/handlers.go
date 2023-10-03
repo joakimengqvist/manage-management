@@ -30,21 +30,14 @@ type UpdateProjectNote struct {
 func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-
-	privilegePayload := Privilege{
-		UserId: userId,
-		Action: "project_write",
-	}
-
-	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	authenticated, err := app.CheckPrivilege(w, userId, "project_write")
 	if err != nil {
-		fmt.Println("------- authorized, err", err)
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
-	if !authorized {
-		fmt.Println("------- !authorized")
-		app.errorJSON(w, errors.New("could not create projects: Unauthorized"), http.StatusUnauthorized)
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -52,7 +45,6 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		fmt.Println("-------  app.readJSON", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -64,7 +56,6 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	response, err := app.Models.Project.Insert(Project)
 	if err != nil {
-		fmt.Println("-------  response", err)
 		app.errorJSON(w, errors.New("could not create project: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -90,19 +81,14 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-
-	privilegePayload := Privilege{
-		UserId: userId,
-		Action: "project_write",
-	}
-
-	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	authenticated, err := app.CheckPrivilege(w, userId, "project_write")
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
-	if !authorized {
-		app.errorJSON(w, errors.New("could not update project: Unauthorized"), http.StatusUnauthorized)
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -148,19 +134,14 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-
-	privilegePayload := Privilege{
-		UserId: userId,
-		Action: "project_sudo",
-	}
-
-	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	authenticated, err := app.CheckPrivilege(w, userId, "project_sudo")
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
-	if !authorized {
-		app.errorJSON(w, errors.New("could not delete project: Unauthorized"), http.StatusUnauthorized)
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -205,19 +186,14 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-
-	privilegePayload := Privilege{
-		UserId: userId,
-		Action: "project_read",
-	}
-
-	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	authenticated, err := app.CheckPrivilege(w, userId, "project_read")
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
-	if !authorized {
-		app.errorJSON(w, errors.New("could not get project: Unauthorized"), http.StatusUnauthorized)
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -265,19 +241,14 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-
-	privilegePayload := Privilege{
-		UserId: userId,
-		Action: "project_read",
-	}
-
-	authorized, err := app.CheckPrivilege(w, privilegePayload)
+	authenticated, err := app.CheckPrivilege(w, userId, "project_read")
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
-	if !authorized {
-		app.errorJSON(w, errors.New("could not get all projects: Unauthorized"), http.StatusUnauthorized)
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -313,88 +284,74 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 // -------------------------------------------
-// --------- START OF UPDATE PROJECT NOTES ---
+// --------- START OF ADD PROJECT NOTES ------
 // -------------------------------------------
 
-func (app *Config) UpdateProjectNotes(w http.ResponseWriter, r *http.Request) {
-
-	/*
-		userId := r.Header.Get("X-User-Id")
-
-		privilegePayload := Privilege{
-			UserId: userId,
-			Action: "project_write",
-		}
-
-		authorized, err := app.CheckPrivilege(w, privilegePayload)
-		if err != nil {
-			app.errorJSON(w, err, http.StatusBadRequest)
-			return
-		}
-		if !authorized {
-			app.errorJSON(w, errors.New("could not delete project: Unauthorized"), http.StatusUnauthorized)
-			return
-		}
-
-	*/
-
+func (app *Config) AddProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateProjectNote
 
-	err := app.readJSON(w, r, &requestPayload)
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("------- requestPayload", requestPayload)
-
-	project, err := app.Models.Project.GetProjectById(requestPayload.ProjectId)
+	err = data.AppendProjectNote(requestPayload.ProjectId, requestPayload.NoteId)
 	if err != nil {
-		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
+		app.errorJSON(w, errors.New("failed to append note to project"), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("------- project", project)
-
-	notesSlice := app.parsePostgresArray(project.Notes)
-	fmt.Println("------- notesSlice", notesSlice)
-
-	updatedNotes := append(notesSlice, requestPayload.NoteId)
-	fmt.Println("------- updatedNotes", updatedNotes)
-
-	updatedProject := data.PostgresProject{
-		ID:     requestPayload.ProjectId,
-		Name:   project.Name,
-		Status: project.Status,
-		Notes:  app.convertToPostgresArray(updatedNotes),
-	}
-
-	fmt.Println("------- updatedProject", updatedProject)
-
-	err = updatedProject.Update()
-	if err != nil {
-		fmt.Println("------- err", err)
-		app.errorJSON(w, errors.New("could not update project: "+err.Error()), http.StatusBadRequest)
-		return
-	}
-
-	returnedProject := data.Project{
-		ID:     requestPayload.ProjectId,
-		Name:   project.Name,
-		Status: project.Status,
-		Notes:  updatedNotes,
-	}
-
-	payload := jsonResponse{
-		Error:   false,
-		Message: fmt.Sprintf("updated project with Id: %s", fmt.Sprint(updatedProject.ID)),
-		Data:    returnedProject,
-	}
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/create-project-note]", Name: "[project-service] - Successful added project note"})
+	app.writeJSON(w, http.StatusAccepted, requestPayload)
 }
 
 // -------------------------------------------
-// --------- END OF DELETE PROJECT  ----------
+// --------- END OF ADD PROJECT NOTES --------
 // -------------------------------------------
+
+// -------------------------------------------
+// --------- START OF REMOVE PROJECT NOTES ---
+// -------------------------------------------
+
+func (app *Config) RemoveProjectNote(w http.ResponseWriter, r *http.Request) {
+	var requestPayload UpdateProjectNote
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	err = data.DeleteProjectNote(requestPayload.ProjectId, requestPayload.NoteId)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to delete note from project"), http.StatusBadRequest)
+		return
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/delete-project-note]", Name: "[project-service] - Successful deleted project note"})
+	app.writeJSON(w, http.StatusAccepted, requestPayload)
+}

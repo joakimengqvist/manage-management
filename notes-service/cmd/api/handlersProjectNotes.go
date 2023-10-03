@@ -36,6 +36,10 @@ type ProjectId struct {
 	ProjectId string `json:"projectId"`
 }
 
+type UserId struct {
+	UserId string `json:"userId"`
+}
+
 type ReturnedNotes struct {
 	Notes []data.Note `json:"notes"`
 }
@@ -45,12 +49,37 @@ type UpdateProjectNote struct {
 	ProjectId string `json:"projectId"`
 }
 
+type UpdateUserNotes struct {
+	NoteId string `json:"noteId"`
+	UserId string `json:"userId"`
+}
+
+type DeleteNoteIdPayload struct {
+	AuthorId  string `json:"authorId"`
+	NoteId    string `json:"noteId"`
+	ProjectId string `json:"projectId"`
+}
+
+// -------------------------------------------
+// ------- START OF CREATE PROJECT NOTE  -----
+// -------------------------------------------
+
 func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewNote
 
-	// userId := r.Header.Get("X-User-Id")
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
 
-	err := app.readJSON(w, r, &requestPayload)
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -65,7 +94,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 		Note:        requestPayload.Note,
 	}
 
-	response, err := app.Models.Note.InsertProjectNote(newNote)
+	noteId, err := app.Models.Note.InsertProjectNote(newNote)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not create project note: "+err.Error()), http.StatusBadRequest)
 		return
@@ -73,58 +102,111 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	updateProject := UpdateProjectNote{
 		ProjectId: requestPayload.Project,
-		NoteId:    response,
+		NoteId:    noteId,
 	}
 
-	jsonData, _ := json.MarshalIndent(updateProject, "", "")
+	jsonDataProject, _ := json.MarshalIndent(updateProject, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/update-project-notes", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://project-service/project/add-project-note", bytes.NewBuffer(jsonDataProject))
 
 	if err != nil {
 		app.errorJSON(w, err)
-		data.DeleteProjectNoteById(response)
+		data.DeleteProjectNoteById(noteId)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 
 	projectUpdateResponse, err := client.Do(request)
 	if err != nil {
 		app.errorJSON(w, err)
-		data.DeleteProjectNoteById(response)
+		data.DeleteProjectNoteById(noteId)
 		return
 	}
 
 	defer projectUpdateResponse.Body.Close()
 
 	if projectUpdateResponse.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - update project with new project note"))
-		data.DeleteProjectNoteById(response)
+		data.DeleteProjectNoteById(noteId)
 		return
 	} else if projectUpdateResponse.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling project service - update project with new project note"))
-		data.DeleteProjectNoteById(response)
+		data.DeleteProjectNoteById(noteId)
+		return
+	}
+
+	updateUser := UpdateUserNotes{
+		NoteId: noteId,
+		UserId: requestPayload.AuthorId,
+	}
+
+	jsonDataUser, _ := json.MarshalIndent(updateUser, "", "")
+
+	request, err = http.NewRequest("POST", "http://authentication-service/auth/add-user-note", bytes.NewBuffer(jsonDataUser))
+
+	if err != nil {
+		data.DeleteProjectNoteById(requestPayload.Project)
+		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
+		return
+	}
+
+	client = &http.Client{}
+
+	userUpdateResponse, err := client.Do(request)
+	if err != nil {
+		data.DeleteProjectNoteById(noteId)
+		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
+		return
+	}
+
+	defer userUpdateResponse.Body.Close()
+
+	if userUpdateResponse.StatusCode == http.StatusUnauthorized {
+		data.DeleteProjectNoteById(noteId)
+		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
+		return
+	} else if userUpdateResponse.StatusCode != http.StatusAccepted {
+		data.DeleteProjectNoteById(noteId)
+		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
 		return
 	}
 
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("created note %s", requestPayload.Title),
-		Data:    response,
+		Data:    noteId,
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request) {
+// ------------------------------------------------
+// -- END OF CREATE PROJECT NOTE  -----------------
+// ------------------------------------------------
 
+// ------------------------------------------------
+// -- START OF GET ALL PROJECT NOTES (projectId) --
+// ------------------------------------------------
+
+func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ProjectId
-
-	// userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -157,12 +239,89 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 	app.writeJSON(w, http.StatusAccepted, noteSlice)
 }
 
+// ------------------------------------------------
+// -- END OF GET ALL PROJECT NOTES (projectId) ----
+// ------------------------------------------------
+
+// ------------------------------------------------
+// -- START OF GET ALL PROJECT NOTES (userId) -----
+// ------------------------------------------------
+
+func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
+
+	var requestPayload UserId
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	notes, err := app.Models.Note.GetProjectNotesByAuthorId(requestPayload.UserId)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	var noteSlice []data.Note
+	for _, notePtr := range notes {
+		note := *notePtr
+
+		returnedNote := data.Note{
+			ID:          note.ID,
+			AuthorId:    note.AuthorId,
+			AuthorName:  note.AuthorName,
+			AuthorEmail: note.AuthorEmail,
+			Project:     note.Project,
+			Title:       note.Title,
+			Note:        note.Note,
+			CreatedAt:   note.CreatedAt,
+			UpdatedAt:   note.UpdatedAt,
+		}
+
+		noteSlice = append(noteSlice, returnedNote)
+	}
+
+	app.logItemViaRPC(w, noteSlice, RPCLogData{Action: "Get all project notes by project id [/notes/get-all-notes-by-project-id]", Name: "[notes-service] - Successfuly fetched all notes by project id"})
+	app.writeJSON(w, http.StatusAccepted, noteSlice)
+}
+
+// ------------------------------------------------
+// -- END OF GET ALL PROJECT NOTES (userId) -------
+// ------------------------------------------------
+
+// ------------------------------------------------
+// -- START OF GET PROJECT NOTE BY ID -------------
+// ------------------------------------------------
+
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NoteIdPayload
 
-	// userId := r.Header.Get("X-User-Id")
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
 
-	err := app.readJSON(w, r, &requestPayload)
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -196,12 +355,30 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+// ------------------------------------------------
+// -- END OF GET PROJECT NOTE BY ID ---------------
+// ------------------------------------------------
+
+// ------------------------------------------------
+// -- START OF UPDATE PROJECT NOTE ----------------
+// ------------------------------------------------
+
 func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateNote
 
-	//userId := r.Header.Get("X-User-Id")
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
 
-	err := app.readJSON(w, r, &requestPayload)
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -233,18 +410,82 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+// ------------------------------------------------
+// -- END OF UPDATE PROJECT NOTE ------------------
+// ------------------------------------------------
+
+// ------------------------------------------------
+// -- START OF DELETE PROJECT NOTE ----------------
+// ------------------------------------------------
+
 func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NoteIdPayload
+	var requestPayload DeleteNoteIdPayload
 
-	//userId := r.Header.Get("X-User-Id")
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
 
-	err := app.readJSON(w, r, &requestPayload)
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	err = data.DeleteProjectNoteById(requestPayload.Id)
+	note, err := app.Models.Note.GetProjectNoteById(requestPayload.NoteId)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
+		return
+	}
+
+	deleteUserNote := DeleteNoteIdPayload{
+		NoteId:   note.ID,
+		AuthorId: requestPayload.AuthorId,
+	}
+
+	jsonDataUser, _ := json.MarshalIndent(deleteUserNote, "", "")
+
+	request, err := http.NewRequest("POST", "http://authentication-service/auth/delete-user-note", bytes.NewBuffer(jsonDataUser))
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - delete project note from user"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling auth service - delete project note from user"))
+		return
+	}
+
+	err = app.RemoveNoteFromProject(w, r, note.ID, requestPayload.ProjectId)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	err = data.DeleteProjectNoteById(requestPayload.NoteId)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -252,10 +493,72 @@ func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request)
 
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("deleted note with Id: %s", fmt.Sprint(requestPayload.Id)),
+		Message: fmt.Sprintf("deleted note with Id: %s", fmt.Sprint(requestPayload.NoteId)),
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project note [/notes/delete-project-note-by-id]", Name: "[notes-service] - Successful deleted project-note by id"})
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project note [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
+
+// ------------------------------------------------
+// -- END OF DELETE PROJECT NOTE ------------------
+// ------------------------------------------------
+
+// ------------------------------------------------
+// -- START OF REMOVE PROJECT NOTE FROM PROJECT ---
+// ------------------------------------------------
+
+func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request, noteId string, projectId string) error {
+	deleteProjectNote := UpdateProjectNote{
+		NoteId:    noteId,
+		ProjectId: projectId,
+	}
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return err
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return errors.New("status unauthorized")
+	}
+
+	jsonDataUser, _ := json.MarshalIndent(deleteProjectNote, "", "")
+
+	request, err := http.NewRequest("POST", "http://project-service/project/delete-project-note", bytes.NewBuffer(jsonDataUser))
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return err
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return err
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - delete note from project"))
+		return err
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling project service - delete note from project"))
+		return err
+	}
+
+	return nil
+}
+
+// ------------------------------------------------
+// -- END OF REMOVE PROJECT NOTE FROM PROJECT -----
+// ------------------------------------------------

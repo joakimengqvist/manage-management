@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -339,8 +338,6 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UserIdPayload
 
-	userId := r.Header.Get("X-User-Id")
-
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -348,6 +345,8 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get user by id [/auth/get-user-by-id]", Name: "[broker-service]"})
+
+	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
@@ -412,8 +411,6 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
-
-	fmt.Println("------------  userId -----------", userId)
 
 	request, err := http.NewRequest("GET", "http://authentication-service/auth/get-all-users", nil)
 	if err != nil {

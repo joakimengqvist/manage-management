@@ -6,6 +6,10 @@ import (
 	"net/rpc"
 )
 
+// -------------------------------------------
+// ------- START OF SEND EMAIL  --------------
+// -------------------------------------------
+
 func (app *Config) SendMail(w http.ResponseWriter, r *http.Request) {
 	type mailMessage struct {
 		From    string `json:"from"`
@@ -46,6 +50,10 @@ func (app *Config) SendMail(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+// -------------------------------------------
+// ------- END OF SEND EMAIL  ----------------
+// -------------------------------------------
+
 type RPCPayload struct {
 	Action string
 	Name   string
@@ -56,6 +64,10 @@ type RPCLogData struct {
 	Action string
 	Name   string
 }
+
+// -------------------------------------------
+// ------- START OF LOG ITEM (RPC)  ----------
+// -------------------------------------------
 
 func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
 
@@ -79,3 +91,7 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 		return
 	}
 }
+
+// -------------------------------------------
+// ------- END OF LOG ITEM (RPC)  ------------
+// -------------------------------------------

@@ -24,6 +24,13 @@ import { State } from './types/state';
 import { hasPrivilege } from './helpers/hasPrivileges';
 import { PRIVILEGES } from './enums/privileges';
 import MyPage from './routes/myPage';
+import CreateExpense from './routes/CreateExpense';
+import Expense from './routes/Expense';
+import Expenses from './routes/Expenses';
+import ServiceOverview from './routes/ServiceOverview';
+import Incomes from './routes/Incomes';
+import CreateIncome from './routes/CreateIncome';
+import Income from './routes/Income';
 
 const { Header, Sider, Content } = Layout;
 
@@ -75,7 +82,7 @@ const App: React.FC = () => {
             <HeaderMenu />
           </Header>
         )}
-        <Content style={{ borderRadius: '4px', padding: 0, minHeight: 700 }}>
+        <Content style={{ padding: 0, minHeight: 1200, background: 'white' }}>
           <Routes>
             <Route index element={<div>Home</div>} />
 
@@ -91,6 +98,16 @@ const App: React.FC = () => {
 
             <Route path="/privileges" element={<PrivilegesDetails />} />
             <Route path="/privilege/:id" element={<PrivilegeDetails />} />
+
+            <Route path="/expenses" element={<Expenses />} />
+            <Route path="/create-expense" element={<CreateExpense />} />
+            <Route path="/expense/:id" element={<Expense />} />
+
+            <Route path="/incomes" element={<Incomes />} />
+            <Route path="/create-income" element={<CreateIncome />} />
+            <Route path="/income/:id" element={<Income />} />
+
+            <Route path="/services" element={<ServiceOverview />} />
 
           </Routes>
         </Content>

@@ -139,15 +139,13 @@ func (u *PostgresProject) Update() error {
 	stmt := `update projects set
 		name = $1,
 		status = $2,
-		notes = $3,
-		updated_at = $4
-		where id = $5
+		updated_at = $3
+		where id = $4
 	`
 
 	_, err := db.ExecContext(ctx, stmt,
 		u.Name,
 		u.Status,
-		u.Notes,
 		time.Now(),
 		u.ID,
 	)
@@ -193,4 +191,32 @@ func (u *Project) Insert(project NewProject) (string, error) {
 	}
 
 	return newID, nil
+}
+
+func AppendProjectNote(projectId string, noteId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update projects set notes = array_append(notes, $1) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, noteId, projectId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteProjectNote(projectId string, noteId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update projects set notes = array_remove(notes, $1) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, noteId, projectId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

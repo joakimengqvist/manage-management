@@ -43,8 +43,18 @@ type NoteIdPayload struct {
 	Id string `json:"id"`
 }
 
+type DeleteNotePayload struct {
+	NoteId    string `json:"noteId"`
+	AuthorId  string `json:"authorId"`
+	ProjectId string `json:"projectId"`
+}
+
 type ProjectIdNotesPayload struct {
 	ProjectId string `json:"projectId"`
+}
+
+type UserIdNotesPayload struct {
+	UserId string `json:"userId"`
 }
 
 // -------------------------------------------
@@ -196,8 +206,6 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NoteIdPayload
 
-	userId := r.Header.Get("X-User-Id")
-
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -205,6 +213,8 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-project-note-by-id]", Name: "[broker-service]"})
+
+	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
@@ -277,6 +287,8 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-all-notes-by-project-id]", Name: "[broker-service]"})
 
+	userId := r.Header.Get("X-User-Id")
+
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-notes-by-project-id", bytes.NewBuffer(jsonData))
@@ -285,7 +297,7 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// request.Header.Set("X-User-Id", userId)
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 
@@ -322,16 +334,81 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 // -------------------------------------------
 
 // -------------------------------------------
-// --- START OF DELETE PROJECT NOTE (id) -----
+// --- START OF GET PROJECT NOTES (userId) -----
 // -------------------------------------------
 
-func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NoteIdPayload
+func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
+	var requestPayload UserIdNotesPayload
+
+	// userId := r.Header.Get("X-User-Id")
+
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
 	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-all-notes-by-project-id]", Name: "[broker-service]"})
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-notes-by-user-id", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch project note"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - get project note by id"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling notes service - get project note by id"))
+		return
+	}
+
+	var jsonFromService []Note
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
+// -------------------------------------------
+// --- END OF GET PROJECT NOTES (userId) -----
+// -------------------------------------------
+
+// -------------------------------------------
+// --- START OF DELETE PROJECT NOTE (id) -----
+// -------------------------------------------
+
+func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request) {
+	var requestPayload DeleteNotePayload
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
@@ -340,6 +417,8 @@ func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request)
 		app.errorJSON(w, err)
 		return
 	}
+
+	request.Header.Set("X-User-Id", userId)
 
 	client := &http.Client{}
 

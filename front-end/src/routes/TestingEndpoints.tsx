@@ -7,6 +7,7 @@ import { testBroker } from '../api/test/testBroker'
 import { getAllUsers } from '../api/users/getAll';
 import { getAllProjects } from '../api/projects/getAll';
 import { getAllPrivileges } from '../api/privileges/getAll';
+import { cardShadow } from '../enums/styles';
 
 const TestingEndpoints: React.FC = () => {
     const userId = useSelector((state : State) => state.user.id)
@@ -78,12 +79,12 @@ const TestingEndpoints: React.FC = () => {
         </Space>
         <Row gutter={16} style={{ padding: '16px'}}>
             <Col span={10}>
-            <Card title="Sent payload">
+            <Card bordered={false} title="Sent payload" style={{boxShadow: cardShadow, borderRadius: 0}}>
                 {sentPayload}
             </Card>
             </Col>
             <Col span={10}>
-            <Card title="Recieved payload">
+            <Card bordered={false} title="Recieved payload" style={{boxShadow: cardShadow, borderRadius: 0}}>
                 {receivedPayload}
             </Card>
             </Col>

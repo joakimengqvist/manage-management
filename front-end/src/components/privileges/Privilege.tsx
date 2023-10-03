@@ -11,6 +11,7 @@ import { deletePrivilege } from '../../api/privileges/delete';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { cardShadow } from '../../enums/styles';
 
 const { Text, Title } = Typography;
 
@@ -111,7 +112,7 @@ const Privilege: React.FC = () => {
       };
 
     return (
-        <Card style={{maxWidth: '400px'}}>
+        <Card bordered={false} style={{maxWidth: '400px', borderRadius: 0, boxShadow: cardShadow}}>
             {contextHolder}
             <Title level={4}>Privilege information</Title>
             <Space direction="vertical" style={{width: '100%'}}>

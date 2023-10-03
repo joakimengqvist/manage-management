@@ -9,6 +9,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { RenderProjectStatus } from './../tags/ProjectStatus';
+import { cardShadow } from '../../enums/styles';
 interface Project {
     id: string;
     name: string;
@@ -101,7 +102,7 @@ const Projects: React.FC = () => {
     })
 
 
-    return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={projectsData} /></>
+    return  <>{contextHolder}<Table style={{boxShadow: cardShadow, borderTopLeftRadius: '8px', borderTopRightRadius: '8px'}} size="small" bordered columns={columns} dataSource={projectsData} /></>
 }
 
 export default Projects;

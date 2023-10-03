@@ -293,6 +293,67 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	app.writeUsersJSONFromSlice(w, http.StatusAccepted, userSlice)
 }
 
+type UpdateUserNotesRequest struct {
+	NoteId string `json:"noteId"`
+	UserId string `json:"userId"`
+}
+
+type DeleteUserNotesRequest struct {
+	NoteId   string `json:"noteId"`
+	AuthorId string `json:"authorId"`
+}
+
+func (app *Config) AddUserNote(w http.ResponseWriter, r *http.Request) {
+	var requestPayload UpdateUserNotesRequest
+
+	// userId := r.Header.Get("X-User-Id")
+	// err := app.CheckUserPrivilege(w, userId, "user_read")
+	//	if err != nil {
+	// 		app.errorJSON(w, err, http.StatusUnauthorized)
+	// 		return
+	//	}
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = data.AppendUserNote(requestPayload.UserId, requestPayload.NoteId)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to append note to user"), http.StatusBadRequest)
+		return
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/add-user-note]", Name: "[authentication-service] - Successful added user note"})
+	app.writeJSON(w, http.StatusAccepted, requestPayload)
+}
+
+func (app *Config) DeleteUserNote(w http.ResponseWriter, r *http.Request) {
+	var requestPayload DeleteUserNotesRequest
+
+	// userId := r.Header.Get("X-User-Id")
+	// err := app.CheckUserPrivilege(w, userId, "user_read")
+	//	if err != nil {
+	// 		app.errorJSON(w, err, http.StatusUnauthorized)
+	// 		return
+	//	}
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	err = data.DeleteUserNote(requestPayload.AuthorId, requestPayload.NoteId)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to delete note from user"), http.StatusBadRequest)
+		return
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Authenticate [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
+	app.writeJSON(w, http.StatusAccepted, requestPayload)
+}
+
 func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId string, action string) error {
 
 	user, err := app.Models.User.GetUserById(userId)

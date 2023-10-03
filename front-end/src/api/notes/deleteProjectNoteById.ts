@@ -1,11 +1,13 @@
-export const deleteProjectNoteById = async (userId : string, id : string) => {
+export const deleteProjectNoteById = async (loggedInUser : string, noteId : string, authorId : string, projectId : string) => {
     const payload = {
-      id: id,
+      noteId: noteId,
+      authorId: authorId,
+      projectId: projectId
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUser);
 
     const body = {
         method: 'POST',

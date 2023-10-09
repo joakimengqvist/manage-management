@@ -1,8 +1,8 @@
 export const deleteProjectNoteById = async (loggedInUser : string, noteId : string, authorId : string, projectId : string) => {
     const payload = {
-      noteId: noteId,
-      authorId: authorId,
-      projectId: projectId
+      note_id: noteId,
+      author_id: authorId,
+      project_id: projectId
     };
 
     const headers = new Headers();

@@ -13,11 +13,11 @@ type NewPrivilege struct {
 }
 
 type PrivilegeIdPayload struct {
-	Id string `json:"id"`
+	ID string `json:"id"`
 }
 
 type UpdatePrivilege struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -109,7 +109,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	privilege, err := app.Models.Privilege.GetPrivilegeById(requestPayload.Id)
+	privilege, err := app.Models.Privilege.GetPrivilegeById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get privilege by id"), http.StatusBadRequest)
 		return
@@ -142,7 +142,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 	}
 
 	updatedPrivilege := data.Privilege{
-		ID:          requestPayload.Id,
+		ID:          requestPayload.ID,
 		Name:        requestPayload.Name,
 		Description: requestPayload.Description,
 	}
@@ -179,7 +179,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	privilege, err := app.Models.Privilege.GetPrivilegeById(requestPayload.Id)
+	privilege, err := app.Models.Privilege.GetPrivilegeById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get privilege by id"), http.StatusBadRequest)
 		return

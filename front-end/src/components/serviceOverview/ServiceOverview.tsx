@@ -109,6 +109,17 @@ const Services: React.FC = () => {
                 },
             },
             {
+                id: '1007',
+                value: {
+                title: 'External-company-service',
+                items: [
+                    {
+                        text: 'External companies',
+                    },
+                ],
+                },
+            },
+            {
                 id: '10000',
                 value: {
                 title: 'Front-end',
@@ -145,12 +156,14 @@ const Services: React.FC = () => {
                 source: '10',
                 target: '1006',
             },
-
+            {
+                source: '10',
+                target: '1007',
+            },
             {
                 source: '1001',
                 target: '1002',
             },
-
             {
                 source: '1001',
                 target: '1003',
@@ -160,15 +173,17 @@ const Services: React.FC = () => {
                 source: '1001',
                 target: '1004',
             },
-
             {
                 source: '1001',
                 target: '1005',
             },
-
             {
                 source: '1001',
                 target: '1006',
+            },
+            {
+                source: '1001',
+                target: '1007',
             },
             {
                 source: '1002',
@@ -188,6 +203,10 @@ const Services: React.FC = () => {
             },
             {
                 source: '1006',
+                target: '100',
+            },
+            {
+                source: '1007',
                 target: '100',
             },
             {

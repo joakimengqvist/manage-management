@@ -6,22 +6,23 @@ export type State = {
     }
 user: {
     id: string,
-    authenticated: boolean,
-    firstName: string,
-    lastName: string,
-    email: string,
-    privileges: Array<string>,
-    projects: Array<string>,
+    authenticated: boolean
+    firstName: string
+    lastName: string
+    email: string
+    privileges: Array<string>
+    projects: Array<string>
 }
 application: {
     privileges: Array<any>
     projects: Array<any>
     users: Array<any>
+    externalCompanies: Array<any>
 }
 }
 
 export type NoteAuthor = {
-    id: string,
-    name: string,
+    id: string
+    name: string
     email: string
 }

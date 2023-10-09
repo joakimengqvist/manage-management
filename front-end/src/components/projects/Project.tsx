@@ -11,7 +11,7 @@ import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { RenderProjectStatus } from '../tags/ProjectStatus';
+import { ProjectStatus, ProjectStatusTypes } from '../tags/ProjectStatus';
 import { createProjectNote } from '../../api/notes/createProjectNote';
 import { getAllProjectNotesByProjectId } from '../../api/notes/getAllProjectNotesByProductId';
 import { deleteProjectNoteById } from '../../api/notes/deleteProjectNoteById';
@@ -22,7 +22,7 @@ import { IncomeObject } from '../../types/income';
 import * as React from 'react';
 import { getAllProjectIncomesByProjectId } from '../../api/economics/incomes/getAllProjectIncomesByProjectId';
 
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 const { TextArea } = Input;
 
 const tabList = [
@@ -85,10 +85,11 @@ const Project: React.FC = () => {
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
+    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const userPrivileges = useSelector((state : State) => state.user.privileges);
     const projects = useSelector((state : State) => state.application.projects);
     const [name, setName] = useState('');
-    const [projectStatus, setProjectStatus] = useState('');
+    const [projectStatus, setProjectStatus] = useState<ProjectStatusTypes | ''>('');
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
     const [editing, setEditing] = useState(false);
@@ -271,24 +272,26 @@ const Project: React.FC = () => {
           });
       };
 
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+
       const expensesData: Array<any> = projectExpenses.map((expense : ExpenseObject) => {
         return {                    
-            vendor: <Text>{expense.vendor}</Text>,
+            vendor: <Link href={`/income/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link>,
             description: <Text>{expense.description}</Text>,
             cost: <Text>{expense.amount} {expense.currency}</Text>,
             tax: <Text>{expense.tax} {expense.currency}</Text>,
-            operations: <Button type="link" onClick={() => navigate(`/expense/${expense.expense_id}`)}>Details</Button>
+            operations: <Link href={`/expense/${expense.expense_id}`}>Details</Link>
            
           }
       })
 
-      const incomesData: Array<any> = projectIncomes.map((expense : IncomeObject) => {
+      const incomesData: Array<any> = projectIncomes.map((income : IncomeObject) => {
         return {                    
-            vendor: <Text>{expense.vendor}</Text>,
-            description: <Text>{expense.description}</Text>,
-            cost: <Text>{expense.amount} {expense.currency}</Text>,
-            tax: <Text>{expense.tax} {expense.currency}</Text>,
-            operations: <Button type="link" onClick={() => navigate(`/income/${expense.income_id}`)}>Details</Button>
+            vendor:  <Link href={`/income/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
+            description: <Text>{income.description}</Text>,
+            cost: <Text>{income.amount} {income.currency}</Text>,
+            tax: <Text>{income.tax} {income.currency}</Text>,
+            operations: <Link href={`/income/${income.income_id}`}>Details</Link>
            
           }
       })
@@ -322,7 +325,7 @@ const Project: React.FC = () => {
                   value={projectStatus}
                 />
               ) : (
-                  <RenderProjectStatus status={projectStatus} />
+                  <ProjectStatus status={projectStatus ? projectStatus : 'default'} />
               )}
           </Space>
           <Space direction="vertical" style={{paddingRight: '24px'}}>

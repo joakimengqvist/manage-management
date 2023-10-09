@@ -8,4 +8,7 @@ export enum PRIVILEGES {
     project_read = 'project_read',
     project_write = 'project_write',
     project_sudo = 'project_sudo',
+    external_company_read = 'external_company_read',
+    external_company_write = 'external_company_write',
+    external_company_sudo = 'external_company_sudo',
 }

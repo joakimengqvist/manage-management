@@ -68,6 +68,7 @@ const User: React.FC = () => {
         setFirstName(user.first_name);
         setLastName(user.last_name);
         setPrivileges(user.privileges);
+        setProjects(user.projects);
 
         const userProjects : Array<any> = [];
         allProjects.forEach(project => {
@@ -75,8 +76,6 @@ const User: React.FC = () => {
             userProjects.push({ label: project.name, value: project.id})
           }
         });
-
-        setProjects(userProjects);
        
         const privilegesOptions = allPrivileges.map(privilege => {
           return { label: privilege.name, value: privilege.name }

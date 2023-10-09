@@ -10,6 +10,7 @@ import { Column, Pie } from '@ant-design/plots';
 import { getAllProjectIncomes } from '../../../api/economics/incomes/getAllProjectIncomes';
 import { useNavigate } from 'react-router-dom';
 import { getAllProjectIncomesByProjectId } from '../../../api/economics/incomes/getAllProjectIncomesByProjectId';
+import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 
 const { Text, Title } = Typography;
 
@@ -54,6 +55,7 @@ type IncomeObject = {
 	description: string,
 	amount: number,
 	tax: number,
+  status: PaymentStatusTypes,
 	currency: string,
 	payment_method: string,
 	created_by: string,
@@ -101,6 +103,11 @@ const economicsColumns = [
 
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status'
+    },
+    {
         title: 'Income date',
         dataIndex: 'income_date',
         key: 'income_date'
@@ -115,6 +122,7 @@ const economicsColumns = [
 const Income = ({ project } : { project: string }) => {
     const navigate = useNavigate();
     const loggedInUserId = useSelector((state : State) => state.user.id);
+    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const [activeTab, setActiveTab] = useState<string>('incomes')
     const [incomes, setIncomes] = useState<Array<any>>([]);
 
@@ -138,14 +146,17 @@ const Income = ({ project } : { project: string }) => {
 
       const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+
       const economicsData: Array<any> = useMemo(() => {
         const incomesListItem = incomes.map((income : IncomeObject) => {
         return {                    
-            vendor: <Text>{income.vendor}</Text>,
+            vendor: <Button type="link" onClick={() => navigate(`/external-company/${income.vendor}`)}>{getVendorName(income.vendor)}</Button>,
             description: <Text>{income.description}</Text>,
             cost: <Text>{income.amount} {income.currency}</Text>,
             tax: <Text>{income.tax} {income.currency}</Text>,
             payment_method: <Text>{income.payment_method}</Text>,
+            status: <ExpenseAndIncomeStatus status={income.status}/>,
             income_date: <Text>{income.income_date}</Text>,
             operations: <Button type="link" onClick={() => navigate(`/income/${income.income_id}`)}>Details</Button>
           }
@@ -168,11 +179,7 @@ const Income = ({ project } : { project: string }) => {
         data: pieGraphData,
         angleField: 'amount',
         colorField: 'income_category',
-        label: {
-            style: {
-              fontSize: 14,
-            },
-          },
+        label: false
       };
 
       const pieShartTaxConfig = {
@@ -180,11 +187,7 @@ const Income = ({ project } : { project: string }) => {
         data: pieGraphTaxData,
         angleField: 'tax',
         colorField: 'income_category',
-        label: {
-            style: {
-              fontSize: 14,
-            },
-          },
+        label: false
       };
 
 
@@ -200,12 +203,12 @@ const Income = ({ project } : { project: string }) => {
                 <div style={{padding: '16px'}}>
                     <Column {...columnShartConfig} />
                     <div style={{display: 'flex'}}>
-                        <div style={{width: '50%', marginTop: '48px'}}>
-                        <Title level={2}>Costs</Title>
+                        <div style={{width: '49%', marginRight: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Costs</Title>
                         <Pie {...pieShartConfig} />
                         </div>
-                        <div style={{width: '50%', marginTop: '48px'}}>
-                        <Title level={2}>Taxes</Title>
+                        <div style={{width: '59%', marginLeft: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Taxes</Title>
                         <Pie {...pieShartTaxConfig} />
                         </div>
                     </div>
@@ -217,7 +220,7 @@ const Income = ({ project } : { project: string }) => {
     return  (
         <Card 
             bordered={false}
-            style={{ borderRadius: 0, height: 'fit-content', boxShadow: cardShadow, padding: 0}}
+            style={{ borderRadius: 0, height: 'fit-content', boxShadow: 'none', padding: 0}}
             tabList={incomesTabList}
             activeTabKey={activeTab}
             bodyStyle={{padding: '0px'}}

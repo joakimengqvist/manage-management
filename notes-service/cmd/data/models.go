@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 )
@@ -73,6 +74,7 @@ func (n *Note) GetProjectNotesByProjectId(id string) ([]*Note, error) {
 
 	rows, err := db.QueryContext(ctx, query, id)
 	if err != nil {
+		fmt.Print("rows", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -101,6 +103,8 @@ func (n *Note) GetProjectNotesByProjectId(id string) ([]*Note, error) {
 		notes = append(notes, &note)
 	}
 
+	fmt.Print("notes appended", notes)
+
 	return notes, nil
 }
 
@@ -108,7 +112,7 @@ func (n *Note) GetProjectNotesByAuthorId(id string) ([]*Note, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, author_id, author_name, author_email, project, title, note, created_at, updated_at from project_notes where author_id = $1`
+	query := `select id, author_id, author_name, author_email, project, title, note, created_at, updated_at from project_notes where author_id = $1 order by updated_at desc`
 
 	rows, err := db.QueryContext(ctx, query, id)
 	if err != nil {

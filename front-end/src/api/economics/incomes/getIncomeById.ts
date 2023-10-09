@@ -1,6 +1,6 @@
 export const getIncomeById = async (userId : string, id : string) => {
     const payload = {
-      income_id: id,
+      id: id,
     };
 
     const headers = new Headers();

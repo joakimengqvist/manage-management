@@ -1,8 +1,6 @@
-// get-all-notes-by-project-id
-
 export const getAllProjectNotesByProjectId = async (userId : string, projectId : string) => {
     const payload = {
-        projectId: projectId,
+        id: projectId,
     };
 
     const headers = new Headers();

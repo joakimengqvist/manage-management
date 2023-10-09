@@ -53,6 +53,7 @@ func (app *Config) routes() http.Handler {
 
 	mux.Post("/economics/create-project-expense", app.CreateProjectExpense)
 	mux.Get("/economics/get-all-project-expenses", app.GetAllProjectExpenses)
+	mux.Get("/economics/update-project-expense", app.UpdateProjectExpense)
 	mux.Post("/economics/get-project-expense-by-id", app.GetProjectExpenseById)
 	mux.Post("/economics/get-all-project-expenses-by-project-id", app.GetAllProjectExpensesByProjectId)
 
@@ -60,6 +61,10 @@ func (app *Config) routes() http.Handler {
 	mux.Get("/economics/get-all-project-incomes", app.GetAllProjectIncomes)
 	mux.Post("/economics/get-project-income-by-id", app.GetProjectIncomeById)
 	mux.Post("/economics/get-all-project-incomes-by-project-id", app.GetAllProjectIncomesByProjectId)
+
+	mux.Post("/external-company/create-external-company", app.CreateExternalCompany)
+	mux.Get("/external-company/get-all-external-companies", app.GetAllExternalCompanies)
+	mux.Post("/external-company/get-external-company-by-id", app.GetExternalCompanyById)
 
 	mux.Post("/email/send", app.SendEmail)
 

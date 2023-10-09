@@ -6,6 +6,7 @@ MAIL_BINARY=mailerApp
 LISTENER_BINARY=listenerApp
 NOTES_BINARY=notesApp
 ECONOMICS_BINARY=economicsApp
+EXTERNAL_COMPANY_BINARY=externalCompanyApp
 
 
 ## up: starts all containers in the background without forcing build
@@ -15,7 +16,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_broker build_auth build_project build_notes build_economics build_logger build_mail build_listener
+up_build: build_broker build_auth build_project build_notes build_economics build_external_company build_logger build_mail build_listener
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -56,6 +57,12 @@ build_notes:
 build_economics:
 	@echo "Building economics binary..."
 	cd ../economics-service && env GOOS=linux CGO_ENABLED=0 go build -o ${ECONOMICS_BINARY} ./cmd/api
+	@echo "Done!"
+
+## build_external_company: builds the external company binary as a linux executable
+build_external_company:
+	@echo "Building external_company binary..."
+	cd ../external-company-service && env GOOS=linux CGO_ENABLED=0 go build -o ${EXTERNAL_COMPANY_BINARY} ./cmd/api
 	@echo "Done!"
 
 ## build_logger: builds the broker binary as a linux executable

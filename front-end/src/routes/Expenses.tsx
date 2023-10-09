@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Expenses from '../components/economics/expenses/expenses';
 import { State } from '../types/state';
 
-const PrivilegeDetails: React.FC = () => {
+const ExpensesRoute: React.FC = () => {
     const navigate = useNavigate();
     const projects = useSelector((state: State) => state.application.projects);
     const [project, setProject] = useState('all');
@@ -44,4 +44,4 @@ const PrivilegeDetails: React.FC = () => {
 
 }
 
-export default PrivilegeDetails;
+export default ExpensesRoute;

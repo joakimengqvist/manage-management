@@ -4,13 +4,16 @@ import {
   FunctionOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UsergroupDeleteOutlined,
+  IdcardOutlined,
+  TeamOutlined,
   UnlockOutlined,
   ProjectOutlined,
   FundProjectionScreenOutlined,
   ReconciliationOutlined,
   DollarOutlined,
-  FundOutlined
+  FundOutlined,
+  ApartmentOutlined,
+  BankOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -47,8 +50,8 @@ const Navigation: React.FC<NavigationProps> = (props) => {
 
   const itemsLoggedIn: MenuItem[] = useMemo(() => ([
     getItem(isCollapsed ? 'Expand' : 'Minimize', '0', isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />, () => setCollapsed(!isCollapsed)),
-    getItem('People', '1', <UsergroupDeleteOutlined />, () => {}, [
-      getItem('Users', 'sub1-1', <UsergroupDeleteOutlined />, () => navigate("/users")),
+    getItem('People', '1', <TeamOutlined />, () => {}, [
+      getItem('Users', 'sub1-1', <IdcardOutlined />, () => navigate("/users")),
       getItem('Privileges', 'sub1-2', <UnlockOutlined />, () => navigate("/privileges")),
     ]),
     getItem('Projects', '2', <ProjectOutlined />, () => {}, [
@@ -58,8 +61,9 @@ const Navigation: React.FC<NavigationProps> = (props) => {
       getItem('Expenses', 'sub3-1', <ReconciliationOutlined />, () => navigate("/expenses")),
       getItem('Incomes', 'sub3-2', <FundOutlined />, () => navigate("/incomes")),
   ]),
-    getItem('Testing', '4', <FunctionOutlined />, () => navigate("/test-endpoints")),
-    getItem('Services', '5', <FunctionOutlined />, () => navigate("/services")),
+    getItem('External companies', '4', <BankOutlined />, () => navigate("/external-companies")),
+    getItem('Testing', '5', <FunctionOutlined />, () => navigate("/test-endpoints")),
+    getItem('Services', '6', <ApartmentOutlined />, () => navigate("/services")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 

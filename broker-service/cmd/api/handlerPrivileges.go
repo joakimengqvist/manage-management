@@ -8,7 +8,7 @@ import (
 )
 
 type PrivilegePayload struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	CreatedAt   string `json:"created_at"`
@@ -21,18 +21,9 @@ type NewPrivilege struct {
 }
 
 type UpdatePrivilege struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-}
-
-type PrivilegeIdPayload struct {
-	Id string `json:"id"`
-}
-
-type CheckUserPrivilegePayload struct {
-	UserId string
-	Action string
 }
 
 // -------------------------------------------
@@ -155,7 +146,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload PrivilegeIdPayload
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -297,7 +288,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
-	var requestPayload PrivilegeIdPayload
+	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)

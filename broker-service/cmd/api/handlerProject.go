@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"time"
 )
@@ -14,12 +13,8 @@ type Project struct {
 	Name      string    `json:"name"`
 	Status    string    `json:"status"`
 	Notes     []string  `json:"notes"`
-	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-}
-
-type ProjectIdPayload struct {
-	Id string `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type UpdateProject struct {
@@ -182,7 +177,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectIdPayload
+	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -253,7 +248,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectIdPayload
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -344,8 +339,6 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 		app.errorJSON(w, errors.New("could not fetch projects"))
 		return
 	}
-
-	log.Println("response", response)
 
 	defer response.Body.Close()
 

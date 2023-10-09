@@ -10,6 +10,10 @@ type RequestPayload struct {
 	Mail   MailPayload `json:"mail,omitempty"`
 }
 
+type IDpayload struct {
+	ID string `json:"id"`
+}
+
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,

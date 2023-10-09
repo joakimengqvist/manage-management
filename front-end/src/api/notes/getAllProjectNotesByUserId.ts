@@ -1,6 +1,6 @@
 export const getAllProjectNotesByUserId = async (loggedInUserId : string, userId : string) => {
     const payload = {
-      userId: userId,
+      id: userId,
     };
 
     const headers = new Headers();

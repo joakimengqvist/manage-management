@@ -8,19 +8,19 @@ import (
 )
 
 type ProjectIdPayload struct {
-	Id string `json:"id"`
+	ID string `json:"id"`
 }
 
 type UpdateProject struct {
-	Id     string   `json:"id"`
+	ID     string   `json:"id"`
 	Name   string   `json:"name"`
 	Status string   `json:"status"`
 	Notes  []string `json:"notes"`
 }
 
 type UpdateProjectNote struct {
-	NoteId    string `json:"noteId"`
-	ProjectId string `json:"projectId"`
+	NoteId    string `json:"note_id"`
+	ProjectId string `json:"project_id"`
 }
 
 // -------------------------------------------
@@ -101,7 +101,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	updatedProject := data.PostgresProject{
-		ID:     requestPayload.Id,
+		ID:     requestPayload.ID,
 		Name:   requestPayload.Name,
 		Status: requestPayload.Status,
 		Notes:  app.convertToPostgresArray(requestPayload.Notes),
@@ -153,7 +153,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, err := app.Models.Project.GetProjectById(requestPayload.Id)
+	project, err := app.Models.Project.GetProjectById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
 		return
@@ -206,7 +206,7 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, err := app.Models.Project.GetProjectById(requestPayload.Id)
+	project, err := app.Models.Project.GetProjectById(requestPayload.ID)
 	if err != nil {
 		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to get project by id: " + err.Error()})
 		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)

@@ -19,7 +19,7 @@ type NewNote struct {
 }
 
 type UpdateNote struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
@@ -28,16 +28,8 @@ type UpdateNote struct {
 	Note        string `json:"note"`
 }
 
-type NoteIdPayload struct {
-	Id string `json:"id"`
-}
-
-type ProjectId struct {
-	ProjectId string `json:"projectId"`
-}
-
-type UserId struct {
-	UserId string `json:"userId"`
+type IDpayload struct {
+	ID string `json:"id"`
 }
 
 type ReturnedNotes struct {
@@ -45,19 +37,19 @@ type ReturnedNotes struct {
 }
 
 type UpdateProjectNote struct {
-	NoteId    string `json:"noteId"`
-	ProjectId string `json:"projectId"`
+	NoteId    string `json:"note_id"`
+	ProjectId string `json:"project_id"`
 }
 
 type UpdateUserNotes struct {
-	NoteId string `json:"noteId"`
-	UserId string `json:"userId"`
+	NoteId string `json:"note_id"`
+	UserId string `json:"user_id"`
 }
 
 type DeleteNoteIdPayload struct {
-	AuthorId  string `json:"authorId"`
-	NoteId    string `json:"noteId"`
-	ProjectId string `json:"projectId"`
+	AuthorId  string `json:"author_id"`
+	NoteId    string `json:"note_id"`
+	ProjectId string `json:"project_id"`
 }
 
 // -------------------------------------------
@@ -190,13 +182,18 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 // ------------------------------------------------
 
 func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectId
+	var requestPayload IDpayload
+
+	fmt.Println("GetAllNotesByProjectId")
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		fmt.Println("Readjson", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
+
+	fmt.Print("requestPayload", requestPayload)
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
@@ -210,8 +207,9 @@ func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	notes, err := app.Models.Note.GetProjectNotesByProjectId(requestPayload.ProjectId)
+	notes, err := app.Models.Note.GetProjectNotesByProjectId(requestPayload.ID)
 	if err != nil {
+		fmt.Print("notes", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -249,7 +247,7 @@ func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request
 
 func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
 
-	var requestPayload UserId
+	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
@@ -269,7 +267,7 @@ func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := app.Models.Note.GetProjectNotesByAuthorId(requestPayload.UserId)
+	notes, err := app.Models.Note.GetProjectNotesByAuthorId(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -307,7 +305,7 @@ func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
 // ------------------------------------------------
 
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NoteIdPayload
+	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
@@ -327,7 +325,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := app.Models.Note.GetProjectNoteById(requestPayload.Id)
+	note, err := app.Models.Note.GetProjectNoteById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
 		return
@@ -385,7 +383,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnedNote := data.Note{
-		ID:          requestPayload.Id,
+		ID:          requestPayload.ID,
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,

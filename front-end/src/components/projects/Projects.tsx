@@ -8,12 +8,12 @@ import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { RenderProjectStatus } from './../tags/ProjectStatus';
+import { ProjectStatus, ProjectStatusTypes } from './../tags/ProjectStatus';
 import { cardShadow } from '../../enums/styles';
 interface Project {
     id: string;
     name: string;
-    status: string;
+    status: ProjectStatusTypes;
     notes: Array<string>
     created_at: string;
     updated_at: string
@@ -81,7 +81,7 @@ const Projects: React.FC = () => {
     const projectsData: Array<any> = projects.map((project : Project) => {
         return {                    
             name: <Button type="link" onClick={() => navigateToProject(project.id.toString())}>{project.name}</Button>,
-            status: <RenderProjectStatus status={project.status} />,
+            status: <ProjectStatus status={project.status} />,
             operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Button type="link" onClick={() => navigateToProject(project.id.toString())}>Edit</Button>
                 {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&

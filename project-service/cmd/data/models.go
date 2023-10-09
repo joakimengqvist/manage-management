@@ -68,8 +68,8 @@ func (u *Project) GetAll() ([]*PostgresProject, error) {
 			&project.Name,
 			&project.Status,
 			&project.Notes,
-			&project.UpdatedAt,
 			&project.CreatedAt,
+			&project.UpdatedAt,
 		)
 		if err != nil {
 			log.Println("Error scanning", err)

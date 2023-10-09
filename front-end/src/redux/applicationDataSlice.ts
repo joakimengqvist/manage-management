@@ -94,6 +94,20 @@ export const staticDataSlice = createSlice({
       state.selectedProject = payload.payload
       return state;
     },
+
+    // -----------------------  |
+    // -- EXTERNAL COMPANIES    |
+    // -------------------      V
+
+    fetchExternalCompanies: (state : any, payload) => {
+      console.log('payload', payload)
+      const externalCompanies = payload.payload.map((company : any) => ({
+        id: company.id,
+        name: company.company_name
+      }))
+      state.externalCompanies = externalCompanies
+    },
+
     clearData: state => {
       const updatedData = {
           ...state,
@@ -103,7 +117,8 @@ export const staticDataSlice = createSlice({
           },
           privileges: [],
           users: [],
-          projects: []
+          projects: [],
+          externalCompanies: [],
       }
       localStorage.setItem(applicationStateName, JSON.stringify(updatedData))
         return updatedData
@@ -126,6 +141,7 @@ export const {
   appendProject,
   popProject,
   selectProject,
+  fetchExternalCompanies,
   clearData,
 } = staticDataSlice.actions
 

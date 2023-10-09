@@ -1,6 +1,6 @@
 export const getExpenseById = async (userId : string, id : string) => {
     const payload = {
-      expense_id: id,
+      id: id,
     };
 
     const headers = new Headers();

@@ -22,7 +22,7 @@ type Authenticate struct {
 }
 
 type UpdateUser struct {
-	Id         string   `json:"id"`
+	ID         string   `json:"id"`
 	Email      string   `json:"email"`
 	FirstName  string   `json:"first_name"`
 	LastName   string   `json:"last_name"`
@@ -30,8 +30,8 @@ type UpdateUser struct {
 	Projects   []string `json:"projects"`
 }
 
-type UserIdPayload struct {
-	Id string `json:"id"`
+type IDpayload struct {
+	ID string `json:"id"`
 }
 
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
@@ -137,7 +137,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	updatedUser := data.User{
-		ID:         requestPayload.Id,
+		ID:         requestPayload.ID,
 		Email:      requestPayload.Email,
 		FirstName:  requestPayload.FirstName,
 		Privileges: app.convertToPostgresArray(requestPayload.Privileges),
@@ -152,7 +152,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnedData := data.ReturnedUser{
-		ID:         requestPayload.Id,
+		ID:         requestPayload.ID,
 		Email:      requestPayload.Email,
 		FirstName:  requestPayload.FirstName,
 		Privileges: requestPayload.Privileges,
@@ -172,7 +172,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
-	var requestPayload UserIdPayload
+	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_sudo")
@@ -187,7 +187,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := app.Models.User.GetUserById(requestPayload.Id)
+	user, err := app.Models.User.GetUserById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return
@@ -210,7 +210,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload UserIdPayload
+	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_read")
@@ -225,7 +225,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := app.Models.User.GetUserById(requestPayload.Id)
+	user, err := app.Models.User.GetUserById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return

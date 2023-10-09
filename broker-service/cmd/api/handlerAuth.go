@@ -26,10 +26,6 @@ type User struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
-type UserIdPayload struct {
-	Id string `json:"id"`
-}
-
 type NewUser struct {
 	Email      string   `json:"email"`
 	FirstName  string   `json:"first_name"`
@@ -265,7 +261,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	var requestPayload UserIdPayload
+	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -336,7 +332,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload UserIdPayload
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {

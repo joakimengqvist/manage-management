@@ -10,6 +10,7 @@ import { Column, Pie } from '@ant-design/plots';
 import { getAllProjectExpenses } from '../../../api/economics/expenses/getAllProjectExpenses';
 import { useNavigate } from 'react-router-dom';
 import { getAllProjectExpensesByProjectId } from '../../../api/economics/expenses/getAllProjectExpensesByProjectId';
+import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 
 const { Text, Title } = Typography;
 
@@ -48,12 +49,13 @@ const calculateTotalAmountAndTax = (expenses: ExpenseObject[]) => {
 type ExpenseObject = {
 	expense_id: string,
 	project_id: string,
-    expense_date: any,
+  expense_date: any,
 	expense_category: string,
 	vendor: string,
 	description: string,
 	amount: number,
 	tax: number,
+  status: PaymentStatusTypes,
 	currency: string,
 	payment_method: string,
 	created_by: string,
@@ -101,6 +103,11 @@ const economicsColumns = [
 
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status'
+    },
+    {
         title: 'Expense date',
         dataIndex: 'expense_date',
         key: 'expense_date'
@@ -112,9 +119,10 @@ const economicsColumns = [
     },
   ];
 
-const Expense = ({ project } : { project: string }) => {
+const Expenses = ({ project } : { project: string }) => {
     const navigate = useNavigate();
     const loggedInUserId = useSelector((state : State) => state.user.id);
+    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const [activeTab, setActiveTab] = useState<string>('expenses')
     const [expenses, setExpenses] = useState<Array<any>>([]);
 
@@ -138,14 +146,18 @@ const Expense = ({ project } : { project: string }) => {
 
       const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+      
+
       const economicsData: Array<any> = useMemo(() => {
         const expensesListItem = expenses.map((expense : ExpenseObject) => {
         return {                    
-            vendor: <Text>{expense.vendor}</Text>,
+            vendor: <Button type="link" onClick={() => navigate(`/external-company/${expense.vendor}`)}>{getVendorName(expense.vendor)}</Button>,
             description: <Text>{expense.description}</Text>,
             cost: <Text>{expense.amount} {expense.currency}</Text>,
             tax: <Text>{expense.tax} {expense.currency}</Text>,
             payment_method: <Text>{expense.payment_method}</Text>,
+            status: <ExpenseAndIncomeStatus status={expense.status}/>,
             expense_date: <Text>{expense.expense_date}</Text>,
             operations: <Button type="link" onClick={() => navigate(`/expense/${expense.expense_id}`)}>Details</Button>
           }
@@ -168,11 +180,7 @@ const Expense = ({ project } : { project: string }) => {
         data: pieGraphData,
         angleField: 'amount',
         colorField: 'expense_category',
-        label: {
-            style: {
-              fontSize: 14,
-            },
-          },
+        label: false
       };
 
       const pieShartTaxConfig = {
@@ -180,11 +188,7 @@ const Expense = ({ project } : { project: string }) => {
         data: pieGraphTaxData,
         angleField: 'tax',
         colorField: 'expense_category',
-        label: {
-            style: {
-              fontSize: 14,
-            },
-          },
+        label: false
       };
 
 
@@ -200,12 +204,12 @@ const Expense = ({ project } : { project: string }) => {
                 <div style={{padding: '16px'}}>
                     <Column {...columnShartConfig} />
                     <div style={{display: 'flex'}}>
-                        <div style={{width: '50%', marginTop: '48px'}}>
-                        <Title level={2}>Costs</Title>
+                        <div style={{width: '59%', marginRight: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Costs</Title>
                         <Pie {...pieShartConfig} />
                         </div>
-                        <div style={{width: '50%', marginTop: '48px'}}>
-                        <Title level={2}>Taxes</Title>
+                        <div style={{width: '59%', marginLeft: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Taxes</Title>
                         <Pie {...pieShartTaxConfig} />
                         </div>
                     </div>
@@ -217,7 +221,7 @@ const Expense = ({ project } : { project: string }) => {
     return  (
         <Card 
             bordered={false}
-            style={{ borderRadius: 0, height: 'fit-content', boxShadow: cardShadow, padding: 0}}
+            style={{ borderRadius: 0, height: 'fit-content', boxShadow: 'none', padding: 0}}
             tabList={expensesTabList}
             activeTabKey={activeTab}
             bodyStyle={{padding: '0px'}}
@@ -229,4 +233,4 @@ const Expense = ({ project } : { project: string }) => {
 
 }
 
-export default Expense;
+export default Expenses;

@@ -30,7 +30,7 @@ type NewProjectNote struct {
 }
 
 type UpdateNote struct {
-	Id          string `json:"id"`
+	ID          string `json:"id"`
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
@@ -39,22 +39,10 @@ type UpdateNote struct {
 	Note        string `json:"note"`
 }
 
-type NoteIdPayload struct {
-	Id string `json:"id"`
-}
-
 type DeleteNotePayload struct {
-	NoteId    string `json:"noteId"`
-	AuthorId  string `json:"authorId"`
-	ProjectId string `json:"projectId"`
-}
-
-type ProjectIdNotesPayload struct {
-	ProjectId string `json:"projectId"`
-}
-
-type UserIdNotesPayload struct {
-	UserId string `json:"userId"`
+	NoteId    string `json:"note_id"`
+	AuthorId  string `json:"author_id"`
+	ProjectId string `json:"project_id"`
 }
 
 // -------------------------------------------
@@ -204,7 +192,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NoteIdPayload
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -275,7 +263,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 
 func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectIdNotesPayload
+	var requestPayload IDpayload
 
 	// userId := r.Header.Get("X-User-Id")
 
@@ -338,7 +326,7 @@ func (app *Config) GetAllNotesByProductId(w http.ResponseWriter, r *http.Request
 // -------------------------------------------
 
 func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
-	var requestPayload UserIdNotesPayload
+	var requestPayload IDpayload
 
 	// userId := r.Header.Get("X-User-Id")
 

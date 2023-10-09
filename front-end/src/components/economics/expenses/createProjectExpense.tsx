@@ -7,6 +7,7 @@ import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { cardShadow } from '../../../enums/styles';
 import { createProjectExpense } from '../../../api/economics/expenses/createProjectExpense';
+import { paymentMethodOptions, IncomeAndExpenseStatusOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseCategoryOptions } from '../options';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -18,6 +19,7 @@ const CreateProjectExpense: React.FC = () => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const allProjects = useSelector((state: State) => state.application.projects);
+    const externalCompanies = useSelector((state: State) => state.application.externalCompanies);
     const [project, setProject] = useState('');
     const [expenseDate, setExpenseDate] = useState('');
     const [expenseCategory, setExpenseCategory] = useState('');
@@ -25,11 +27,10 @@ const CreateProjectExpense: React.FC = () => {
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [tax, setTax] = useState('');
+    const [expenseStatus, setExpenseStatus] = useState('');
     const [currency, setCurrency] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
 
-
-    
     const projectOptions = allProjects.map(project => {
         return { label: project.name, value: project.id}
       }
@@ -42,13 +43,13 @@ const CreateProjectExpense: React.FC = () => {
     }
 
     const onChangeAmount = (value : string) => {
-        if (numberPattern.test(value)) {
+        if (numberPattern.test(value) || value === '') {
             setAmount(value)
         }
     }
 
     const onChangeTaxAmount = (value : string) => {
-        if (numberPattern.test(value)) {
+        if (numberPattern.test(value) || value === '') {
             setTax(value)
         }
     }
@@ -56,7 +57,9 @@ const CreateProjectExpense: React.FC = () => {
     const onChangeCurrency = (value : any) => setCurrency(value);
     const onChangePaymentMethod = (value : any) => setPaymentMethod(value);
     const onChangeExpenseCategory = (value : any) => setExpenseCategory(value); 
+    const onChangeVendor = (value : any) => setVendor(value); 
     const onChangeProject = (value: any) => setProject(value);
+    const onChangeExpenseStatus = (value : any) => setExpenseStatus(value);
 
     const onSubmit = () => {
         createProjectExpense(
@@ -67,6 +70,7 @@ const CreateProjectExpense: React.FC = () => {
             description,
             amount,
             tax,
+            expenseStatus,
             currency,
             paymentMethod,
             userId,
@@ -102,6 +106,11 @@ const CreateProjectExpense: React.FC = () => {
         })
     };
 
+    const vendorOptions = externalCompanies.map(company => ({
+        value: company.id,
+        label: company.name
+    }))
+
   return (
         <Card bordered={false} style={{borderRadius: 0, boxShadow: cardShadow, maxWidth: '600px'}}>
             {contextHolder}
@@ -111,7 +120,6 @@ const CreateProjectExpense: React.FC = () => {
                     <Space direction="vertical" style={{width: '100%'}}>
                         <Text strong>Project</Text>
                         <Select
-                            placeholder="Project" 
                             style={{width: '100%'}}
                             options={projectOptions}
                             onChange={onChangeProject}
@@ -123,32 +131,17 @@ const CreateProjectExpense: React.FC = () => {
                         />
                         <Text strong>Expense category</Text>
                         <Select
-                            placeholder="Select payment method"
                             style={{width: '100%'}}
-                            options={[
-                                { value: 'materials', label: 'Materials' },
-                                { value: 'fee', label: 'Fee' },
-                                { value: 'staff', label: 'Staff' },
-                                { value: 'equipment', label: 'Equipment' },
-                                { value: 'rent', label: 'Rent' },
-                                { value: 'travel', label: 'Travel' },
-                                { value: 'marketing', label: 'Marketing' },
-                                { value: 'maintenance', label: 'Maintenance' },
-                                { value: 'software', label: 'Software' },
-                                { value: 'consulting', label: 'Consulting' },
-                                { value: 'insurance', label: 'Insurance' },
-                                { value: 'utilities', label: 'Utilities' },
-                                { value: 'advertising', label: 'Advertising' },
-                            ]}
+                            options={IncomeAndExpenseCategoryOptions}
                             onChange={onChangeExpenseCategory}
                             value={expenseCategory}
                         />
                         <Text strong>Vendor</Text>
-                        <Input 
-                            placeholder="Vendor" 
+                        <Select 
+                            style={{width: '100%'}}
                             value={vendor} 
-                            onChange={event => setVendor(event.target.value)} 
-                            onBlur={event => setVendor(event.target.value)}
+                            options={vendorOptions}
+                            onChange={onChangeVendor} 
                         />
                         <Text strong>Description</Text>
                         <TextArea 
@@ -163,14 +156,8 @@ const CreateProjectExpense: React.FC = () => {
                     <Space direction="vertical" style={{width: '100%'}}>
                         <Text strong>Currency</Text>
                         <Select
-                            placeholder="Select currency"
                             style={{width: '100%'}}
-                            options={[
-                                { value: 'sek', label: 'SEK' },
-                                { value: 'nok', label: 'NOK' },
-                                { value: 'us', label: 'US' },
-                                { value: 'eur', label: 'EUR' },
-                            ]}
+                            options={IncomeAndExpenseCurrencyOptions}
                             onChange={onChangeCurrency}
                             value={currency}
                         />
@@ -190,24 +177,17 @@ const CreateProjectExpense: React.FC = () => {
                             onBlur={event => onChangeTaxAmount(event.target.value)}
                             suffix={currency.toUpperCase()}
                         />
+                        <Text strong>Expense status</Text>
+                        <Select
+                            style={{width: '100%'}}
+                            options={IncomeAndExpenseStatusOptions}
+                            onChange={onChangeExpenseStatus}
+                            value={expenseStatus}
+                        />
                         <Text strong>Payment method</Text>
                         <Select
-                            placeholder="Select payment method"
                             style={{width: '100%'}}
-                            options={[
-                                { value: 'debit-card', label: 'Debit card' },
-                                { value: 'credit-card', label: 'Credit card' },
-                                { value: 'invoice', label: 'Invoice' },
-                                { value: 'paypal', label: 'PayPal' },
-                                { value: 'bank-transfer', label: 'Bank Transfer' },
-                                { value: 'check', label: 'Check' },
-                                { value: 'cash', label: 'Cash' },
-                                { value: 'crypto', label: 'Cryptocurrency' },
-                                { value: 'mobile-wallet', label: 'Mobile Wallet' },
-                                { value: 'apple-pay', label: 'Apple Pay' },
-                                { value: 'google-pay', label: 'Google Pay' },
-                                { value: 'amazon-pay', label: 'Amazon Pay' },
-                            ]}
+                            options={paymentMethodOptions}
                             onChange={onChangePaymentMethod}
                             value={paymentMethod}
                         />

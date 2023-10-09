@@ -8,7 +8,7 @@ import { State } from '../../../types/state';
 import { cardShadow } from '../../../enums/styles';
 import { getExpenseById } from '../../../api/economics/expenses/getExpenseById';
 
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 
 type ExpenseObject = {
 	expense_id: string,
@@ -19,6 +19,7 @@ type ExpenseObject = {
 	description: string,
 	amount: number,
 	tax: number,
+    status: string,
 	currency: string,
 	payment_method: string,
 	created_by: string,
@@ -30,6 +31,7 @@ type ExpenseObject = {
 const Expense: React.FC = () => {
     const loggedInUserId = useSelector((state : State) => state.user.id);
     const [expense, setExpense] = useState<null | ExpenseObject>(null);
+    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const { id } =  useParams(); 
     const expenseId = id || '';
 
@@ -43,6 +45,8 @@ const Expense: React.FC = () => {
         }
       }, [loggedInUserId]);
 
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+
     return (
         <Card bordered={false} style={{ borderRadius: 0, boxShadow: cardShadow}}>
             <Title level={4}>Expense information</Title>
@@ -51,7 +55,7 @@ const Expense: React.FC = () => {
                         <Col span={8}>
                             <Space direction="vertical">
                                 <Text strong>Vendor</Text>
-                                {expense.vendor}
+                                <Link href={`/external-company/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link>
                                 <Text strong>Description</Text>
                                 {expense.description}
                                 <Text strong>Expense date</Text>
@@ -68,7 +72,8 @@ const Expense: React.FC = () => {
                                 {`${expense.tax} ${expense.currency.toUpperCase()}`}
                                 <Text strong>Payment method</Text>
                                 {expense.payment_method}
-
+                                <Text strong>Expense status</Text>
+                                {expense.status}
                             </Space>
                         </Col>
                         <Col span={8}>

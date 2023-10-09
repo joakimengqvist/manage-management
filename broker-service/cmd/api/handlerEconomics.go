@@ -16,6 +16,7 @@ type NewProjectExpense struct {
 	Description     string    `json:"description"`
 	Amount          float64   `json:"amount"`
 	Tax             float64   `json:"tax"`
+	Status          string    `json:"status"`
 	Currency        string    `json:"currency"`
 	PaymentMethod   string    `json:"payment_method"`
 	CreatedBy       string    `json:"created_by"`
@@ -30,6 +31,7 @@ type NewProjectIncome struct {
 	Description    string    `json:"description"`
 	Amount         float64   `json:"amount"`
 	Tax            float64   `json:"tax"`
+	Status         string    `json:"status"`
 	Currency       string    `json:"currency"`
 	PaymentMethod  string    `json:"payment_method"`
 	CreatedBy      string    `json:"created_by"`
@@ -45,6 +47,7 @@ type ProjectExpense struct {
 	Description     string    `json:"description"`
 	Amount          float64   `json:"amount"`
 	Tax             float64   `json:"tax"`
+	Status          string    `json:"status"`
 	Currency        string    `json:"currency"`
 	PaymentMethod   string    `json:"payment_method"`
 	CreatedBy       string    `json:"created_by"`
@@ -62,24 +65,13 @@ type ProjectIncome struct {
 	Description    string    `json:"description"`
 	Amount         float64   `json:"amount"`
 	Tax            float64   `json:"tax"`
+	Status         string    `json:"status"`
 	Currency       string    `json:"currency"`
 	PaymentMethod  string    `json:"payment_method"`
 	CreatedBy      string    `json:"created_by"`
 	CreatedAt      time.Time `json:"created_at"`
 	ModifiedBy     string    `json:"modified_by"`
 	ModifiedAt     time.Time `json:"modified_at"`
-}
-
-type ProjectId struct {
-	ProjectId string `json:"project_id"`
-}
-
-type ExpenseId struct {
-	ExpenseId string `json:"expense_id"`
-}
-
-type IncomeId struct {
-	IncomeId string `json:"income_id"`
 }
 
 // -------------------------------------------
@@ -221,7 +213,7 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 // --------------------------------------------------------
 
 func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectId
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -284,7 +276,7 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 // --------------------------------------------------------
 
 func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectId
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -425,11 +417,149 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 // -------------------------------------------------
 
 // -------------------------------------------------
+// ------ START OF UPDATE PROJECT EXPENSE  ---------
+// -------------------------------------------------
+
+func (app *Config) UpdateProjectExpense(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ProjectExpense
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://ecomomics-service/economics/update-expense", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - update expense"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling economics service - update expense"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "update expense successful"
+	payload.Data = jsonFromService.Data
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated expense successfully [/economics/update-expense]", Name: "[broker-service] - Successfully updated expense"})
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// -------------------------------------------
+// --------- END OF UPDATE PROJECT EXPENSE  --
+// -------------------------------------------
+
+// -------------------------------------------------
+// ------ START OF UPDATE PROJECT INCOME  ----------
+// -------------------------------------------------
+
+func (app *Config) UpdateProjectIncome(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ProjectIncome
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://ecomomics-service/economics/update-income", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - update income"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling economics service - update income"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "update income successful"
+	payload.Data = jsonFromService.Data
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated income successfully [/economics/update-income]", Name: "[broker-service] - Successfully updated income"})
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// -------------------------------------------
+// --------- END OF UPDATE PROJECT INCOME  ---
+// -------------------------------------------
+
+// -------------------------------------------------
 // ------ START OF GET PROJECT EXPENSE (ID)  -------
 // -------------------------------------------------
 
 func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ExpenseId
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -497,7 +627,7 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 // -------------------------------------------------
 
 func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload IncomeId
+	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {

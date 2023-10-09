@@ -16,7 +16,7 @@ import PrivilegesDetails from './routes/Privileges';
 import PrivilegeDetails from './routes/Privilege';
 import { Layout } from 'antd';
 import { getAllPrivileges } from './api/privileges/getAll';
-import { clearData, fetchPrivileges, fetchProjects, fetchUsers, initiateApplicationData } from './redux/applicationDataSlice';
+import { clearData, fetchExternalCompanies, fetchPrivileges, fetchProjects, fetchUsers, initiateApplicationData } from './redux/applicationDataSlice';
 import {initiateUser } from './redux/userDataSlice'
 import { getAllUsers } from './api/users/getAll';
 import { getAllProjects } from './api/projects/getAll';
@@ -24,13 +24,17 @@ import { State } from './types/state';
 import { hasPrivilege } from './helpers/hasPrivileges';
 import { PRIVILEGES } from './enums/privileges';
 import MyPage from './routes/myPage';
-import CreateExpense from './routes/CreateExpense';
+import ExpenseCreate from './routes/ExpenseCreate';
 import Expense from './routes/Expense';
 import Expenses from './routes/Expenses';
 import ServiceOverview from './routes/ServiceOverview';
 import Incomes from './routes/Incomes';
-import CreateIncome from './routes/CreateIncome';
+import IncomeCreate from './routes/IncomeCreate';
 import Income from './routes/Income';
+import ExternalCompanies from './routes/ExternalCompanies';
+import ExternalCompanyCreate from './routes/ExternalCompanyCreate';
+import ExternalCompany from './routes/ExternalCompany';
+import { getAllExternalCompanies } from './api/externalCompanies/getAll';
 
 const { Header, Sider, Content } = Layout;
 
@@ -65,8 +69,10 @@ const App: React.FC = () => {
       if (hasPrivilege(userPrivileges, PRIVILEGES.project_read)) {
         getAllProjects(loggedInUserId).then(response => dispatch(fetchProjects(response))).catch(() => {})
       }
-  }
-
+      if (hasPrivilege(userPrivileges, PRIVILEGES.external_company_read)) {
+        getAllExternalCompanies(loggedInUserId).then(response => dispatch(fetchExternalCompanies(response))).catch(() => {})
+      }
+    }
 }, [loggedInUserId])
 
   return (
@@ -100,12 +106,16 @@ const App: React.FC = () => {
             <Route path="/privilege/:id" element={<PrivilegeDetails />} />
 
             <Route path="/expenses" element={<Expenses />} />
-            <Route path="/create-expense" element={<CreateExpense />} />
+            <Route path="/create-expense" element={<ExpenseCreate />} />
             <Route path="/expense/:id" element={<Expense />} />
 
             <Route path="/incomes" element={<Incomes />} />
-            <Route path="/create-income" element={<CreateIncome />} />
+            <Route path="/create-income" element={<IncomeCreate />} />
             <Route path="/income/:id" element={<Income />} />
+
+            <Route path="/external-companies" element={<ExternalCompanies />} />
+            <Route path="/create-external-company" element={<ExternalCompanyCreate />} />
+            <Route path="/external-company/:id" element={<ExternalCompany />} />
 
             <Route path="/services" element={<ServiceOverview />} />
 

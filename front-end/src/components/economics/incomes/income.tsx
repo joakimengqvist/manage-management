@@ -8,7 +8,7 @@ import { State } from '../../../types/state';
 import { cardShadow } from '../../../enums/styles';
 import { getIncomeById } from '../../../api/economics/incomes/getIncomeById';
 
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 
 type IncomeObject = {
 	income_id: string,
@@ -19,6 +19,7 @@ type IncomeObject = {
 	description: string,
 	amount: number,
 	tax: number,
+    status: string,
 	currency: string,
 	payment_method: string,
 	created_by: string,
@@ -29,6 +30,7 @@ type IncomeObject = {
 
 const Income: React.FC = () => {
     const loggedInUserId = useSelector((state : State) => state.user.id);
+    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const [income, setIncome] = useState<null | IncomeObject>(null);
     const { id } =  useParams(); 
     const incomeId = id || '';
@@ -43,6 +45,8 @@ const Income: React.FC = () => {
         }
       }, [loggedInUserId]);
 
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+
     return (
         <Card bordered={false} style={{ borderRadius: 0, boxShadow: cardShadow}}>
             <Title level={4}>Income information</Title>
@@ -51,7 +55,7 @@ const Income: React.FC = () => {
                         <Col span={8}>
                             <Space direction="vertical">
                                 <Text strong>Vendor</Text>
-                                {income.vendor}
+                                <Link href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link>
                                 <Text strong>Description</Text>
                                 {income.description}
                                 <Text strong>Income date</Text>
@@ -68,7 +72,8 @@ const Income: React.FC = () => {
                                 {`${income.tax} ${income.currency.toUpperCase()}`}
                                 <Text strong>Payment method</Text>
                                 {income.payment_method}
-
+                                <Text strong>Income status</Text>
+                                {income.status}
                             </Space>
                         </Col>
                         <Col span={8}>

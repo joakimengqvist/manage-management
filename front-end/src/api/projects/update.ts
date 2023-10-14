@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const updateProject = async (userId : string, id : string, name : string, status : string) => {
     const payload = {
       id: id,
@@ -15,7 +17,7 @@ export const updateProject = async (userId : string, id : string, name : string,
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/project/update-project", body)
+    const response = await fetch(ENDPOINTS.UpdateProject, body)
       .then(response => { 
         return response.json()
       })

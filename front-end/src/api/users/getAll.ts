@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const getAllUsers = async (userId : string) => {
 
     const headers = new Headers();
@@ -9,7 +11,7 @@ export const getAllUsers = async (userId : string) => {
         headers: headers,
     };
 
-    const response = await fetch("http://localhost:8080/auth/get-all-users", body)
+    const response = await fetch(ENDPOINTS.GetAllUsers, body)
         .then(response => {
             return response.json()})
         .catch(error => {

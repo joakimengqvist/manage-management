@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "../endpoints";
 export const getPrivilegeById = async (userId : string, id : string) => {
     const payload = {
       id: id,
@@ -13,7 +14,7 @@ export const getPrivilegeById = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/get-privilege-by-id", body)
+    const response = await fetch(ENDPOINTS.GetPrivilegeById, body)
       .then(response => { 
         return response.json()
       })

@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "../endpoints";
 export const getAllPrivileges = async (userId : string) => {
 
     const headers = new Headers();
@@ -9,7 +10,7 @@ export const getAllPrivileges = async (userId : string) => {
         headers: headers,
     };
 
-    const response = await fetch("http://localhost:8080/auth/get-all-privileges", body)
+    const response = await fetch(ENDPOINTS.GetAllPrivileges, body)
         .then(response => {
             return response.json()})
         .catch(error => {

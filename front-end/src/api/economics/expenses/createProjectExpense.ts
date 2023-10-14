@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../../endpoints";
+
 export const createProjectExpense = async (
     project_id: string,
     expense_date: string,
@@ -36,7 +38,7 @@ export const createProjectExpense = async (
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/economics/create-project-expense", body)
+    const response = await fetch(ENDPOINTS.CreateProjectExpense, body)
       .then(response => { 
         return response.json()
       })

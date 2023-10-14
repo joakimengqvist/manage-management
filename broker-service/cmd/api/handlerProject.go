@@ -14,7 +14,9 @@ type Project struct {
 	Status    string    `json:"status"`
 	Notes     []string  `json:"notes"`
 	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedBy string    `json:"updated_by"`
 	CreatedAt time.Time `json:"created_at"`
+	CreatedBy string    `json:"created_by"`
 }
 
 type UpdateProject struct {

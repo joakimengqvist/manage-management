@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "../endpoints";
 export const deletePrivilege = async (userId : string, id : string) => {
     const payload = {
             id: id,
@@ -13,7 +14,7 @@ export const deletePrivilege = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/delete-privilege", body)
+    const response = await fetch(ENDPOINTS.DeletePrivilege, body)
       .then(response => { 
         return response.json()
       })

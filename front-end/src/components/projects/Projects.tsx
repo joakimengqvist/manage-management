@@ -4,21 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteProject } from '../../api/projects/delete';
 import { Table, Button, Popconfirm, notification } from 'antd';
 import { State } from '../../types/state';
+import { Project } from '../../types/project';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { ProjectStatus, ProjectStatusTypes } from './../tags/ProjectStatus';
-import { cardShadow } from '../../enums/styles';
-interface Project {
-    id: string;
-    name: string;
-    status: ProjectStatusTypes;
-    notes: Array<string>
-    created_at: string;
-    updated_at: string
-    delete_project: any
-}
+import { ProjectStatus } from './../tags/ProjectStatus';
 
 const columns = [
     {
@@ -102,7 +93,7 @@ const Projects: React.FC = () => {
     })
 
 
-    return  <>{contextHolder}<Table style={{boxShadow: cardShadow, borderTopLeftRadius: '8px', borderTopRightRadius: '8px'}} size="small" bordered columns={columns} dataSource={projectsData} /></>
+    return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={projectsData} /></>
 }
 
 export default Projects;

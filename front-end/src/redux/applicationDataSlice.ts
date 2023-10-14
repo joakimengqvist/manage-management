@@ -13,7 +13,7 @@ export const staticDataSlice = createSlice({
     },
     privileges: [],
     users: [],
-    projects: []
+    projects: [],
   },
   reducers: {
     initiateApplicationData: (state : any) => {
@@ -100,12 +100,8 @@ export const staticDataSlice = createSlice({
     // -------------------      V
 
     fetchExternalCompanies: (state : any, payload) => {
-      console.log('payload', payload)
-      const externalCompanies = payload.payload.map((company : any) => ({
-        id: company.id,
-        name: company.company_name
-      }))
-      state.externalCompanies = externalCompanies
+      state.externalCompanies = payload.payload
+      return state;
     },
 
     clearData: state => {

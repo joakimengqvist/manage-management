@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
-import { cardShadow } from '../../../enums/styles';
 import { createProjectExpense } from '../../../api/economics/expenses/createProjectExpense';
 import { paymentMethodOptions, IncomeAndExpenseStatusOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseCategoryOptions } from '../options';
 
@@ -112,7 +111,7 @@ const CreateProjectExpense: React.FC = () => {
     }))
 
   return (
-        <Card bordered={false} style={{borderRadius: 0, boxShadow: cardShadow, maxWidth: '600px'}}>
+        <Card style={{maxWidth: '600px'}}>
             {contextHolder}
             <Title level={4}>Create project expense</Title>
             <Row>

@@ -1,45 +1,13 @@
-/*
-
-
-type ExternalCompany struct {
-	CompanyName               string    `json:"company_name" sql:"not null"`
-	CompanyRegistrationNumber string    `json:"company_registration_number"`
-	ContactPerson             string    `json:"contact_person"`
-	ContactEmail              string    `json:"contact_email"`
-	ContactPhone              string    `json:"contact_phone"`
-	Address                   string    `json:"address"`
-	City                      string    `json:"city"`
-	StateProvince             string    `json:"state_province"`
-	Country                   string    `json:"country"`
-	PostalCode                string    `json:"postal_code"`
-	PaymentTerms              string    `json:"payment_terms"`
-	BillingCurrency           string    `json:"billing_currency"`
-	BankAccountInfo           string    `json:"bank_account_info"`
-	TaxIdentificationNumber   string    `json:"tax_identification_number"`
-	CreatedAt                 time.Time `json:"created_at"`
-	UpdatedAt                 time.Time `json:"updated_at"`
-	Status                    string    `json:"status"`
-	AssignedProjects          []string  `json:"assigned_projects"`
-	InvoicePending            []string  `json:"invoice_pending"`
-	InvoiceHistory            []string  `json:"invoice_history"`
-	ContractualAgreements     []string  `json:"contractual_agreements"`
-}
-
-*/
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
 import { State } from '../../types/state';
-import { cardShadow } from '../../enums/styles';
 import { createExternalCompany } from '../../api/externalCompanies/create';
 import { externalCompanyOptions } from './options';
 
 const { Title, Text } = Typography;
-
-// const numberPattern = /^[0-9]+$/;
 
 const CreateProjectExpense: React.FC = () => {
     const [api, contextHolder] = notification.useNotification();
@@ -148,7 +116,7 @@ const CreateProjectExpense: React.FC = () => {
     }
 
   return (
-        <Card bordered={false} style={{borderRadius: 0, boxShadow: cardShadow, maxWidth: '1100px'}}>
+        <Card style={{ maxWidth: '1100px'}}>
             {contextHolder}
             <Title level={4}>Create external company</Title>
             <Row>

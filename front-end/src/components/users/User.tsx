@@ -15,7 +15,7 @@ import {
   Divider,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProjectNotesByUserId } from '../../api/notes/getAllProjectNotesByUserId';
+import { getAllProjectNotesByUserId } from '../../api/notes/project/getAllByUserId';
 import { useEffect, useState } from "react";
 import { updateUserCall } from "../../api/users/update";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -26,22 +26,52 @@ import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
 import { BlueTags } from "../tags/BlueTags";
 import { PurpleTags } from "../tags/DefaultTags";
-import { cardShadow } from "../../enums/styles";
-import { deleteProjectNoteById } from "../../api/notes/deleteProjectNoteById";
+import { SelectOptions } from '../../types/generics';
+import { NOTE_TYPE } from "../../enums/notes";
+import Notes from "../notes/Notes";
+import { getAllExpenseNotesByUserId } from "../../api/notes/expense/getAllByUserId";
+import { getAllIncomeNotesByUserId } from "../../api/notes/income/getAllByUserId";
+import { getAllExternalCompanyNotesByUserId } from "../../api/notes/externalCompany/getAllByUserId";
+import {
+  ProjectOutlined,
+  DollarOutlined,
+  FundOutlined,
+  BankOutlined
+} from '@ant-design/icons';
 
 const { Text, Title } = Typography;
-interface Project {
-  label : string,
-  value : string,
-}
+
+const userNotesTabList = [
+  {
+    key: 'project',
+    label: <ProjectOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
+    key: 'expense',
+    label: <DollarOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
+    key: 'income',
+    label: <FundOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
+    key: 'companies',
+    label: <BankOutlined style={{paddingLeft: '12px'}} />,
+  },
+];
 
 const User: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
-  const [userNotes, setUserNotes] = useState([])
 
-  const { id } = useParams(); // user id
+  const [projectNotes, setProjectNotes] = useState([]);
+  const [expenseNotes, setExpenseNotes] = useState([]);
+  const [incomeNotes, setIncomeNotes] = useState([]);
+  const [externalCompaniesNotes, setExternalCompaniesNotes] = useState([]);
+  const [activeNotesTab, setActiveNotesTab] = useState<string>('project');
+  
+  const { id } = useParams();
   const userId = id || '';
   const users = useSelector((state: State) => state.application.users);
   const user = users.find((u : any) => u.id === userId);
@@ -57,7 +87,7 @@ const User: React.FC = () => {
   const [privilegesOptions, setPrivilegesOptions] = useState<Array<any>>([]);
   const [privileges, setPrivileges] = useState<Array<any>>([]);
   const [projects, setProjects] = useState<Array<any>>([]);
-  const [allProjectsOptions, setAllProjectsOptions] = useState<Array<Project>>([]);
+  const [allProjectsOptions, setAllProjectsOptions] = useState<Array<SelectOptions>>([]);
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -96,23 +126,59 @@ const User: React.FC = () => {
           });
         }
     }
-
-    if (userNotes.length === 0 && user?.id) {
-      getAllProjectNotesByUserId(loggedInUserId, userId).then(response => {
-        setUserNotes(response)
-      }).catch((error : any) => {
-        console.log('error fetching project notes', error)
-      })
-    }
   }, [users, allProjects]);
 
-  console.log('userNotes', userNotes)
+  useEffect(() => {
+    if (loggedInUserId) {
+      getAllProjectNotesByUserId(loggedInUserId, userId).then(response => {
+        if (response?.length) {
+          setProjectNotes(response);
+        } else {
+          setProjectNotes([]);
+        }
+      }).catch((error : any) => {
+        console.log('error fetching project notes', error);
+      });
+   
+      getAllExpenseNotesByUserId(loggedInUserId, userId).then(response => {
+        if (response?.length) {
+          setExpenseNotes(response);
+        } else {
+          setExpenseNotes([]);
+        }
+      }).catch((error : any) => {
+        console.log('error fetching expense notes', error);
+      });
+
+      getAllIncomeNotesByUserId(loggedInUserId, userId).then(response => {
+        if (response?.length) {
+          setIncomeNotes(response);
+        } else {
+          setIncomeNotes([]);
+        }
+      }).catch((error : any) => {
+        console.log('error fetching income notes', error);
+      });
+
+    
+      getAllExternalCompanyNotesByUserId(loggedInUserId, userId).then(response => {
+        if (response?.length) {
+          setExternalCompaniesNotes(response);
+        } else {
+          setExternalCompaniesNotes([]);
+        }
+      }).catch((error : any) => {
+        console.log('error fetching income notes', error);
+      });
+    }
+  }, [loggedInUserId, activeNotesTab]);
 
   const onHandleEmailChange = (event: any) => setEmail(event.target.value);
   const onHandleFirstNameChange = (event: any) => setFirstName(event.target.value);
   const onHandleLastNameChange = (event: any) => setLastName(event.target.value);
   const onHandlePrivilegeChange = (value: any) => setPrivileges(value);
   const onHandleProjectsChange = (value: any) => setProjects(value);
+  const onHandleChangeActiveNotesTab = (tab: string) => setActiveNotesTab(tab);
 
   const onSaveEdittedUser = async () => {
     await updateUserCall(
@@ -185,41 +251,19 @@ const User: React.FC = () => {
       });
   };
 
-  const onClickdeleteNote = async (noteId : string, authorId : string, projectId : string) => {
-    await deleteProjectNoteById(loggedInUserId, noteId, authorId, projectId)
-      .then(response => {
-        if (response?.error) {
-          api.error({
-              message: `Deleted project project note`,
-              description: response.message,
-              placement: 'bottom',
-              duration: 1.4
-            });
-          return
-        }
-        api.info({
-          message: `Deleted project`,
-          description: "Succesfully deleted project note.",
-          placement: "bottom",
-          duration: 1.2,
-        });
-      })
-      .catch((error) => {
-        api.error({
-          message: `Error deleting project note`,
-          description: error.toString(),
-          placement: "bottom",
-          duration: 1.4,
-        });
-      });
-  };
+  const notesContentList: Record<string, React.ReactNode> = {
+    project: <Notes notes={projectNotes} type={NOTE_TYPE.project} userId={loggedInUserId} generalized /> ,
+    expense:  <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUserId} generalized /> ,
+    income: <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUserId} generalized /> ,
+    companies: <Notes notes={externalCompaniesNotes} type={NOTE_TYPE.external_company} userId={loggedInUserId} generalized />
+  }
 
   return (
     <>
       {contextHolder}
       <Row>
         <Col span={16}>
-          <Card bordered={false} style={{boxShadow: cardShadow, borderRadius: 0, width: '98%'}}>
+          <Card style={{ width: '98%'}}>
           <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
             <div style={{paddingRight: '16px'}}>
             <Title level={4}>User information</Title>
@@ -318,37 +362,14 @@ const User: React.FC = () => {
           </Card>
         </Col>
         <Col span={8}>
-        {userNotes && userNotes.length > 0 && (
-        <Card bordered={false} style={{width: '400px', borderRadius: 0, height: 'fit-content', boxShadow: cardShadow}}>
-        <Title level={4}>User notes</Title>
-        <Divider style={{marginTop: '0px', marginBottom: '8px'}}/>
-        {userNotes.length > 0 && userNotes.map((note : any) => (
-          <div style={{width: '100%'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Title level={5} style={{margin: '0px'}}>{note.title}</Title>
-              <Popconfirm
-                  placement="top"
-                  title="Are you sure?"
-                  description={`Do you want to delete note ${note.title}`}
-                  onConfirm={() => onClickdeleteNote(note.id, note.author_id, note.project)}
-                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                  okText="Yes"
-                  cancelText="No"
-              >
-                  <Button danger type="link">Delete note</Button>
-              </Popconfirm>
-            </div>
-            <Text>{note.note}</Text>
-            <div style={{display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', marginTop: '4px'}}>
-            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_name}</Text>
-            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_email}</Text>
-            <Text type="secondary" style={{textAlign: 'right'}}>{note.created_at}</Text>
-            </div>
-            <Divider style={{marginTop: '8px', marginBottom: '8px'}}/>
-          </div>
-          ))}
-        </Card>
-        )}</Col>
+        <Card 
+          style={{width: '400px', height: 'fit-content'}}
+          tabList={userNotesTabList}
+          onTabChange={onHandleChangeActiveNotesTab}
+          >
+            {notesContentList[activeNotesTab]}
+          </Card>
+        </Col>
       </Row>
     </>
   );

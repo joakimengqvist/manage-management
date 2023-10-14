@@ -1,5 +1,7 @@
-export const loginAuthenticate = async (email : string, password : string) => {
-    console.log(password)
+import { ENDPOINTS } from "../endpoints";
+
+export const loginAuthenticate = async (email : string /* password : string */ ) => {
+
     const payload = {
           email: email,
           password: "password"
@@ -14,7 +16,7 @@ export const loginAuthenticate = async (email : string, password : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/authenticate", body)
+    const response = await fetch(ENDPOINTS.Authenticate, body)
       .then(response => {
         return response.json()
       })

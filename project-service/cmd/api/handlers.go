@@ -54,7 +54,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		Status: requestPayload.Status,
 	}
 
-	response, err := app.Models.Project.Insert(Project)
+	response, err := app.Models.Project.Insert(Project, userId)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not create project: "+err.Error()), http.StatusBadRequest)
 		return
@@ -107,7 +107,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		Notes:  app.convertToPostgresArray(requestPayload.Notes),
 	}
 
-	err = updatedProject.Update()
+	err = updatedProject.Update(userId)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not update project: "+err.Error()), http.StatusBadRequest)
 		return
@@ -214,10 +214,14 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnedProject := data.Project{
-		ID:     project.ID,
-		Name:   project.Name,
-		Status: project.Status,
-		Notes:  app.parsePostgresArray(project.Notes),
+		ID:        project.ID,
+		Name:      project.Name,
+		Status:    project.Status,
+		Notes:     app.parsePostgresArray(project.Notes),
+		CreatedAt: project.CreatedAt,
+		CreatedBy: project.CreatedBy,
+		UpdatedAt: project.UpdatedAt,
+		UpdatedBy: project.UpdatedBy,
 	}
 
 	payload := jsonResponse{
@@ -269,7 +273,9 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 			Status:    project.Status,
 			Notes:     app.parsePostgresArray(project.Notes),
 			CreatedAt: project.CreatedAt,
+			CreatedBy: project.CreatedBy,
 			UpdatedAt: project.UpdatedAt,
+			UpdatedBy: project.UpdatedBy,
 		}
 
 		projectSlice = append(projectSlice, returnProject)

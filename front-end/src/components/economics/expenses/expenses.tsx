@@ -4,13 +4,13 @@ import { Typography, Button, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
-import { cardShadow } from '../../../enums/styles';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
 import { getAllProjectExpenses } from '../../../api/economics/expenses/getAllProjectExpenses';
 import { useNavigate } from 'react-router-dom';
 import { getAllProjectExpensesByProjectId } from '../../../api/economics/expenses/getAllProjectExpensesByProjectId';
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
+import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
 const { Text, Title } = Typography;
 
@@ -146,7 +146,7 @@ const Expenses = ({ project } : { project: string }) => {
 
       const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
-      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
       
 
       const economicsData: Array<any> = useMemo(() => {
@@ -158,7 +158,7 @@ const Expenses = ({ project } : { project: string }) => {
             tax: <Text>{expense.tax} {expense.currency}</Text>,
             payment_method: <Text>{expense.payment_method}</Text>,
             status: <ExpenseAndIncomeStatus status={expense.status}/>,
-            expense_date: <Text>{expense.expense_date}</Text>,
+            expense_date: <Text>{formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}</Text>,
             operations: <Button type="link" onClick={() => navigate(`/expense/${expense.expense_id}`)}>Details</Button>
           }
         })
@@ -193,7 +193,7 @@ const Expenses = ({ project } : { project: string }) => {
 
 
       const expensesContentList: Record<string, React.ReactNode> = {
-        expenses:  <Table size="small" style={{marginTop: '2px'}} columns={economicsColumns} dataSource={economicsData} />,
+        expenses:  <Table size="small" columns={economicsColumns} dataSource={economicsData} />,
         summary: (
             <div>
                 <div style={{padding: '24px 24px 16px 24px', display: 'flex'}}>
@@ -204,11 +204,11 @@ const Expenses = ({ project } : { project: string }) => {
                 <div style={{padding: '16px'}}>
                     <Column {...columnShartConfig} />
                     <div style={{display: 'flex'}}>
-                        <div style={{width: '59%', marginRight: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <div style={{width: '59%', marginRight: '1%', marginTop: '48px'}}>
                         <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Costs</Title>
                         <Pie {...pieShartConfig} />
                         </div>
-                        <div style={{width: '59%', marginLeft: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <div style={{width: '59%', marginLeft: '1%', marginTop: '48px'}}>
                         <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Taxes</Title>
                         <Pie {...pieShartTaxConfig} />
                         </div>
@@ -220,8 +220,7 @@ const Expenses = ({ project } : { project: string }) => {
 
     return  (
         <Card 
-            bordered={false}
-            style={{ borderRadius: 0, height: 'fit-content', boxShadow: 'none', padding: 0}}
+            style={{ height: 'fit-content', padding: 0}}
             tabList={expensesTabList}
             activeTabKey={activeTab}
             bodyStyle={{padding: '0px'}}

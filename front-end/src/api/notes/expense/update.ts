@@ -1,11 +1,14 @@
-import { NoteAuthor } from "../../types/state";
+import { ENDPOINTS } from "../../endpoints";
 
-export const createProjectNote = async (user : NoteAuthor, project : string, title : string, note : string) => {
+import { NoteAuthor } from "../../../types/state";
+
+export const updateExpenseNote = async (noteId : string, user : NoteAuthor, expense : string, title : string, note : string) => {
     const payload = {
+        id: noteId,
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        project: project,
+        expense: expense,
         title: title,
         note: note
     };
@@ -20,7 +23,7 @@ export const createProjectNote = async (user : NoteAuthor, project : string, tit
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/notes/create-project-note", body)
+    const response = await fetch(ENDPOINTS.UpdateExpenseNote, body)
       .then(response => { 
         return response.json()
       })
@@ -29,4 +32,4 @@ export const createProjectNote = async (user : NoteAuthor, project : string, tit
       });
 
       return response
-}
+    }

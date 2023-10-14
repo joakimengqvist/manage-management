@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createProject } from '../../api/projects/create'
 import { State } from '../../types/state';
 import { appendProject } from '../../redux/applicationDataSlice';
-import { cardShadow } from '../../enums/styles';
 
 const { Title, Text } = Typography;
 
@@ -55,7 +54,7 @@ const CreateProject: React.FC = () => {
     }
 
   return (
-        <Card bordered={false} style={{maxWidth: '400px', borderRadius: 0, boxShadow: cardShadow}}>
+        <Card style={{maxWidth: '400px'}}>
             {contextHolder}
             <Space direction="vertical" style={{width: '100%'}}>
                 <Title level={4}>Create Project</Title>

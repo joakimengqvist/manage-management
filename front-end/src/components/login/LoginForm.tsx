@@ -14,7 +14,7 @@ const LoginForm: React.FC = () => {
   const [loginErrorFeedback, setLoginErrorFeedback] = useState('');
 
   const Login = () => {
-    loginAuthenticate(userName, password).then(response => {
+    loginAuthenticate(userName, /* password */ ).then(response => {
       if (response.error) {
         setLoginErrorFeedback(response.message)
         return
@@ -27,10 +27,8 @@ const LoginForm: React.FC = () => {
     })
   }
 
-  const shadow = '0px 2px 5px -1px rgba(50, 50, 93, 0.25), 0px 1px 3px -1px rgba(0, 0, 0, 0.3)';
-
   return (
-    <Card style={{ boxShadow: shadow, borderRadius: 0, marginTop: '180px', padding: '0px 20px 12px 8px', maxWidth: '400px', height: 'fit-content'}}>
+    <Card style={{ marginTop: '180px', padding: '0px 20px 12px 8px', maxWidth: '400px', height: 'fit-content'}}>
       <Space direction="vertical">
         <Title level={3}>Login</Title>
         <Input

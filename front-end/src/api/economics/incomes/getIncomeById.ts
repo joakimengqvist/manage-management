@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../../endpoints";
+
 export const getIncomeById = async (userId : string, id : string) => {
     const payload = {
       id: id,
@@ -13,7 +15,7 @@ export const getIncomeById = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/economics/get-project-income-by-id", body)
+    const response = await fetch(ENDPOINTS.GetProjectIncomeById, body)
       .then(response => { 
         return response.json()
       })

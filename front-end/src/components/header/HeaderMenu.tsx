@@ -53,6 +53,15 @@ const headerTitle = (pathName : string) => {
     if (pathName.includes('incomes')) {
         return 'Incomes'
     }
+    if (pathName.includes('/external-company/')) {
+        return 'External company details'
+    }
+    if (pathName.includes('create-external-company')) {
+        return 'Create new external company'
+    }
+    if (pathName.includes('external-companies')) {
+        return 'External companies'
+    }
     if (pathName.includes('services')) {
         return 'Services overview'
     }
@@ -75,7 +84,7 @@ const HeaderMenu: React.FC = () => {
     }
 
     return (
-        <div style={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '28px', paddingLeft: '12px', borderBottom: '1px solid #d9d9d9', background: '#fafafa' }}>
+        <div style={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '28px', paddingLeft: '12px', borderBottom: '1px solid #e9e9e9', background: '#fafafa' }}>
             <div style={{ height: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 <Title style={{paddingTop: '10px'}} level={5}>{headerTitle(window.location.pathname)}</Title>
             </div>

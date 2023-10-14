@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const getAllProjects = async (userId : string) => {
 
     const headers = new Headers();
@@ -9,7 +11,7 @@ export const getAllProjects = async (userId : string) => {
         headers: headers,
     };
 
-    const response = await fetch("http://localhost:8080/project/get-all-projects", body)
+    const response = await fetch(ENDPOINTS.GetAllProjects, body)
         .then(response => {
             return response.json()})
         .catch(error => {

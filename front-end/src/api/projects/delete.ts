@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const deleteProject = async (userId : string, id : string) => {
     const payload = {
             id: id,
@@ -13,7 +15,7 @@ export const deleteProject = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/project/delete-project", body)
+    const response = await fetch(ENDPOINTS.DeleteProject, body)
       .then(response => { 
         return response.json()
       })

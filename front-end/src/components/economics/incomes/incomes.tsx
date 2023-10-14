@@ -4,13 +4,13 @@ import { Typography, Button, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
-import { cardShadow } from '../../../enums/styles';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
 import { getAllProjectIncomes } from '../../../api/economics/incomes/getAllProjectIncomes';
 import { useNavigate } from 'react-router-dom';
 import { getAllProjectIncomesByProjectId } from '../../../api/economics/incomes/getAllProjectIncomesByProjectId';
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
+import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
 const { Text, Title } = Typography;
 
@@ -146,7 +146,7 @@ const Income = ({ project } : { project: string }) => {
 
       const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
-      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
 
       const economicsData: Array<any> = useMemo(() => {
         const incomesListItem = incomes.map((income : IncomeObject) => {
@@ -157,7 +157,7 @@ const Income = ({ project } : { project: string }) => {
             tax: <Text>{income.tax} {income.currency}</Text>,
             payment_method: <Text>{income.payment_method}</Text>,
             status: <ExpenseAndIncomeStatus status={income.status}/>,
-            income_date: <Text>{income.income_date}</Text>,
+            income_date: <Text>{formatDateTimeToYYYYMMDDHHMM(income.income_date)}</Text>,
             operations: <Button type="link" onClick={() => navigate(`/income/${income.income_id}`)}>Details</Button>
           }
         })
@@ -192,7 +192,7 @@ const Income = ({ project } : { project: string }) => {
 
 
       const incomesContentList: Record<string, React.ReactNode> = {
-        incomes:  <Table size="small" style={{marginTop: '2px'}} columns={economicsColumns} dataSource={economicsData} />,
+        incomes:  <Table size="small" columns={economicsColumns} dataSource={economicsData} />,
         summary: (
             <div>
                 <div style={{padding: '24px 24px 16px 24px', display: 'flex'}}>
@@ -203,11 +203,11 @@ const Income = ({ project } : { project: string }) => {
                 <div style={{padding: '16px'}}>
                     <Column {...columnShartConfig} />
                     <div style={{display: 'flex'}}>
-                        <div style={{width: '49%', marginRight: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <div style={{width: '49%', marginRight: '1%', marginTop: '48px'}}>
                         <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Costs</Title>
                         <Pie {...pieShartConfig} />
                         </div>
-                        <div style={{width: '59%', marginLeft: '1%', marginTop: '48px', boxShadow: cardShadow}}>
+                        <div style={{width: '59%', marginLeft: '1%', marginTop: '48px'}}>
                         <Title style={{textAlign: 'center', marginTop: '24px'}} level={2}>Taxes</Title>
                         <Pie {...pieShartTaxConfig} />
                         </div>
@@ -219,8 +219,7 @@ const Income = ({ project } : { project: string }) => {
 
     return  (
         <Card 
-            bordered={false}
-            style={{ borderRadius: 0, height: 'fit-content', boxShadow: 'none', padding: 0}}
+            style={{ height: 'fit-content', padding: 0}}
             tabList={incomesTabList}
             activeTabKey={activeTab}
             bodyStyle={{padding: '0px'}}

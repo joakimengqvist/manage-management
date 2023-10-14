@@ -82,11 +82,10 @@ const Expenses = ({ project } : { project: string }) => {
 
     return  (
         <Card 
-            bordered={false}
-            style={{ borderRadius: 0, height: 'fit-content', boxShadow: 'none', padding: 0}}
+            style={{ height: 'fit-content', padding: 0}}
             bodyStyle={{padding: '0px'}}
             >
-            <Table size="small" style={{marginTop: '2px'}} columns={economicsColumns} dataSource={externalCompanyData} />
+            <Table size="small" columns={economicsColumns} dataSource={externalCompanyData} />
         </Card>
     );
 

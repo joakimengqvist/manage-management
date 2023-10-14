@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const createUser = async (
   userId : string,
   firstName : string,
@@ -16,8 +18,6 @@ export const createUser = async (
       password: password
     };
 
-    console.log('payload create user', payload)
-
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("X-user-id", userId.toString());
@@ -28,7 +28,7 @@ export const createUser = async (
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/create-user", body)
+    const response = await fetch(ENDPOINTS.CreateUser, body)
       .then(response => { 
         return response.json()
       })

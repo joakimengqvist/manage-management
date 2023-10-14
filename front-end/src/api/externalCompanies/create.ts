@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const createExternalCompany = async (
     userId : string,
     company_name: string,
@@ -53,7 +55,7 @@ export const createExternalCompany = async (
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/external-company/create-external-company", body)
+    const response = await fetch(ENDPOINTS.CreateExternalCompany, body)
       .then(response => { 
         return response.json()
       })

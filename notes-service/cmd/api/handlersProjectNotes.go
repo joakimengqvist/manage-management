@@ -9,7 +9,7 @@ import (
 	"notes-service/cmd/data"
 )
 
-type NewNote struct {
+type NewProjectNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
@@ -18,7 +18,7 @@ type NewNote struct {
 	Note        string `json:"note"`
 }
 
-type UpdateNote struct {
+type UpdateProjectNotePayload struct {
 	ID          string `json:"id"`
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
@@ -32,8 +32,8 @@ type IDpayload struct {
 	ID string `json:"id"`
 }
 
-type ReturnedNotes struct {
-	Notes []data.Note `json:"notes"`
+type ReturnedProjectNotes struct {
+	Notes []data.ProjectNote `json:"notes"`
 }
 
 type UpdateProjectNote struct {
@@ -57,7 +57,7 @@ type DeleteNoteIdPayload struct {
 // -------------------------------------------
 
 func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NewNote
+	var requestPayload NewProjectNote
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
@@ -77,7 +77,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newNote := data.Note{
+	newNote := data.ProjectNote{
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
@@ -86,7 +86,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 		Note:        requestPayload.Note,
 	}
 
-	noteId, err := app.Models.Note.InsertProjectNote(newNote)
+	noteId, err := app.Models.ProjectNote.InsertProjectNote(newNote)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not create project note: "+err.Error()), http.StatusBadRequest)
 		return
@@ -103,7 +103,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		app.errorJSON(w, err)
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		return
 	}
 
@@ -114,17 +114,17 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	projectUpdateResponse, err := client.Do(request)
 	if err != nil {
 		app.errorJSON(w, err)
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		return
 	}
 
 	defer projectUpdateResponse.Body.Close()
 
 	if projectUpdateResponse.StatusCode == http.StatusUnauthorized {
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		return
 	} else if projectUpdateResponse.StatusCode != http.StatusAccepted {
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		return
 	}
 
@@ -138,7 +138,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	request, err = http.NewRequest("POST", "http://authentication-service/auth/add-user-note", bytes.NewBuffer(jsonDataUser))
 
 	if err != nil {
-		data.DeleteProjectNoteById(requestPayload.Project)
+		data.DeleteProjectNote(requestPayload.Project)
 		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
 		return
 	}
@@ -147,7 +147,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	userUpdateResponse, err := client.Do(request)
 	if err != nil {
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
 		return
 	}
@@ -155,11 +155,11 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	defer userUpdateResponse.Body.Close()
 
 	if userUpdateResponse.StatusCode == http.StatusUnauthorized {
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
 		return
 	} else if userUpdateResponse.StatusCode != http.StatusAccepted {
-		data.DeleteProjectNoteById(noteId)
+		data.DeleteProjectNote(noteId)
 		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
 		return
 	}
@@ -181,7 +181,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 // -- START OF GET ALL PROJECT NOTES (projectId) --
 // ------------------------------------------------
 
-func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	fmt.Println("GetAllNotesByProjectId")
@@ -207,18 +207,18 @@ func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	notes, err := app.Models.Note.GetProjectNotesByProjectId(requestPayload.ID)
+	notes, err := app.Models.ProjectNote.GetProjectNotesByProjectId(requestPayload.ID)
 	if err != nil {
 		fmt.Print("notes", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	var noteSlice []data.Note
+	var noteSlice []data.ProjectNote
 	for _, notePtr := range notes {
 		note := *notePtr
 
-		returnedNote := data.Note{
+		returnedNote := data.ProjectNote{
 			ID:          note.ID,
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
@@ -245,7 +245,7 @@ func (app *Config) GetAllNotesByProjectId(w http.ResponseWriter, r *http.Request
 // -- START OF GET ALL PROJECT NOTES (userId) -----
 // ------------------------------------------------
 
-func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Request) {
 
 	var requestPayload IDpayload
 
@@ -267,17 +267,17 @@ func (app *Config) GetAllNotesByUserId(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, err := app.Models.Note.GetProjectNotesByAuthorId(requestPayload.ID)
+	notes, err := app.Models.ProjectNote.GetProjectNotesByAuthorId(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	var noteSlice []data.Note
+	var noteSlice []data.ProjectNote
 	for _, notePtr := range notes {
 		note := *notePtr
 
-		returnedNote := data.Note{
+		returnedNote := data.ProjectNote{
 			ID:          note.ID,
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
@@ -325,13 +325,13 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note, err := app.Models.Note.GetProjectNoteById(requestPayload.ID)
+	note, err := app.Models.ProjectNote.GetProjectNoteById(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
 		return
 	}
 
-	returnedNote := data.Note{
+	returnedNote := data.ProjectNote{
 		ID:          note.ID,
 		AuthorId:    note.AuthorId,
 		AuthorName:  note.AuthorName,
@@ -362,7 +362,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 // ------------------------------------------------
 
 func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
-	var requestPayload UpdateNote
+	var requestPayload UpdateProjectNotePayload
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
@@ -382,7 +382,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	returnedNote := data.Note{
+	returnedNote := data.ProjectNote{
 		ID:          requestPayload.ID,
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
@@ -416,7 +416,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 // -- START OF DELETE PROJECT NOTE ----------------
 // ------------------------------------------------
 
-func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request) {
+func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload DeleteNoteIdPayload
 
 	userId := r.Header.Get("X-User-Id")
@@ -437,7 +437,7 @@ func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	note, err := app.Models.Note.GetProjectNoteById(requestPayload.NoteId)
+	note, err := app.Models.ProjectNote.GetProjectNoteById(requestPayload.NoteId)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
 		return
@@ -483,7 +483,7 @@ func (app *Config) DeleteProjectNoteById(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = data.DeleteProjectNoteById(requestPayload.NoteId)
+	err = data.DeleteProjectNote(requestPayload.NoteId)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return

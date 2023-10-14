@@ -214,20 +214,6 @@ func (u *User) DeleteUser() error {
 	return nil
 }
 
-func (u *User) DeleteUserByID(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-	defer cancel()
-
-	stmt := `delete from users where id = $1`
-
-	_, err := db.ExecContext(ctx, stmt, id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (u *User) InsertUser(user User) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()

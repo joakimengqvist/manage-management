@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
-import { cardShadow } from '../../../enums/styles';
 import { createProjectIncome } from '../../../api/economics/incomes/createProjectIncome';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
 
@@ -114,7 +113,7 @@ const CreateProjectIncome: React.FC = () => {
     }))
 
   return (
-        <Card bordered={false} style={{borderRadius: 0, boxShadow: cardShadow, maxWidth: '600px'}}>
+        <Card style={{maxWidth: '600px'}}>
             {contextHolder}
             <Title level={4}>Create project income</Title>
             <Row>

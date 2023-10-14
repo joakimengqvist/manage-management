@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 )
@@ -34,7 +35,9 @@ type Project struct {
 	Status    string    `json:"status"`
 	Notes     []string  `json:"notes"`
 	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedBy string    `json:"updated_by"`
 	CreatedAt time.Time `json:"created_at"`
+	CreatedBy string    `json:"created_by"`
 }
 
 type PostgresProject struct {
@@ -43,14 +46,16 @@ type PostgresProject struct {
 	Status    string    `json:"status"`
 	Notes     string    `json:"notes"`
 	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedBy string    `json:"updated_by"`
 	CreatedAt time.Time `json:"created_at"`
+	CreatedBy string    `json:"created_by"`
 }
 
 func (u *Project) GetAll() ([]*PostgresProject, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, name, status, notes, created_at, updated_at
+	query := `select id, name, status, notes, created_at, created_by, updated_at, updated_by
 	from projects order by name`
 
 	rows, err := db.QueryContext(ctx, query)
@@ -69,7 +74,9 @@ func (u *Project) GetAll() ([]*PostgresProject, error) {
 			&project.Status,
 			&project.Notes,
 			&project.CreatedAt,
+			&project.CreatedBy,
 			&project.UpdatedAt,
+			&project.UpdatedBy,
 		)
 		if err != nil {
 			log.Println("Error scanning", err)
@@ -86,7 +93,7 @@ func (u *Project) GetProjectByName(name string) (*Project, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, name, status, notes, created_at, updated_at from projects where name = $1`
+	query := `select id, name, status, notes, created_at, created_by, updated_at, updated_by from projects where name = $1`
 
 	var project Project
 	row := db.QueryRowContext(ctx, query, name)
@@ -111,7 +118,7 @@ func (u *Project) GetProjectById(id string) (*PostgresProject, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, name, status, notes, created_at, updated_at from projects where id = $1`
+	query := `select id, name, status, notes, created_at, created_by, updated_at, updated_by from projects where id = $1`
 
 	var project PostgresProject
 	row := db.QueryRowContext(ctx, query, id)
@@ -132,25 +139,28 @@ func (u *Project) GetProjectById(id string) (*PostgresProject, error) {
 	return &project, nil
 }
 
-func (u *PostgresProject) Update() error {
+func (u *PostgresProject) Update(createdByUserId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	stmt := `update projects set
 		name = $1,
 		status = $2,
-		updated_at = $3
-		where id = $4
+		updated_at = $3,
+		updated_by = $4
+		where id = $5
 	`
 
 	_, err := db.ExecContext(ctx, stmt,
 		u.Name,
 		u.Status,
 		time.Now(),
+		createdByUserId,
 		u.ID,
 	)
 
 	if err != nil {
+		fmt.Println("Error updating project", err)
 		return err
 	}
 
@@ -171,19 +181,21 @@ func (u *PostgresProject) Delete() error {
 	return nil
 }
 
-func (u *Project) Insert(project NewProject) (string, error) {
+func (u *Project) Insert(project NewProject, createdByUserId string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	var newID string
-	stmt := `insert into projects (name, status, created_at, updated_at)
-		values ($1, $2, $3, $4) returning id`
+	stmt := `insert into projects (name, status, created_at, created_by, updated_at, updated_by)
+		values ($1, $2, $3, $4 $5 $6) returning id`
 
 	err := db.QueryRowContext(ctx, stmt,
 		project.Name,
 		project.Status,
 		time.Now(),
+		createdByUserId,
 		time.Now(),
+		createdByUserId,
 	).Scan(&newID)
 
 	if err != nil {

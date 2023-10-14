@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../../endpoints";
+
 export const createProjectIncome = async (
     project_id: string,
     income_date: string,
@@ -36,7 +38,7 @@ export const createProjectIncome = async (
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/economics/create-project-income", body)
+    const response = await fetch(ENDPOINTS.CreateProjectIncome, body)
       .then(response => { 
         return response.json()
       })

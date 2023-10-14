@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../../endpoints";
+
 export const getAllProjectIncomesByProjectId = async (userId : string, projectId : string) => {
     const payload = {
         id: projectId,
@@ -13,7 +15,7 @@ export const getAllProjectIncomesByProjectId = async (userId : string, projectId
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/economics/get-all-project-incomes-by-project-id", body)
+    const response = await fetch(ENDPOINTS.GetAllProjectIncomesByProjectId, body)
       .then(response => { 
         return response.json()
       })

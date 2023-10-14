@@ -4,16 +4,20 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Expenses from '../components/economics/expenses/expenses';
+import { hasPrivilege } from '../helpers/hasPrivileges';
 import { State } from '../types/state';
 
 const ExpensesRoute: React.FC = () => {
     const navigate = useNavigate();
     const projects = useSelector((state: State) => state.application.projects);
+    const userPrivileges = useSelector((state : State) => state.user.privileges)
     const [project, setProject] = useState('all');
 
     if (!projects) {
         return null
     }
+
+    if (!hasPrivilege(userPrivileges, 'economics_read')) return null;
 
     const projectOptions = [{label: 'All projects', value: 'all'}]
     projects.forEach(project => {

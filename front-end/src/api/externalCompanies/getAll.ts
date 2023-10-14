@@ -1,4 +1,4 @@
-// "/external-companies/get-all-external-companies"
+import { ENDPOINTS } from "../endpoints";
 
 export const getAllExternalCompanies = async (userId : string) => {
 
@@ -11,7 +11,7 @@ export const getAllExternalCompanies = async (userId : string) => {
         headers: headers,
     };
 
-    const response = await fetch("http://localhost:8080/external-company/get-all-external-companies", body)
+    const response = await fetch(ENDPOINTS.GetAllExternalCompanies, body)
         .then(response => {
             return response.json()})
         .catch(error => {

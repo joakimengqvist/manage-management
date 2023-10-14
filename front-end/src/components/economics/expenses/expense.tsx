@@ -1,100 +1,164 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from 'react-router-dom'
-import { Card, Space, Typography, Row, Col } from 'antd';
+import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
-import { cardShadow } from '../../../enums/styles';
+import { ExpenseNote } from '../../../types/notes';
+import { ExpenseObject } from '../../../types/expense'
 import { getExpenseById } from '../../../api/economics/expenses/getExpenseById';
+import { getAllExpenseNotesByExpenseId } from '../../../api/notes/expense/getAllByIncomeId';
+import { createExpenseNote } from '../../../api/notes/expense/create'
+import CreateNote from '../../notes/CreateNote';
+import Notes from '../../notes/Notes'
+import { NOTE_TYPE } from '../../../enums/notes';
+import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
+import { ExpenseAndIncomeStatus } from '../../tags/ExpenseAndIncomeStatus';
 
 const { Text, Title, Link } = Typography;
 
-type ExpenseObject = {
-	expense_id: string,
-	project_id: string,
-    expense_date: any,
-	expense_category: string,
-	vendor: string,
-	description: string,
-	amount: number,
-	tax: number,
-    status: string,
-	currency: string,
-	payment_method: string,
-	created_by: string,
-	created_at: any,
-	modified_by: any,
-	modified_at: any
-}
-
 const Expense: React.FC = () => {
-    const loggedInUserId = useSelector((state : State) => state.user.id);
+    const [api, contextHolder] = notification.useNotification();
+    const loggedInUser = useSelector((state : State) => state.user);
     const [expense, setExpense] = useState<null | ExpenseObject>(null);
+    const [expenseNotes, setExpenseNotes] = useState<Array<ExpenseNote> | null>(null);
+    const [noteTitle, setNoteTitle] = useState('');
+    const [note, setNote] = useState('');
+    const users = useSelector((state : State) => state.application.users);
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
+    const projects = useSelector((state : State) => state.application.projects);
     const { id } =  useParams(); 
     const expenseId = id || '';
 
     useEffect(() => {
-        if (loggedInUserId) {
-            getExpenseById(loggedInUserId, expenseId).then(response => {
+        if (loggedInUser?.id) {
+            getExpenseById(loggedInUser.id, expenseId).then(response => {
                 setExpense(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
+            getAllExpenseNotesByExpenseId(loggedInUser.id, expenseId).then(response => {
+                setExpenseNotes(response)
+            }).catch(error => {
+                console.log('error fetching', error)
+            })
         }
-      }, [loggedInUserId]);
+    }, [loggedInUser, expenseId]);
 
-      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+    const getUserName = (id : string) => {
+        const user = users.find(user => user.id === id);
+        return `${user?.first_name} ${user?.last_name}`;
+    };
+    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
+    const getProjectName = (id : string) => projects.find(project => project.id === id)?.name;
+
+    const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
+    const onHandleNoteChange = (event : any) => setNote(event.target.value);
+
+    const clearNoteFields = () => {
+    setNoteTitle('');
+    setNote('');
+    }
+
+    const onSubmitExpenseNote = () => {
+    const user = {
+        id: loggedInUser.id,
+        name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+        email: loggedInUser.email
+
+    }
+    createExpenseNote(user, expenseId, noteTitle, note).then(() => {
+        api.info({
+            message: `Created note`,
+            description: "Succesfully created note.",
+            placement: "bottom",
+            duration: 1.2,
+        });
+        }).catch(error => {
+            api.error({
+                message: `Error creating note`,
+                description: error.toString(),
+                placement: "bottom",
+                duration: 1.4,
+            });
+        })
+    }
 
     return (
-        <Card bordered={false} style={{ borderRadius: 0, boxShadow: cardShadow}}>
-            <Title level={4}>Expense information</Title>
-                {expense && (
-                    <Row>
-                        <Col span={8}>
-                            <Space direction="vertical">
-                                <Text strong>Vendor</Text>
-                                <Link href={`/external-company/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link>
-                                <Text strong>Description</Text>
-                                {expense.description}
-                                <Text strong>Expense date</Text>
-                                {expense.expense_date}
-                                <Text strong>Expense category</Text>
-                                {expense.expense_date}
-                            </Space>
-                        </Col>
-                        <Col span={8}>
-                            <Space direction="vertical">
-                                <Text strong>Amount</Text>
-                                {`${expense.amount} ${expense.currency.toUpperCase()}`}
-                                <Text strong>Tax</Text>
-                                {`${expense.tax} ${expense.currency.toUpperCase()}`}
-                                <Text strong>Payment method</Text>
-                                {expense.payment_method}
-                                <Text strong>Expense status</Text>
-                                {expense.status}
-                            </Space>
-                        </Col>
-                        <Col span={8}>
-                            <Space direction="vertical">
-                            <Text strong>Expense ID</Text>
-                                {expense.expense_id}
-                                <Text strong>Project ID</Text>
-                                {expense.project_id}
-                                <Text strong>Created by</Text>
-                                {expense.created_by}
-                                <Text strong>Created at</Text>
-                                {expense.created_at}
-                                <Text strong>Modified by</Text>
-                                {expense.modified_by}
-                                <Text strong>Modified at</Text>
-                                {expense.modified_at}
-                            </Space>
-                        </Col>
-                    </Row>
-                )}
-        </Card>
+        <Card>
+            {expense && (
+            <Row>
+            {contextHolder}
+            
+            <Col span={15}>
+                <Row>
+                    <Col span={24}>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <span>
+                                <Link style={{fontSize: '16px'}}href={`/external-company/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link><br />
+                                {expense.description}<br />
+                                {formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}<br />
+                            </span>
+                            <Button primary>Edit expense info</Button>
+                        </div>
+                    </Col>
+                    <Divider style={{marginTop: '16px', marginBottom: '16px'}}/>
+                </Row>
+                <Row>
+                    <Col span={8}  style={{padding: '0px 12px 12px 0px'}}>
+                        <Text strong>Category</Text><br/>
+                        {expense.expense_category}<br/>
+                        <Text strong>Amount</Text><br/>
+                        {`${expense.amount} ${expense.currency.toUpperCase()}`}<br/>
+                        <Text strong>Tax</Text><br/>
+                        {`${expense.tax} ${expense.currency.toUpperCase()}`}<br/>
+                        <Text strong>Payment method</Text><br/>
+                        {expense.payment_method}<br/>
+                        <Text strong>Expense status</Text><br/>
+                        <div style={{marginTop: '4px'}}>
+                            <ExpenseAndIncomeStatus status={expense.status}/>
+                        </div>
+                    </Col>
+                    <Col span={16} style={{padding: '0px 12px 12px 0px'}}>
+                            <Text strong>Project</Text><br/>
+                            <Link href={`/project/${expense.project_id}`}>{getProjectName(expense.project_id)}</Link><br/>
+                            <Text strong>Created by</Text><br/>
+                            <Link href={`/user/${expense.created_by}`}>{getUserName(expense.created_by)}</Link><br/>
+                            <Text strong>Created at</Text><br/>
+                            {formatDateTimeToYYYYMMDDHHMM(expense.created_at)}<br/>
+                            <Text strong>Modified by</Text><br/>
+                            <Link href={`/user/${expense.modified_by}`}>{getUserName(expense.modified_by)}</Link><br/>
+                            <Text strong>Modified at</Text><br/>
+                            {formatDateTimeToYYYYMMDDHHMM(expense.modified_at)}<br/>
+                            <Text strong>Expense ID</Text><br/>
+                            {expense.expense_id}<br/>
+                            
+                    </Col>
+                    <Divider style={{marginTop: '8px'}}/>
+                </Row>
+            </Col>
+            <Col span={1}></Col>
+            <Col span={8}>
+                <Card>
+                    <CreateNote
+                        type={NOTE_TYPE.expense}
+                        title={noteTitle}
+                        onTitleChange={onHandleNoteTitleChange}
+                        note={note}
+                        onNoteChange={onHandleNoteChange}
+                        onClearNoteFields={clearNoteFields}
+                        onSubmit={onSubmitExpenseNote}
+                    />
+                      <Title level={4}>Notes</Title>
+                        {expenseNotes && expenseNotes.length > 0 && 
+                            <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUser.id} />
+                        }
+                        </Card>
+            </Col>
+        </Row>
+        )}
+    </Card>
     )
 
 }

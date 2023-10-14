@@ -12,18 +12,19 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { ProjectStatus, ProjectStatusTypes } from '../tags/ProjectStatus';
-import { createProjectNote } from '../../api/notes/createProjectNote';
-import { getAllProjectNotesByProjectId } from '../../api/notes/getAllProjectNotesByProductId';
-import { deleteProjectNoteById } from '../../api/notes/deleteProjectNoteById';
-import { cardShadow } from '../../enums/styles';
+import { createProjectNote } from '../../api/notes/project/create';
+import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectId';
 import { getAllProjectExpensesByProjectId } from '../../api/economics/expenses/getAllProjectExpensesByProjectId';
 import { ExpenseObject } from '../../types/expense';
 import { IncomeObject } from '../../types/income';
 import * as React from 'react';
 import { getAllProjectIncomesByProjectId } from '../../api/economics/incomes/getAllProjectIncomesByProjectId';
+import CreateNote from '../notes/CreateNote';
+import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
+import { NOTE_TYPE } from '../../enums/notes';
+import NoteList from '../notes/Notes';
 
-const { Text, Title, Link } = Typography;
-const { TextArea } = Input;
+const { Text, Link } = Typography;
 
 const tabList = [
   {
@@ -86,6 +87,7 @@ const Project: React.FC = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
+    const users = useSelector((state : State) => state.application.users);
     const userPrivileges = useSelector((state : State) => state.user.privileges);
     const projects = useSelector((state : State) => state.application.projects);
     const [name, setName] = useState('');
@@ -106,8 +108,8 @@ const Project: React.FC = () => {
     useEffect(() => {
         if (project) {
           try {
-            setName(project.name);
-            setProjectStatus(project.status)
+            setName(project?.name);
+            setProjectStatus(project?.status)
             } catch (error : any) {
               api.error({
                 message: `Error fetching privilege`,
@@ -142,7 +144,7 @@ const Project: React.FC = () => {
             console.log('error fetching project notes', error)
           })
         }
-      }, [projects]);
+      }, [projects, projectId, projectNotes, projectExpenses, projectIncomes]);
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
     const onHandleProjectStatusChange = (value : any) => setProjectStatus(value);
@@ -166,7 +168,7 @@ const Project: React.FC = () => {
             setEditing(false)
             api.info({
                 message: `Updated project`,
-                description: 'Succesfully updated project.',
+                description: 'Succesfully updated project?.',
                 placement: 'bottom',
                 duration: 1.4
             });
@@ -195,7 +197,7 @@ const Project: React.FC = () => {
             }
             api.info({
               message: `Deleted project`,
-              description: "Succesfully deleted project.",
+              description: "Succesfully deleted project?.",
               placement: "bottom",
               duration: 1.2,
             });
@@ -243,51 +245,26 @@ const Project: React.FC = () => {
         })
       }
 
-      const onClickdeleteNote = async (noteId : string, authorId : string, projectId : string) => {
-        await deleteProjectNoteById(loggedInUser.id, noteId, authorId, projectId)
-          .then(response => {
-            if (response?.error) {
-              api.error({
-                  message: `Deleted project project note`,
-                  description: response.message,
-                  placement: 'bottom',
-                  duration: 1.4
-                });
-              return
-            }
-            api.info({
-              message: `Deleted project`,
-              description: "Succesfully deleted project note.",
-              placement: "bottom",
-              duration: 1.2,
-            });
-          })
-          .catch((error) => {
-            api.error({
-              message: `Error deleting project note`,
-              description: error.toString(),
-              placement: "bottom",
-              duration: 1.4,
-            });
-          });
-      };
-
-      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.name;
+      const getUserName = (id : string) => {
+        const user = users.find(user => user.id === id);
+        return `${user?.first_name} ${user?.last_name}`;
+    };
+      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
 
       const expensesData: Array<any> = projectExpenses.map((expense : ExpenseObject) => {
         return {                    
-            vendor: <Link href={`/income/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link>,
-            description: <Text>{expense.description}</Text>,
-            cost: <Text>{expense.amount} {expense.currency}</Text>,
-            tax: <Text>{expense.tax} {expense.currency}</Text>,
-            operations: <Link href={`/expense/${expense.expense_id}`}>Details</Link>
+            vendor: <Link href={`/external-company/${expense?.vendor}`}>{getVendorName(expense?.vendor)}</Link>,
+            description: <Text>{expense?.description}</Text>,
+            cost: <Text>{expense?.amount} {expense?.currency}</Text>,
+            tax: <Text>{expense?.tax} {expense?.currency}</Text>,
+            operations: <Link href={`/expense/${expense?.expense_id}`}>Details</Link>
            
           }
       })
 
       const incomesData: Array<any> = projectIncomes.map((income : IncomeObject) => {
         return {                    
-            vendor:  <Link href={`/income/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
+            vendor:  <Link href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
             description: <Text>{income.description}</Text>,
             cost: <Text>{income.amount} {income.currency}</Text>,
             tax: <Text>{income.tax} {income.currency}</Text>,
@@ -297,8 +274,8 @@ const Project: React.FC = () => {
       })
 
       const economicContentList: Record<string, React.ReactNode> = {
-        expenses:  <Table size="small" style={{marginTop: '2px'}} columns={economicsColumns} dataSource={expensesData} />,
-        incomes: <Table size="small" style={{marginTop: '2px'}} columns={economicsColumns} dataSource={incomesData} />,
+        expenses:  <Table size="small" columns={economicsColumns} dataSource={expensesData} />,
+        incomes: <Table size="small" columns={economicsColumns} dataSource={incomesData} />,
       }
 
       const contentList: Record<string, React.ReactNode> = {
@@ -328,14 +305,20 @@ const Project: React.FC = () => {
                   <ProjectStatus status={projectStatus ? projectStatus : 'default'} />
               )}
           </Space>
-          <Space direction="vertical" style={{paddingRight: '24px'}}>
-          <Text strong>Project ID</Text>
-          <Text>{project?.id ? project.id : ''}</Text>
-          <Text strong>Project started</Text>
-          <Text>{project?.created_at ? project.created_at : ''}</Text>
-          <Text strong>Project updated at</Text>
-          <Text>{project?.updated_at ? project.updated_at : ''}</Text>
-          </Space>
+          <div style={{paddingRight: '24px'}}>
+          <Text strong>Project ID</Text><br />
+          <Text>{projectId}</Text><br />
+          {hasPrivilege(userPrivileges, 'user_read') && (<>
+            <Text strong>Created by</Text><br />
+            <Link href={`/user/${project?.created_by}`}>{getUserName(project?.created_by)}</Link><br />
+            <Text strong>Created at</Text><br />
+            <Text>{formatDateTimeToYYYYMMDDHHMM(project?.created_at)}</Text><br />
+            <Text strong>Updated by</Text><br />
+            <Link href={`/user/${project?.updated_by}`}>{getUserName(project?.updated_by)}</Link><br />
+            <Text strong>Updated at</Text><br />
+            <Text>{formatDateTimeToYYYYMMDDHHMM(project?.updated_at)}</Text><br />
+          </>)}
+          </div>
           </div>
           <Divider />
           <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px'}}>
@@ -359,10 +342,9 @@ const Project: React.FC = () => {
         ),
         projectEconomics: (
           <Card 
-            bordered={false}
-            style={{ borderRadius: 0, marginTop: '2px'}}
             tabList={economicsTabList}
             activeTabKey={activeEconomicTab}
+            style={{borderRadius: 0, border: 'none'}}
             bodyStyle={{padding: '0px', border: 'none'}}
             onTabChange={onHandleChangeActiveEconomicTab}
           >
@@ -376,8 +358,7 @@ const Project: React.FC = () => {
          {contextHolder}
       <Col span={16}>
         <Card 
-          bordered={false}
-          style={{ width: '98%', borderRadius: 0, height: 'fit-content', boxShadow: cardShadow, padding: 0}}
+          style={{ width: '98%', height: 'fit-content', padding: 0}}
           tabList={tabList}
           activeTabKey={activeTab}
           bodyStyle={{padding: '0px'}}
@@ -387,45 +368,18 @@ const Project: React.FC = () => {
         </Card>
         </Col>
         <Col span={8}>
-        <Card bordered={false} title="Create note" style={{ width: '100%', borderRadius: 0, height: 'fit-content', boxShadow: cardShadow}}>
-          <Text strong style={{lineHeight: 2.3}}>Title</Text>
-          <Input value={noteTitle} onChange={onHandleNoteTitleChange} />
-          <Text strong style={{lineHeight: 2.3}}>Note</Text>
-          <TextArea value={note} onChange={onHandleNoteChange}/>
-          <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px'}}>
-            <Button onClick={clearNoteFields} type="link">Clear</Button>
-            <Button type="primary" disabled={!note || !noteTitle} onClick={onSubmitProjectNote}>Submit</Button>
-          </div>
-        {projectNotes && (
-        <div style={{paddingTop: '24px'}}>
-        <Title level={5}>Notes</Title>
-        <Divider style={{marginTop: '0px', marginBottom: '8px'}}/>
-        {projectNotes.length > 0 && projectNotes.map((note : any) => (
-          <div style={{width: '100%'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Title level={5} style={{margin: '0px'}}>{note.title}</Title>
-              <Popconfirm
-                  placement="top"
-                  title="Are you sure?"
-                  description={`Do you want to delete note ${note.title}`}
-                  onConfirm={() => onClickdeleteNote(note.id, note.author_id, note.project)}
-                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                  okText="Yes"
-                  cancelText="No"
-              >
-                  <Button danger type="link">Delete note</Button>
-              </Popconfirm>
-            </div>
-            <Text>{note.note}</Text>
-            <div style={{display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', marginTop: '4px'}}>
-            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_name}</Text>
-            <Text style={{textAlign: 'right', lineHeight: 1.2}}>{note.author_email}</Text>
-            <Text type="secondary" style={{textAlign: 'right'}}>{note.created_at}</Text>
-            </div>
-            <Divider style={{marginTop: '8px', marginBottom: '8px'}}/>
-          </div>
-          ))}
-        </div>
+        <Card style={{ width: '100%', height: 'fit-content'}}>
+          <CreateNote
+            type={NOTE_TYPE.project}
+            title={noteTitle}
+            onTitleChange={onHandleNoteTitleChange}
+            note={note}
+            onNoteChange={onHandleNoteChange}
+            onClearNoteFields={clearNoteFields}
+            onSubmit={onSubmitProjectNote}
+          />
+        {hasPrivilege(userPrivileges, 'note_read') && projectNotes && (
+          <NoteList notes={projectNotes} type={NOTE_TYPE.project} userId={loggedInUser.id} />
         )}
         </Card>
         </Col>

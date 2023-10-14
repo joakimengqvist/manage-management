@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const getExternalCompanyById = async (userId : string, id : string) => {
     const payload = {
       id: id,
@@ -13,7 +15,7 @@ export const getExternalCompanyById = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/external-company/get-external-company-by-id", body)
+    const response = await fetch(ENDPOINTS.GetExternalCompanyById, body)
       .then(response => { 
         return response.json()
       })

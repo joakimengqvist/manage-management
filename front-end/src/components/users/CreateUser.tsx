@@ -10,7 +10,6 @@ import { State } from '../../types/state';
 import { appendUser } from '../../redux/applicationDataSlice';
 import { BlueTags } from '../tags/BlueTags';
 import { PurpleTags } from '../tags/DefaultTags';
-import { cardShadow } from '../../enums/styles';
 
 const { Title, Text } = Typography;
 
@@ -99,7 +98,7 @@ const CreateUser: React.FC = () => {
     }
 
   return (
-        <Card bordered={false} style={{maxWidth: '400px', borderRadius: 0, boxShadow: cardShadow}}>
+        <Card style={{maxWidth: '400px'}}>
             {contextHolder}
             <Space direction="vertical" style={{width: '100%'}}>
                 <Title level={4}>Create user</Title>

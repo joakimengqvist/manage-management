@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "../endpoints";
 export const updatePrivilege = async (userId : string, id : string, name : string, description : string) => {
     const payload = {
       id: id,
@@ -15,7 +16,7 @@ export const updatePrivilege = async (userId : string, id : string, name : strin
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/update-privilege", body)
+    const response = await fetch(ENDPOINTS.UpdatePrivilege, body)
       .then(response => { 
         return response.json()
       })

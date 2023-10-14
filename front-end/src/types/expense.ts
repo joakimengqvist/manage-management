@@ -1,3 +1,5 @@
+import { PaymentStatusTypes } from "../components/tags/ExpenseAndIncomeStatus"
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type ExpenseObject = {
 	expense_id: string
@@ -10,6 +12,7 @@ export type ExpenseObject = {
 	tax: number
 	currency: string
 	payment_method: string
+	status: PaymentStatusTypes
 	created_by: string
 	created_at: any
 	modified_by: any

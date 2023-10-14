@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const updateUserCall = async (
   userId : string, 
   id : string, 
@@ -26,7 +28,7 @@ export const updateUserCall = async (
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/update-user", body)
+    const response = await fetch(ENDPOINTS.UpdateUser, body)
       .then(response => { 
         return response.json()
       })

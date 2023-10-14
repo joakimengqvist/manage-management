@@ -1,11 +1,13 @@
-export const getAllProjectNotesByProjectId = async (userId : string, projectId : string) => {
+import { ENDPOINTS } from "../../endpoints";
+
+export const deleteExpenseNote = async (loggedInUser : string, noteId : string) => {
     const payload = {
-        id: projectId,
+      id: noteId
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUser);
 
     const body = {
         method: 'POST',
@@ -13,7 +15,7 @@ export const getAllProjectNotesByProjectId = async (userId : string, projectId :
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/notes/get-all-notes-by-project-id", body)
+    const response = await fetch(ENDPOINTS.DeleteExpenseNote, body)
       .then(response => { 
         return response.json()
       })

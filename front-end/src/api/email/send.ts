@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const sendEmail = async (userId : string, to : string, from : string, subject : string, message : string) => {
     const payload = {
       action: "mail",
@@ -19,7 +21,7 @@ export const sendEmail = async (userId : string, to : string, from : string, sub
         body: JSON.stringify(payload)
     };
 
-    const respone = await fetch("http://localhost:8080/email/send", body)
+    const respone = await fetch(ENDPOINTS.sendEmail, body)
       .then(response => {
   
         return response.json()

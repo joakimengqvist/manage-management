@@ -19,9 +19,9 @@ const MyPage: React.FC = () => {
             <Title level={5}>ID</Title>
             <Text>{user.id}</Text>
             <Title level={5}>Privileges</Title>
-            <Text>{user.privileges.map(privilege => <Tag color="blue">{privilege}</Tag>)}</Text>
+            <Text>{user.privileges.map(privilege => <Tag color="blue" style={{marginBottom: '8px'}}>{privilege}</Tag>)}</Text>
             <Title level={5}>Projects</Title>
-            <Text>{user.projects.map(project => ` ${project} `)}</Text>
+            {user.projects.map(project =>  <><Text>{project}</Text><br /></>)}
         </div>
     )
 }

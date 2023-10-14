@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "../endpoints";
+
 export const getUserById = async (userId : string, id : string) => {
     const payload = {
             id: id,
@@ -13,7 +15,7 @@ export const getUserById = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/auth/get-user-by-id", body)
+    const response = await fetch(ENDPOINTS.GetUserById, body)
       .then(response => { 
         return response.json()
       })

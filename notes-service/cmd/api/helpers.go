@@ -73,7 +73,7 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) er
 	return app.writeJSON(w, statusCode, payload)
 }
 
-func (app *Config) writeNotesJSONFromSlice(w http.ResponseWriter, status int, data []data.Note, headers ...http.Header) error {
+func (app *Config) writeProjectNotesJSONFromSlice(w http.ResponseWriter, status int, data []data.ProjectNote, headers ...http.Header) error {
 
 	out, err := json.Marshal(data)
 	if err != nil {

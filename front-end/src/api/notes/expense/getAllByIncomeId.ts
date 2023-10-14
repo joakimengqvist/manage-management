@@ -1,13 +1,13 @@
-export const deleteProjectNoteById = async (loggedInUser : string, noteId : string, authorId : string, projectId : string) => {
+import { ENDPOINTS } from "../../endpoints";
+
+export const getAllExpenseNotesByExpenseId = async (userId : string, expenseId : string) => {
     const payload = {
-      note_id: noteId,
-      author_id: authorId,
-      project_id: projectId
+        id: expenseId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", loggedInUser);
+    headers.append("X-user-id", userId);
 
     const body = {
         method: 'POST',
@@ -15,7 +15,7 @@ export const deleteProjectNoteById = async (loggedInUser : string, noteId : stri
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch("http://localhost:8080/notes/delete-project-note-by-id", body)
+    const response = await fetch(ENDPOINTS.GetAllExpenseNotesByExpenseId, body)
       .then(response => { 
         return response.json()
       })

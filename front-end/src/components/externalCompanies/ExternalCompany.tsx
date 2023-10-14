@@ -1,81 +1,145 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from 'react-router-dom'
-import { Card, Space, Typography, Row, Col } from 'antd';
+import { Card, Typography, Row, Col, notification, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
-import { cardShadow } from '../../enums/styles';
 import { getExternalCompanyById } from '../../api/externalCompanies/getById';
 import { ExternalCompany } from '../../types/externalCompany';
+import { ExternalCompanyNote } from '../../types/notes';
+import CreateNote from '../notes/CreateNote';
+import Notes from '../notes/Notes';
+import { NOTE_TYPE } from '../../enums/notes';
+import { createExternalCompanyNote } from '../../api/notes/externalCompany/create';
+import { getAllExternalCompanyNotesByExternalCompanyId } from '../../api/notes/externalCompany/getAllByExternalCompanyId';
 
 const { Text, Title } = Typography;
 
 const ExternalCompanyDetails: React.FC = () => {
-    const loggedInUserId = useSelector((state : State) => state.user.id);
+    const [api, contextHolder] = notification.useNotification();
+    const loggedInUser = useSelector((state : State) => state.user);
+    const [externalCompanyNotes, setExternalCompanyNotes] = useState<Array<ExternalCompanyNote> | null>(null);
+    const [noteTitle, setNoteTitle] = useState('');
+    const [note, setNote] = useState('');
     const [externalCompany, setExternalCompany] = useState<null | ExternalCompany>(null);
     const { id } =  useParams(); 
     const externalCompanyId = id || '';
 
     useEffect(() => {
-        if (loggedInUserId) {
-            getExternalCompanyById(loggedInUserId, externalCompanyId).then(response => {
+        if (loggedInUser.id) {
+            getExternalCompanyById(loggedInUser.id, externalCompanyId).then(response => {
                 setExternalCompany(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
+            getAllExternalCompanyNotesByExternalCompanyId(loggedInUser.id, externalCompanyId).then(response => {
+                setExternalCompanyNotes(response)
+            }).catch(error => {
+                console.log('error fetching', error)
+            })
         }
-      }, [loggedInUserId]);
+      }, [loggedInUser.id]);
 
-    return (
-        <Card bordered={false} style={{ borderRadius: 0, boxShadow: cardShadow}}>
-            <Title level={4}>External company information</Title>
-                {externalCompany && (
+      const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
+      const onHandleNoteChange = (event : any) => setNote(event.target.value);
+  
+      const clearNoteFields = () => {
+        setNoteTitle('');
+        setNote('');
+      }
+
+      const onSubmitIncomeNote = () => {
+        const user = {
+            id: loggedInUser.id,
+            name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+            email: loggedInUser.email
+    
+        }
+        createExternalCompanyNote(user, externalCompanyId, noteTitle, note).then(() => {
+            api.info({
+                message: `Created note`,
+                description: "Succesfully created note.",
+                placement: "bottom",
+                duration: 1.2,
+            });
+            }).catch(error => {
+                api.error({
+                    message: `Error creating note`,
+                    description: error.toString(),
+                    placement: "bottom",
+                    duration: 1.4,
+                });
+            })
+        }
+
+    return (<>
+        <Card style={{ padding: 0}}>
+            {contextHolder}
+            {externalCompany && (<>
                     <Row>
-                        <Col span={8}>
-                            <Space direction="vertical">
-                                <Text strong>Name</Text>
-                                {externalCompany.company_name}
-                                <Text strong>Counter</Text>
-                                {externalCompany.country}
-                                <Text strong>City</Text>
-                                {externalCompany.city}
-                                <Text strong>State / Province</Text>
-                                {externalCompany.state_province}
-                                <Text strong>Address</Text>
-                                {externalCompany.address}
-                                <Text strong>Postal code</Text>
-                                {externalCompany.postal_code}
-                            </Space>
+                        <Col span={15}>
+                            <Row>
+                                <Col span={24}>
+                                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                        <Title style={{margin: '0px'}} level={4}>{externalCompany.company_name}</Title>
+                                        <Button primary>Edit company info</Button>
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={7}  style={{padding: '0px 12px 12px 0px'}}>
+                                    <Title style={{marginTop: '12px', marginBottom: '4px'}} level={5}>Address info</Title>
+                                    {`${externalCompany.country}, ${externalCompany.city}`}<br />
+                                    {externalCompany.address}<br />
+                                    {`${externalCompany.postal_code} ${externalCompany.state_province}`}
+                                    <Title style={{marginTop: '12px', marginBottom: '4px'}} level={5}>Contact info</Title>
+                                    {externalCompany.contact_person}<br />
+                                    {externalCompany.contact_email}<br />
+                                    {externalCompany.contact_phone}
+                                </Col>
+                                <Col span={17} style={{padding: '0px 12px 12px 0px'}}>
+                                    <Title style={{marginTop: '12px', marginBottom: '4px'}} level={5}>Company info</Title>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Registration number:</Text><Text>{externalCompany.company_registration_number}</Text>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Tax identification number:</Text><Text>{externalCompany.tax_identification_number}</Text>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Billing currency:</Text><Text>{externalCompany.billing_currency}</Text>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Bank account info:</Text><Text>{externalCompany.bank_account_info}</Text>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>ID:</Text><Text>{externalCompany.id}</Text>
+                                    </div>
+                                </Col>
+                            </Row>
                         </Col>
+                       
+                        <Col span={1}></Col>
                         <Col span={8}>
-                            <Space direction="vertical">
-                                <Text strong>Contact person</Text>
-                                {externalCompany.contact_person}
-                                <Text strong>email</Text>
-                                {externalCompany.contact_email}
-                                <Text strong>phone</Text>
-                                {externalCompany.contact_phone}
-                            </Space>
+                            <Card>
+                                <CreateNote
+                                    type={NOTE_TYPE.external_company}
+                                    title={noteTitle}
+                                    onTitleChange={onHandleNoteTitleChange}
+                                    note={note}
+                                    onNoteChange={onHandleNoteChange}
+                                    onClearNoteFields={clearNoteFields}
+                                    onSubmit={onSubmitIncomeNote}
+                                />
+                                {externalCompanyNotes && externalCompanyNotes.length > 0 && 
+                                    <Notes notes={externalCompanyNotes} type={NOTE_TYPE.external_company} userId={loggedInUser.id} />
+                                }
+                            </Card>
                         </Col>
-                        <Col span={8}>
-                            <Space direction="vertical">
-                                <Text strong>Registration number</Text>
-                                {externalCompany.company_registration_number}
-                                <Text strong>Tax identification number</Text>
-                                {externalCompany.tax_identification_number}
-                                <Text strong>Billing currency</Text>
-                                {externalCompany.billing_currency}
-                                <Text strong>Bank account info</Text>
-                                {externalCompany.bank_account_info}
-                                <Text strong>ID</Text>
-                                {externalCompany.id}
-                            </Space>
-                        </Col>
-                    </Row>
-                )}
+                    </Row> 
+                </>)}
         </Card>
-    )
+    </>)
 
 }
 

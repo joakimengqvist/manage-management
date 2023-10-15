@@ -23,6 +23,9 @@ const headerTitle = (pathName : string) => {
     if (pathName.includes('users')) {
         return 'Users'
     }
+    if (pathName.includes('sub-projects')) {
+        return 'Sub Projects'
+    }
     if (pathName.includes('/project/')) {
         return 'Project details'
     }

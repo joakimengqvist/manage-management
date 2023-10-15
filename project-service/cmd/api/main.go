@@ -27,6 +27,10 @@ type Config struct {
 	Models data.Models
 }
 
+type IDpayload struct {
+	ID string `json:"id"`
+}
+
 func main() {
 
 	log.Println("Starting project service]")

@@ -1,22 +1,24 @@
 import { useSelector } from 'react-redux';
-import CreateProjectIncome from '../components/economics/incomes/createProjectIncome';
+import CreateSubProject from '../components/subProjects/createSubProject';
 import { PRIVILEGES } from '../enums/privileges';
 import { hasPrivilege } from '../helpers/hasPrivileges';
+import { useParams } from 'react-router-dom';
 import { State } from '../types/state';
 
-const CreateIncome: React.FC = () => {
+const CreateExpense: React.FC = () => {
+    const { projectId } = useParams()
     const userPrivileges = useSelector((state : State) => state.user.privileges);
 
-    if (!hasPrivilege(userPrivileges, PRIVILEGES.economics_write)) return null;
+    if (!hasPrivilege(userPrivileges, PRIVILEGES.sub_project_write)) return null;
     
     return (
         <div style={{padding: '12px 8px'}}>
             <div style={{padding: '4px'}}>
-                <CreateProjectIncome />
+                <CreateSubProject projectIdParam={projectId} />
             </div>
         </div>
     )
 
 }
 
-export default CreateIncome;
+export default CreateExpense;

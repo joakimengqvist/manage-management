@@ -1,4 +1,4 @@
-import Projects from '../components/projects/Projects';
+import SubProjects from '../components/subProjects/SubProjects';
 import { Row, Col, Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { State } from '../types/state';
@@ -12,17 +12,17 @@ const ProjectDetails: React.FC = () => {
     return (
         <div style={{padding: '12px 8px'}}>
             <Row>
-            <Col span={24}>
+                <Col span={24}>
                     <div style={{display: 'flex', justifyContent: 'flex-end', paddingBottom: '8px', paddingRight: '4px'}}>
-                        <Button type="primary" onClick={() => navigate("/create-project")}>Create new project</Button>
+                        <Button type="primary" onClick={() => navigate("/create-sub-project")}>Create new sub project</Button>
                     </div>
                 </Col>
                 <Col span={24}>
-                {hasPrivilege(userPrivileges, PRIVILEGES.project_read) &&
+                {hasPrivilege(userPrivileges, PRIVILEGES.sub_project_read) &&
                     <div style={{padding: '4px'}}>
-                        <Projects />
+                        <SubProjects />
                     </div>
-                }
+                }   
                 </Col>
             </Row>
         </div>

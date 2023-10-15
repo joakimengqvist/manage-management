@@ -12,7 +12,8 @@ import {
   ReconciliationOutlined,
   DollarOutlined,
   FundOutlined,
-  ApartmentOutlined,
+  ClusterOutlined,
+  BuildOutlined,
   BankOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
@@ -56,6 +57,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
     ]),
     getItem('Projects', '2', <ProjectOutlined />, () => {}, [
       getItem('Projects', 'sub2-1', <FundProjectionScreenOutlined />, () => navigate("/projects")),
+      getItem('Sub Projects', 'sub2-2', <BuildOutlined />, () => navigate("/sub-projects")),
     ]),
     getItem('Economics', '3', <DollarOutlined />, () => {}, [
       getItem('Expenses', 'sub3-1', <ReconciliationOutlined />, () => navigate("/expenses")),
@@ -63,7 +65,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
   ]),
     getItem('External companies', '4', <BankOutlined />, () => navigate("/external-companies")),
     getItem('Testing', '5', <FunctionOutlined />, () => navigate("/test-endpoints")),
-    getItem('Services', '6', <ApartmentOutlined />, () => navigate("/services")),
+    getItem('Services', '6', <ClusterOutlined />, () => navigate("/services")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 

@@ -246,34 +246,6 @@ func (u *User) InsertUser(user User) (string, error) {
 	return newID, nil
 }
 
-func AppendUserNote(userId string, noteId string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-	defer cancel()
-
-	stmt := `update users set notes = array_append(notes, $1) where id = $2`
-
-	_, err := db.ExecContext(ctx, stmt, noteId, userId)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func DeleteUserNote(userId string, noteId string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-	defer cancel()
-
-	stmt := `update users set notes = array_remove(notes, $1) where id = $2`
-
-	_, err := db.ExecContext(ctx, stmt, noteId, userId)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // ResetPassword is the method we will use to change a user's password.
 func (u *User) ResetPassword(password string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)

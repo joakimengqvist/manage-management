@@ -16,6 +16,7 @@ user: {
 application: {
     privileges: Array<any>
     projects: Array<any>
+    subProjects: Array<any>
     users: Array<any>
     externalCompanies: Array<any>
 }

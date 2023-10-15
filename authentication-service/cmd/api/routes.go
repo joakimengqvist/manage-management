@@ -38,8 +38,5 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/auth/delete-privilege", app.DeletePrivilege)
 	mux.Post("/auth/check-privilege", app.CheckPrivilege)
 
-	mux.Post("/auth/add-user-note", app.AddUserNote)
-	mux.Post("/auth/delete-user-note", app.DeleteUserNote)
-
 	return mux
 }

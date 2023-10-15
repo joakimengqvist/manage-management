@@ -14,6 +14,7 @@ export const staticDataSlice = createSlice({
     privileges: [],
     users: [],
     projects: [],
+    subProjects: [],
   },
   reducers: {
     initiateApplicationData: (state : any) => {
@@ -95,6 +96,27 @@ export const staticDataSlice = createSlice({
       return state;
     },
 
+    // -------------------------  |
+    // -- SUB PROJECTS -------    |
+    // -------------------        V
+
+    fetchSubProjects: (state : any, payload : any) => {
+      state.subProjects = payload.payload;
+      localStorage.setItem(applicationStateName, JSON.stringify({...state, subProjects: payload.payload}));
+      return state;
+    },
+    // updatesubProject: (state : any, payload) => {
+    //  TODO
+    //},
+    appendSubProject: (state : any, payload) => {
+      state.subProjects[state.subProjects.length] = payload.payload;
+      return state;
+    },
+    popSubProject: (state : any, payload) => {
+      state.subProjects.splice(state.subProjects.findIndex((p : any) => p.id === payload.payload), 1);
+      return state;
+    },
+
     // -----------------------  |
     // -- EXTERNAL COMPANIES    |
     // -------------------      V
@@ -124,20 +146,29 @@ export const staticDataSlice = createSlice({
 
 export const { 
   initiateApplicationData, 
+
   fetchPrivileges, 
   // updatePrivilege,
   appendPrivilege,
   popPrivilege,
+
   fetchUsers,
   updateUser,
   appendUser,
   popUser,
+
   fetchProjects,
   // updateProject,
   appendProject,
   popProject,
+
+  fetchSubProjects,
+  appendSubProject,
+  popSubProject,
   selectProject,
+
   fetchExternalCompanies,
+  
   clearData,
 } = staticDataSlice.actions
 

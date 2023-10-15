@@ -9,15 +9,15 @@ import Navigation from './components/navigation/Navigation';
 import Login from './routes/login';
 import TestingEndpoints from './routes/TestingEndpoints';
 import UsersDetails from './routes/Users';
-import UserDetails from './routes/User';
-import ProjectsDetails from './routes/Projects';
-import ProjectDetails from './routes/Project';
-import PrivilegesDetails from './routes/Privileges';
-import PrivilegeDetails from './routes/Privilege';
+import User from './routes/User';
+import Projects from './routes/Projects';
+import Project from './routes/Project';
+import Privileges from './routes/Privileges';
+import Privilege from './routes/Privilege';
 import { Layout } from 'antd';
 import { getAllPrivileges } from './api/privileges/getAll';
-import { clearData, fetchExternalCompanies, fetchPrivileges, fetchProjects, fetchUsers, initiateApplicationData } from './redux/applicationDataSlice';
-import {initiateUser } from './redux/userDataSlice'
+import { clearData, fetchExternalCompanies, fetchPrivileges, fetchProjects, fetchSubProjects, fetchUsers, initiateApplicationData } from './redux/applicationDataSlice';
+import { initiateUser } from './redux/userDataSlice'
 import { getAllUsers } from './api/users/getAll';
 import { getAllProjects } from './api/projects/getAll';
 import { State } from './types/state';
@@ -35,6 +35,10 @@ import ExternalCompanies from './routes/ExternalCompanies';
 import ExternalCompanyCreate from './routes/ExternalCompanyCreate';
 import ExternalCompany from './routes/ExternalCompany';
 import { getAllExternalCompanies } from './api/externalCompanies/getAll';
+import SubProjects from './routes/SubProjects';
+import SubProjectCreate from './routes/SubProjectCreate';
+import { getAllSubProjects } from './api/subProjects/getAll';
+import ProjectCreate from './routes/ProjectCreate';
 
 const { Header, Sider, Content } = Layout;
 
@@ -69,6 +73,9 @@ const App: React.FC = () => {
       if (hasPrivilege(userPrivileges, PRIVILEGES.project_read)) {
         getAllProjects(loggedInUserId).then(response => dispatch(fetchProjects(response))).catch(() => {})
       }
+      if (hasPrivilege(userPrivileges, PRIVILEGES.sub_project_read)) {
+        getAllSubProjects(loggedInUserId).then(response => dispatch(fetchSubProjects(response))).catch(() => {})
+      }
       if (hasPrivilege(userPrivileges, PRIVILEGES.external_company_read)) {
         getAllExternalCompanies(loggedInUserId).then(response => dispatch(fetchExternalCompanies(response))).catch(() => {})
       }
@@ -96,14 +103,19 @@ const App: React.FC = () => {
             <Route path="/test-endpoints" element={<TestingEndpoints />} />
             <Route path="/login" element={<Login />} />
 
-            <Route path="/user/:id" element={<UserDetails />} />
+            <Route path="/user/:id" element={<User />} />
             <Route path="/users" element={<UsersDetails />} />
 
-            <Route path="/project/:id" element={<ProjectDetails />} />
-            <Route path="/projects" element={<ProjectsDetails />} />
+            <Route path="/project/:id" element={<Project />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/create-project" element={<ProjectCreate />} />
 
-            <Route path="/privileges" element={<PrivilegesDetails />} />
-            <Route path="/privilege/:id" element={<PrivilegeDetails />} />
+            <Route path="/sub-projects" element={<SubProjects />} />
+            <Route path="/create-sub-project" element={<SubProjectCreate />} />
+            <Route path="/create-sub-project/project-id/:projectId" element={<SubProjectCreate />} />
+
+            <Route path="/privileges" element={<Privileges />} />
+            <Route path="/privilege/:id" element={<Privilege />} />
 
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/create-expense" element={<ExpenseCreate />} />

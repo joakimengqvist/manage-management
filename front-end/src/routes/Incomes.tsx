@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Incomes from '../components/economics/incomes/incomes';
+import { PRIVILEGES } from '../enums/privileges';
 import { hasPrivilege } from '../helpers/hasPrivileges';
 import { State } from '../types/state';
 
@@ -17,7 +18,7 @@ const PrivilegeDetails: React.FC = () => {
         return null
     }
 
-    if (!hasPrivilege(userPrivileges, 'privilege_read')) return null;
+    if (!hasPrivilege(userPrivileges, PRIVILEGES.privilege_read)) return null;
 
     const projectOptions = [{label: 'All projects', value: 'all'}]
     projects.forEach(project => {

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ExternalCompanies from '../components/externalCompanies/externalCompanies';
+import { PRIVILEGES } from '../enums/privileges';
 import { hasPrivilege } from '../helpers/hasPrivileges';
 import { State } from '../types/state';
 
@@ -17,7 +18,7 @@ const ExternalCompaniesRoute: React.FC = () => {
         return null
     }
 
-    if (!hasPrivilege(userPrivileges, 'external_company_read')) return null;
+    if (!hasPrivilege(userPrivileges, PRIVILEGES.economics_read)) return null;
 
     const projectOptions = [{label: 'All projects', value: 'all'}]
     projects.forEach(project => {

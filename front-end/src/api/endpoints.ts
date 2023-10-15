@@ -22,6 +22,13 @@ export enum ENDPOINTS {
     GetProjectById = "http://localhost:8080/project/get-project-by-id",
     GetAllProjects = "http://localhost:8080/project/get-all-projects",
 
+    // PROJECTS
+    CreateSubProject = "http://localhost:8080/project/create-sub-project",
+    UpdateSubProject = "http://localhost:8080/project/update-sub-project",
+    DeleteSubProject = "http://localhost:8080/project/delete-sub-project",
+    GetSubProjectById = "http://localhost:8080/project/get-sub-project-by-id",
+    GetAllSubProjects = "http://localhost:8080/project/get-all-sub-projects",
+
     // PROJECT NOTES
     CreateProjectNote = "http://localhost:8080/notes/create-project-note",
     GetProjectNoteById = "http://localhost:8080/notes/get-project-note-by-id",

@@ -128,42 +128,6 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updateUser := UpdateUserNotes{
-		NoteId: noteId,
-		UserId: requestPayload.AuthorId,
-	}
-
-	jsonDataUser, _ := json.MarshalIndent(updateUser, "", "")
-
-	request, err = http.NewRequest("POST", "http://authentication-service/auth/add-user-note", bytes.NewBuffer(jsonDataUser))
-
-	if err != nil {
-		data.DeleteProjectNote(requestPayload.Project)
-		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
-		return
-	}
-
-	client = &http.Client{}
-
-	userUpdateResponse, err := client.Do(request)
-	if err != nil {
-		data.DeleteProjectNote(noteId)
-		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
-		return
-	}
-
-	defer userUpdateResponse.Body.Close()
-
-	if userUpdateResponse.StatusCode == http.StatusUnauthorized {
-		data.DeleteProjectNote(noteId)
-		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
-		return
-	} else if userUpdateResponse.StatusCode != http.StatusAccepted {
-		data.DeleteProjectNote(noteId)
-		app.RemoveNoteFromProject(w, r, requestPayload.AuthorId, requestPayload.Project)
-		return
-	}
-
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("created note %s", requestPayload.Title),
@@ -440,40 +404,6 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 	note, err := app.Models.ProjectNote.GetProjectNoteById(requestPayload.NoteId)
 	if err != nil {
 		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
-		return
-	}
-
-	deleteUserNote := DeleteNoteIdPayload{
-		NoteId:   note.ID,
-		AuthorId: requestPayload.AuthorId,
-	}
-
-	jsonDataUser, _ := json.MarshalIndent(deleteUserNote, "", "")
-
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/delete-user-note", bytes.NewBuffer(jsonDataUser))
-
-	if err != nil {
-		app.errorJSON(w, err)
-		return
-	}
-
-	request.Header.Set("X-User-Id", userId)
-
-	client := &http.Client{}
-
-	response, err := client.Do(request)
-	if err != nil {
-		app.errorJSON(w, err)
-		return
-	}
-
-	defer response.Body.Close()
-
-	if response.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - delete project note from user"))
-		return
-	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling auth service - delete project note from user"))
 		return
 	}
 

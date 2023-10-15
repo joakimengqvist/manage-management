@@ -7,10 +7,6 @@ import (
 	"project-service/cmd/data"
 )
 
-type ProjectIdPayload struct {
-	ID string `json:"id"`
-}
-
 type UpdateProject struct {
 	ID     string   `json:"id"`
 	Name   string   `json:"name"`
@@ -54,7 +50,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		Status: requestPayload.Status,
 	}
 
-	response, err := app.Models.Project.Insert(Project, userId)
+	response, err := app.Models.Project.InsertProject(Project, userId)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not create project: "+err.Error()), http.StatusBadRequest)
 		return
@@ -107,7 +103,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		Notes:  app.convertToPostgresArray(requestPayload.Notes),
 	}
 
-	err = updatedProject.Update(userId)
+	err = updatedProject.UpdateProject(userId)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not update project: "+err.Error()), http.StatusBadRequest)
 		return
@@ -145,7 +141,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var requestPayload ProjectIdPayload
+	var requestPayload IDpayload
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -159,7 +155,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = project.Delete()
+	err = project.DeleteProject()
 	if err != nil {
 		app.errorJSON(w, errors.New("could not delete project: "+err.Error()), http.StatusBadRequest)
 		return
@@ -197,7 +193,7 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var requestPayload ProjectIdPayload
+	var requestPayload IDpayload
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -282,7 +278,7 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.logItemViaRPC(w, projectSlice, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Successfuly fetched all projects"})
-	app.writeJSONFromSlice(w, http.StatusAccepted, projectSlice)
+	app.writeProductJSONFromSlice(w, http.StatusAccepted, projectSlice)
 }
 
 // -------------------------------------------

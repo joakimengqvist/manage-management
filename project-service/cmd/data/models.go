@@ -61,7 +61,6 @@ type NewSubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             []string  `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	CreatedBy         string    `json:"created_by"`
 	UpdatedBy         string    `json:"updated_by"`
 	Invoices          []string  `json:"invoices"`
@@ -79,11 +78,11 @@ type SubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             []string  `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	CreatedAt         time.Time `json:"created_at"`
 	CreatedBy         string    `json:"created_by"`
 	UpdatedAt         time.Time `json:"updated_at"`
 	UpdatedBy         string    `json:"updated_by"`
+	Projects          []string  `json:"projects"`
 	Invoices          []string  `json:"invoices"`
 	Incomes           []string  `json:"incomes"`
 	Expenses          []string  `json:"expenses"`
@@ -99,22 +98,64 @@ type PostgresSubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             string    `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	CreatedAt         time.Time `json:"created_at"`
 	CreatedBy         string    `json:"created_by"`
 	UpdatedAt         time.Time `json:"updated_at"`
 	UpdatedBy         string    `json:"updated_by"`
+	Projects          string    `json:"projects"`
 	Invoices          string    `json:"invoices"`
 	Incomes           string    `json:"incomes"`
 	Expenses          string    `json:"expenses"`
 }
 
-func (u *Project) GetAll() ([]*PostgresProject, error) {
+func (u *Project) GetAllProjects() ([]*PostgresProject, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	query := `select id, name, status, notes, created_at, created_by, updated_at, updated_by
 	from projects order by name`
+
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var projects []*PostgresProject
+
+	for rows.Next() {
+		var project PostgresProject
+		err := rows.Scan(
+			&project.ID,
+			&project.Name,
+			&project.Status,
+			&project.Notes,
+			&project.CreatedAt,
+			&project.CreatedBy,
+			&project.UpdatedAt,
+			&project.UpdatedBy,
+		)
+		if err != nil {
+			fmt.Println("Error scanning", err)
+			return nil, err
+		}
+
+		projects = append(projects, &project)
+	}
+
+	return projects, nil
+}
+
+func GetProjectsByIds(ids string) ([]*PostgresProject, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `
+        select id, name, status, notes, created_at, created_by, updated_at, updated_by
+        from projects
+        where id = ANY($1)
+		order by name
+    `
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
@@ -242,7 +283,7 @@ func AppendProjectNote(projectId string, noteId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	stmt := `update projects set notes = array_append(notes, $1) where id = $2`
+	stmt := `update projects set notes = array(SELECT DISTINCT unnest(array_append(notes, $1))) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, noteId, projectId)
 	if err != nil {
@@ -275,8 +316,8 @@ func (u *SubProject) GetAllSubProjects() ([]*PostgresSubProject, error) {
 	defer cancel()
 
 	query := `select id, name, description, status, priority, start_date, due_date, estimated_duration, 
-          notes, project_id, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses
-          from sub_projects order by name`
+          notes, projects, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses
+          from sub_projects order by start_date`
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
@@ -298,7 +339,7 @@ func (u *SubProject) GetAllSubProjects() ([]*PostgresSubProject, error) {
 			&subProject.DueDate,
 			&subProject.EstimatedDuration,
 			&subProject.Notes,
-			&subProject.ProjectID,
+			&subProject.Projects,
 			&subProject.CreatedAt,
 			&subProject.CreatedBy,
 			&subProject.UpdatedAt,
@@ -323,7 +364,7 @@ func (u *SubProject) GetSubProjectById(id string) (*PostgresSubProject, error) {
 	defer cancel()
 
 	query := `select id, name, description, status, priority, start_date, due_date, estimated_duration, 
-		notes, project_id, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses
+		notes, projects, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses
         from sub_projects where id = $1`
 
 	var subProject PostgresSubProject
@@ -339,7 +380,7 @@ func (u *SubProject) GetSubProjectById(id string) (*PostgresSubProject, error) {
 		&subProject.DueDate,
 		&subProject.EstimatedDuration,
 		&subProject.Notes,
-		&subProject.ProjectID,
+		&subProject.Projects,
 		&subProject.CreatedAt,
 		&subProject.CreatedBy,
 		&subProject.UpdatedAt,
@@ -369,12 +410,11 @@ func (p *PostgresSubProject) UpdateSubProject(updatedByUserId string) error {
 		due_date = $6,
 		estimated_duration = $7,
 		notes = $8,
-		project_id = $9,
-		updated_at = $10,
-		updated_by = $11,
-		invoices = $12,
-		incomes = $13,
-		expenses = $14
+		updated_at = $9,
+		updated_by = $10,
+		invoices = $11,
+		incomes = $12,
+		expenses = $13
 	`
 
 	_, err := db.ExecContext(ctx, stmt,
@@ -386,7 +426,6 @@ func (p *PostgresSubProject) UpdateSubProject(updatedByUserId string) error {
 		p.DueDate,
 		p.EstimatedDuration,
 		p.Notes,
-		p.ProjectID,
 		time.Now(),
 		updatedByUserId,
 		p.Invoices,
@@ -422,7 +461,7 @@ func (u *SubProject) InsertSubProject(project PostgresSubProject, createdByUserI
 
 	var newID string
 	stmt := `insert into sub_projects (name, description, status, priority, start_date, due_date, estimated_duration, 
-		notes, project_id, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses)
+		notes, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses)
 		values ($1, $2, $3, $4, $5, $6, $7,	$8, $9, $10, $11, $12, $13, $14, $15, $16) returning id`
 
 	err := db.QueryRowContext(ctx, stmt,
@@ -434,7 +473,6 @@ func (u *SubProject) InsertSubProject(project PostgresSubProject, createdByUserI
 		project.DueDate,
 		project.EstimatedDuration,
 		project.Notes,
-		project.ProjectID,
 		time.Now(),
 		createdByUserId,
 		time.Now(),
@@ -455,7 +493,7 @@ func AppendSubProjectNote(subProjectId string, noteId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	stmt := `update sub_projects set notes = array_append(notes, $1) where id = $2`
+	stmt := `update sub_projects set notes = array(SELECT DISTINCT unnest(array_append(notes, $1))) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, noteId, subProjectId)
 	if err != nil {
@@ -483,7 +521,7 @@ func AppendSubProjectInvoice(subProjectId string, invoiceId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	stmt := `update sub_projects set invoices = array_append(notes, $1) where id = $2`
+	stmt := `update sub_projects set invoices = array(SELECT DISTINCT unnest(array_append(invoices, $1))) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, invoiceId, subProjectId)
 	if err != nil {
@@ -511,7 +549,7 @@ func AppendSubProjectIncome(subProjectId string, incomeId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	stmt := `update sub_projects set incomes = array_append(notes, $1) where id = $2`
+	stmt := `update sub_projects set incomes = array(SELECT DISTINCT unnest(array_append(incomes, $1))) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, incomeId, subProjectId)
 	if err != nil {
@@ -539,7 +577,7 @@ func AppendSubProjectExpense(subProjectId string, expenseId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	stmt := `update sub_projects set expenses = array_append(notes, $1) where id = $2`
+	stmt := `update sub_projects set expenses = array(SELECT DISTINCT unnest(array_append(expenses, $1))) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, expenseId, subProjectId)
 	if err != nil {
@@ -556,6 +594,118 @@ func DeleteSubProjectExpense(subProjectId string, expenseId string) error {
 	stmt := `update sub_projects set expenses = array_remove(notes, $1) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, expenseId, subProjectId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetSubProjectsByIds(ids string) ([]*PostgresSubProject, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `
+        select id, name, description, status, priority, start_date, due_date, estimated_duration, 
+		notes, projects, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses
+        from sub_projects
+        where id = ANY($1)
+		order by start_date desc
+    `
+
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var subProjects []*PostgresSubProject
+
+	for rows.Next() {
+		var subProject PostgresSubProject
+		err := rows.Scan(
+			&subProject.ID,
+			&subProject.Name,
+			&subProject.Description,
+			&subProject.Status,
+			&subProject.Priority,
+			&subProject.StartDate,
+			&subProject.DueDate,
+			&subProject.EstimatedDuration,
+			&subProject.Notes,
+			&subProject.Projects,
+			&subProject.CreatedAt,
+			&subProject.CreatedBy,
+			&subProject.UpdatedAt,
+			&subProject.UpdatedBy,
+			&subProject.Invoices,
+			&subProject.Incomes,
+			&subProject.Expenses,
+		)
+		if err != nil {
+			fmt.Println("Error scanning", err)
+			return nil, err
+		}
+
+		subProjects = append(subProjects, &subProject)
+	}
+
+	return subProjects, nil
+}
+
+// ------------------------
+// -- COMMON (entangled) --
+// ------------------------
+
+func AppendSubProjectToProject(projectId string, subProjectId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update projects set sub_projects = array(SELECT DISTINCT unnest(array_append(sub_projects, $1))) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, subProjectId, projectId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteSubProjectFromProject(projectId string, subProjectId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update projects set sub_projects = array_remove(sub_projects, $1) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, subProjectId, projectId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func AppendProjectToSubProject(projectId string, subProjectId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update sub_projects set projects = array(SELECT DISTINCT unnest(array_append(projects, $1))) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, projectId, subProjectId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteProjectFromSubProject(projectId string, subProjectId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update sub_projects set projects = array_remove(projects, $1) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, projectId, subProjectId)
 	if err != nil {
 		return err
 	}

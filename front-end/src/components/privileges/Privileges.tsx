@@ -5,7 +5,7 @@ import { deletePrivilege } from '../../api/privileges/delete';
 import { Table, Button, Popconfirm, notification, Tag } from 'antd';
 import { State } from '../../types/state';
 import { popPrivilege } from '../../redux/applicationDataSlice';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 
@@ -72,7 +72,7 @@ const Privileges: React.FC = () => {
             name: <Tag color="blue" style={{cursor: 'pointer'}} onClick={() => navigateToPrivilege(privilege.id)}>{privilege.name}</Tag>,
             description: privilege.description,
             operations: (<div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                <Button type="link" onClick={() => navigateToPrivilege(privilege.id)}>Details</Button>
+                <Button type="link" onClick={() => navigateToPrivilege(privilege.id)}><ZoomInOutlined /></Button>
                 {hasPrivilege(userPrivileges, PRIVILEGES.privilege_sudo) &&
                     <Popconfirm
                         placement="top"
@@ -83,7 +83,7 @@ const Privileges: React.FC = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button danger type="link">Delete</Button>
+                        <Button danger type="link"><DeleteOutlined /></Button>
                     </Popconfirm>
                 }
             </div>)

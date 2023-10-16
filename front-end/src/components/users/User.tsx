@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProjectNotesByUserId } from '../../api/notes/project/getAllByUserId';
 import { useEffect, useState } from "react";
 import { updateUserCall } from "../../api/users/update";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import { State } from "../../types/state";
 import { updateUser, popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
@@ -126,7 +126,7 @@ const User: React.FC = () => {
           });
         }
     }
-  }, [users, allProjects]);
+  }, [user]);
 
   useEffect(() => {
     if (loggedInUserId) {
@@ -336,7 +336,7 @@ const User: React.FC = () => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button danger>Delete</Button>
+                <Button danger><DeleteOutlined /></Button>
               </Popconfirm>
             )}
             <div

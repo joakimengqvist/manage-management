@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { ExternalCompanyStatus } from '../tags/ExternalCompanyStatus';
 import { getAllExternalCompanies } from '../../api/externalCompanies/getAll';
 import { ExternalCompany } from '../../types/externalCompany';
+import { ZoomInOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -66,7 +67,7 @@ const Expenses = ({ project } : { project: string }) => {
       }, [loggedInUserId]);
 
       const externalCompanyData: Array<any> = useMemo(() => {
-        const expensesListItem = externalCompanies.map((company : ExternalCompany) => {
+        const expensesListItem = externalCompanies && externalCompanies.map((company : ExternalCompany) => {
         return {                    
             name: <Button type="link" onClick={() => navigate(`/external-company/${company.id}`)}>{company.company_name}</Button>,
             registration_number: <Text>{company.company_registration_number}</Text>,
@@ -74,11 +75,13 @@ const Expenses = ({ project } : { project: string }) => {
             phone: <Text>{company.contact_phone}</Text>,
             email: <Text>{company.contact_email}</Text>,
             status: <ExternalCompanyStatus status={company.status}/>,
-            operations: <Button type="link" onClick={() => navigate(`/external-company/${company.id}`)}>Details</Button>
+            operations: <Button type="link" onClick={() => navigate(`/external-company/${company.id}`)}><ZoomInOutlined /></Button>
           }
         })
         return expensesListItem;
     }, [project, externalCompanies])
+
+    if (!externalCompanies) return null;
 
     return  (
         <Card 

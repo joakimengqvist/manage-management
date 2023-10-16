@@ -17,6 +17,15 @@ export const IncomeAndExpenseStatusOptions = [
     { value: "closed", label: "Closed" }
 ];
 
+export const subProjectStatusOptions = [
+    {value: 'not-started', label: 'Not started'},
+    { value: "on_hold", label: "On Hold" },
+    { value: "postponed", label: "Postponed" },
+    {value: 'ongoing', label: 'Ongoing'},
+    {value: 'cancelled', label: 'Cancelled'},
+    {value: 'completed', label: 'Completed'}
+]
+
 export const IncomeAndExpenseCategoryOptions = [
     { value: 'materials', label: 'Materials' },
     { value: 'fee', label: 'Fee' },

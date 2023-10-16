@@ -18,11 +18,11 @@ type SubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             []string  `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	CreatedAt         time.Time `json:"created_at"`
 	CreatedBy         string    `json:"created_by"`
 	UpdatedAt         time.Time `json:"updated_at"`
 	UpdatedBy         string    `json:"updated_by"`
+	Projects          []string  `json:"projects"`
 	Invoices          []string  `json:"invoices"`
 	Incomes           []string  `json:"incomes"`
 	Expenses          []string  `json:"expenses"`
@@ -38,7 +38,6 @@ type UpdateSubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             []string  `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	Invoices          []string  `json:"invoices"`
 	Incomes           []string  `json:"incomes"`
 	Expenses          []string  `json:"expenses"`
@@ -53,7 +52,6 @@ type NewSubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             []string  `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	CreatedBy         string    `json:"created_by"`
 	UpdatedBy         string    `json:"updated_by"`
 	Invoices          []string  `json:"invoices"`
@@ -62,7 +60,7 @@ type NewSubProject struct {
 }
 
 // -------------------------------------------
-// --------- START OF CREATE PROJECT  --------
+// --------- START OF CREATE SUB PROJECT  ----
 // -------------------------------------------
 
 func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
@@ -130,11 +128,11 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 }
 
 // -------------------------------------------
-// --------- END OF CREATE PROJECT  ----------
+// --------- END OF CREATE SUB PROJECT  ------
 // -------------------------------------------
 
 // -------------------------------------------
-// --------- START OF UPDATE PROJECT  --------
+// --------- START OF UPDATE SUB PROJECT  ----
 // -------------------------------------------
 
 func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
@@ -201,11 +199,11 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 }
 
 // -------------------------------------------
-// --------- END OF UPDATE PROJECT  ----------
+// --------- END OF UPDATE SUB PROJECT  ------
 // -------------------------------------------
 
 // -------------------------------------------
-// --------- START OF DELETE PROJECTS  -------
+// --------- START OF DELETE SUB PROJECT  ----
 // -------------------------------------------
 
 func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
@@ -271,13 +269,13 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -------------------------------------------
-// --------- END OF DELETE PROJECT  ----------
-// -------------------------------------------
+// ----------------------------------------------
+// --------- END OF DELETE SUB PROJECT  ---------
+// ----------------------------------------------
 
-// -------------------------------------------
-// --------- START OF GET PROJECTS (ID)  -----
-// -------------------------------------------
+// ----------------------------------------------
+// --------- START OF GET SUB PROJECTS (ID)  ----
+// ----------------------------------------------
 
 func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -343,11 +341,11 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 }
 
 // -------------------------------------------
-// --------- END OF GET PROJECTS (ID)  -------
+// --------- END OF GET SUB PROJECTS (ID)  ---
 // -------------------------------------------
 
 // -------------------------------------------
-// --------- START OF GET PROJECTS  ----------
+// --------- START OF GET SUB PROJECTS  ------
 // -------------------------------------------
 
 func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
@@ -387,5 +385,59 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 }
 
 // -------------------------------------------
-// --------- END OF GET PROJECTS  ------------
+// --------- END OF GET SUB PROJECTS  --------
+// -------------------------------------------
+
+// -------------------------------------------
+// ----- START OF GET SUB PROJECTS BY IDS  ---
+// -------------------------------------------
+
+func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
+
+	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all subProjects [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
+
+	userId := r.Header.Get("X-User-Id")
+
+	var requestPayload IDpayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://project-service/project/get-sub-projects-by-ids", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch subProjects by ids"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	var jsonFromService []SubProject
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects by ids success [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
+// -------------------------------------------
+// ----- END OF GET SUB PROJECTS BY IDS  -----
 // -------------------------------------------

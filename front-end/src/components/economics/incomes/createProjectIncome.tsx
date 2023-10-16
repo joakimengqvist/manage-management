@@ -109,7 +109,7 @@ const CreateProjectIncome: React.FC = () => {
 
     const vendorOptions = externalCompanies.map(company => ({
         value: company.id,
-        label: company.name
+        label: company.company_name
     }))
 
   return (

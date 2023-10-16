@@ -10,11 +10,11 @@ export interface SubProject {
     due_date: Date;
     estimated_duration: number;
     notes: Array<string>;
-    project_id: string;
     created_at: Date;
     created_by: string;
     updated_at: Date;
     updated_by: string;
+    projects: Array<string>;
     invoices: Array<string>;
     incomes: Array<string>;
     expenses: Array<string>;

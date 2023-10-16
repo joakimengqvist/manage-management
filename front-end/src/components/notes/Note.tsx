@@ -17,6 +17,8 @@ import { updateIncomeNote } from "../../api/notes/income/update";
 import { updateProjectNote } from "../../api/notes/project/update";
 import { updateExternalCompanyNote } from "../../api/notes/externalCompany/update";
 import { replaceUnderscore } from "../../helpers/stringFormatting";
+import { PRIVILEGES } from "../../enums/privileges";
+import { hasPrivilege } from "../../helpers/hasPrivileges";
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -32,6 +34,7 @@ const Note = (props: NoteProps) => {
   const { type, generalized, userId, note } =  props;
   const [api, contextHolder] = notification.useNotification();
   const user = useSelector((state : State) => state.user);
+  const userPrivileges = useSelector((state : State) => state.user.privileges);
 
   const [noteTitle, setNoteTitle] = useState('');
   const [noteBody, setNoteBody] = useState('');
@@ -171,7 +174,7 @@ const Note = (props: NoteProps) => {
           {editing && (
             <Button type="link" onClick={onSaveUpdateNote}style={{padding: '0px 4px 0px 0px'}}><SendOutlined /></Button>
           )}
-          {!editing && (
+          {!editing && hasPrivilege(userPrivileges, PRIVILEGES.note_sudo) && (
             <Popconfirm
                 placement="top"
                 title="Are you sure?"

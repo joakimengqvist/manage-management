@@ -8,10 +8,9 @@ import (
 )
 
 type UpdateProject struct {
-	ID     string   `json:"id"`
-	Name   string   `json:"name"`
-	Status string   `json:"status"`
-	Notes  []string `json:"notes"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
 }
 
 type UpdateProjectNote struct {
@@ -100,7 +99,6 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		ID:     requestPayload.ID,
 		Name:   requestPayload.Name,
 		Status: requestPayload.Status,
-		Notes:  app.convertToPostgresArray(requestPayload.Notes),
 	}
 
 	err = updatedProject.UpdateProject(userId)
@@ -252,7 +250,7 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projects, err := app.Models.Project.GetAll()
+	projects, err := app.Models.Project.GetAllProjects()
 	if err != nil {
 		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
@@ -284,6 +282,59 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 // --------- END OF GET ALL PROJECTS  --------
 // -------------------------------------------
+
+// ----------------------------------------------------
+// --------- START OF GET ALL SUB PROJECTS BY IDS  ----
+// ----------------------------------------------------
+
+func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "project_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var requestPayload IdsPayload
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	projects, err := data.GetProjectsByIds(app.convertToPostgresArray(requestPayload.Ids))
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	var projectSlice []data.Project
+	for _, projectPtr := range projects {
+		project := *projectPtr
+
+		returnedProject := data.Project{
+			ID:        project.ID,
+			Name:      project.Name,
+			Status:    project.Status,
+			Notes:     app.parsePostgresArray(project.Notes),
+			CreatedAt: project.CreatedAt,
+			CreatedBy: project.CreatedBy,
+			UpdatedAt: project.UpdatedAt,
+			UpdatedBy: project.UpdatedBy,
+		}
+
+		projectSlice = append(projectSlice, returnedProject)
+	}
+
+	app.writeProductJSONFromSlice(w, http.StatusAccepted, projectSlice)
+}
 
 // -------------------------------------------
 // --------- START OF ADD PROJECT NOTES ------

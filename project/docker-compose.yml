@@ -22,8 +22,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - postgres
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=auth sslmode=disable timezone=UTC connect_timeout=5"
 
   project-service:
     build:
@@ -35,8 +37,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - postgres
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=projects sslmode=disable timezone=UTC connect_timeout=5"
 
   notes-service:
     build:
@@ -48,8 +52,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - postgres
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=notes sslmode=disable timezone=UTC connect_timeout=5"
 
   economics-service:
     build:
@@ -61,8 +67,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - postgres
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=economics sslmode=disable timezone=UTC connect_timeout=5"
 
   external-company-service:
     build:
@@ -74,8 +82,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - postgres
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=companies sslmode=disable timezone=UTC connect_timeout=5"
 
   logger-service:
     build:
@@ -123,7 +133,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: users
+      POSTGRES_DB: management
     volumes:
       - ./db-data/postgres/:/var/lib/postgresql/data/
 

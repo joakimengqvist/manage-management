@@ -31,6 +31,10 @@ type IDpayload struct {
 	ID string `json:"id"`
 }
 
+type IdsPayload struct {
+	Ids []string `json:"ids"`
+}
+
 func main() {
 
 	log.Println("Starting project service]")

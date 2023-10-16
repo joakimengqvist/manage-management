@@ -1,4 +1,4 @@
-export default function RenderEstimatedDuration({ duration }: { duration: number }) {
+export default function EstimatedDuration({ duration }: { duration: number }) {
         switch (duration) {
             case 1:
                 return <p>very short</p>;

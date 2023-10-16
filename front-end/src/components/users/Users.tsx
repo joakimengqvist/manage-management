@@ -5,7 +5,7 @@ import { deleteUser } from '../../api/users/delete';
 import { Table, Button, Popconfirm, notification } from 'antd';
 import { State } from '../../types/state';
 import { fetchUsers, popUser } from '../../redux/applicationDataSlice';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { getAllUsers } from '../../api/users/getAll';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
@@ -96,7 +96,7 @@ const Users: React.FC = () => {
             last_name: user.last_name,
             email: user.email,
             operations: (<>
-                <Button type="link" onClick={() => navigateToUser(user.id.toString())}>Edit</Button>
+                <Button type="link" onClick={() => navigateToUser(user.id.toString())}><ZoomInOutlined /></Button>
                 {hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) &&
                     <Popconfirm
                         placement="top"
@@ -107,7 +107,7 @@ const Users: React.FC = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button danger type="link">Delete</Button>
+                        <Button danger type="link"><DeleteOutlined /></Button>
                     </Popconfirm>
                 }
             </>)

@@ -9,26 +9,31 @@ import (
 )
 
 type Project struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Status    string    `json:"status"`
-	Notes     []string  `json:"notes"`
-	UpdatedAt time.Time `json:"updated_at"`
-	UpdatedBy string    `json:"updated_by"`
-	CreatedAt time.Time `json:"created_at"`
-	CreatedBy string    `json:"created_by"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Status      string    `json:"status"`
+	SubProjects []string  `json:"sub_projects"`
+	Notes       []string  `json:"notes"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	UpdatedBy   string    `json:"updated_by"`
+	CreatedAt   time.Time `json:"created_at"`
+	CreatedBy   string    `json:"created_by"`
 }
 
 type UpdateProject struct {
-	ID     string   `json:"id"`
-	Status string   `json:"status"`
-	Notes  []string `json:"notes"`
-	Name   string   `json:"name"`
+	ID     string `json:"id"`
+	Status string `json:"status"`
+	Name   string `json:"name"`
 }
 
 type NewProject struct {
 	Name   string `json:"name"`
 	Status string `json:"status"`
+}
+
+type ProjectToSubProject struct {
+	ProjectId    string `json:"project_id"`
+	SubProjectId string `json:"sub_project_id"`
 }
 
 // -------------------------------------------
@@ -359,3 +364,193 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 // -------------------------------------------
 // --------- END OF GET PROJECTS  ------------
 // -------------------------------------------
+
+// -------------------------------------------
+// ----- START OF GET PROJECTS BY IDS  -------
+// -------------------------------------------
+
+func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
+
+	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/project/get-all-projects-by-id]", Name: "[broker-service]"})
+
+	userId := r.Header.Get("X-User-Id")
+
+	var requestPayload IDpayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://project-service/project/get-projects-by-ids", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch projects by ids"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	var jsonFromService []Project
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all projects by ids success [/project/get-all-projects-by-id]", Name: "[broker-service]"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
+// ----------------------------------------------------
+// ----- END OF GET SUB PROJECTS BY IDS  --------------
+// ----------------------------------------------------
+
+// ----------------------------------------------------
+// --- START OF ADD PROJECTS SUB PROJECT CONNECTION  --
+// ----------------------------------------------------
+
+func (app *Config) AddProjectSubProjectConnection(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ProjectToSubProject
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://project-service/project/add-project-sub-project-connection", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update sub project"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - update sub project"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling authentication service - update sub project"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "update sub project successful"
+	payload.Data = jsonFromService.Data
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// ------------------------------------------------------
+// ---- END OF ADD PROJECTS SUB PROJECT CONNECTION  -----
+// ------------------------------------------------------
+
+// ------------------------------------------------------
+// -- START OF REMOVE PROJECTS SUB PROJECT CONNECTION  --
+// ------------------------------------------------------
+
+func (app *Config) RemoveProjectSubProjectConnection(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ProjectToSubProject
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://project-service/project/delete-project-sub-project-connection", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update sub project"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - update sub project"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling authentication service - update sub project"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "update sub project successful"
+	payload.Data = jsonFromService.Data
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// ------------------------------------------------------
+// --- END OF REMOVE PROJECTS SUB PROJECT CONNECTION  ---
+// ------------------------------------------------------

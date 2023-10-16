@@ -20,14 +20,19 @@ export enum ENDPOINTS {
     UpdateProject = "http://localhost:8080/project/update-project",
     DeleteProject = "http://localhost:8080/project/delete-project",
     GetProjectById = "http://localhost:8080/project/get-project-by-id",
+    GetProjectsByIds = "http://localhost:8080/project/get-projects-by-ids",
     GetAllProjects = "http://localhost:8080/project/get-all-projects",
 
-    // PROJECTS
+    // SUBPROJECTS
     CreateSubProject = "http://localhost:8080/project/create-sub-project",
     UpdateSubProject = "http://localhost:8080/project/update-sub-project",
     DeleteSubProject = "http://localhost:8080/project/delete-sub-project",
     GetSubProjectById = "http://localhost:8080/project/get-sub-project-by-id",
+    GetSubProjectsByIds = "http://localhost:8080/project/get-sub-projects-by-ids",
     GetAllSubProjects = "http://localhost:8080/project/get-all-sub-projects",
+
+    AddProjectSubProjectConnection = "http://localhost:8080/project/add-project-sub-project-connection",
+    RemoveProjectSubProjectConnection = "http://localhost:8080/project/delete-project-sub-project-connection",
 
     // PROJECT NOTES
     CreateProjectNote = "http://localhost:8080/notes/create-project-note",

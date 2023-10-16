@@ -18,7 +18,6 @@ type UpdateSubProject struct {
 	DueDate           time.Time `json:"due_date"`
 	EstimatedDuration int       `json:"estimated_duration"`
 	Notes             []string  `json:"notes"`
-	ProjectID         string    `json:"project_id"`
 	Invoices          []string  `json:"invoices"`
 	Incomes           []string  `json:"incomes"`
 	Expenses          []string  `json:"expenses"`
@@ -26,7 +25,7 @@ type UpdateSubProject struct {
 
 type UpdateSubProjectNote struct {
 	NoteId       string `json:"note_id"`
-	SubProjectId string `json:"project_id"`
+	SubProjectId string `json:"sub_project_id"`
 }
 
 // -----------------------------------------------
@@ -63,7 +62,6 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 		StartDate:         requestPayload.StartDate,
 		DueDate:           requestPayload.DueDate,
 		EstimatedDuration: requestPayload.EstimatedDuration,
-		ProjectID:         requestPayload.ProjectID,
 		Notes:             app.convertToPostgresArray(requestPayload.Notes),
 		Invoices:          app.convertToPostgresArray(requestPayload.Invoices),
 		Incomes:           app.convertToPostgresArray(requestPayload.Incomes),
@@ -124,7 +122,6 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 		StartDate:         requestPayload.StartDate,
 		DueDate:           requestPayload.DueDate,
 		EstimatedDuration: requestPayload.EstimatedDuration,
-		ProjectID:         requestPayload.ProjectID,
 		Notes:             app.convertToPostgresArray(requestPayload.Notes),
 		Invoices:          app.convertToPostgresArray(requestPayload.Invoices),
 		Incomes:           app.convertToPostgresArray(requestPayload.Incomes),
@@ -245,11 +242,11 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 		StartDate:         subProject.StartDate,
 		DueDate:           subProject.DueDate,
 		EstimatedDuration: subProject.EstimatedDuration,
-		ProjectID:         subProject.ProjectID,
 		CreatedAt:         subProject.CreatedAt,
 		CreatedBy:         subProject.CreatedBy,
 		UpdatedAt:         subProject.UpdatedAt,
 		UpdatedBy:         subProject.UpdatedBy,
+		Projects:          app.parsePostgresArray(subProject.Projects),
 		Notes:             app.parsePostgresArray(subProject.Notes),
 		Invoices:          app.parsePostgresArray(subProject.Invoices),
 		Incomes:           app.parsePostgresArray(subProject.Incomes),
@@ -306,11 +303,11 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 			Priority:  subProject.Priority,
 			StartDate: subProject.StartDate,
 			DueDate:   subProject.DueDate,
-			ProjectID: subProject.ProjectID,
 			CreatedAt: subProject.CreatedAt,
 			CreatedBy: subProject.CreatedBy,
 			UpdatedAt: subProject.UpdatedAt,
 			UpdatedBy: subProject.UpdatedBy,
+			Projects:  app.parsePostgresArray(subProject.Projects),
 			Notes:     app.parsePostgresArray(subProject.Notes),
 			Invoices:  app.parsePostgresArray(subProject.Invoices),
 			Incomes:   app.parsePostgresArray(subProject.Incomes),
@@ -324,13 +321,77 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 	app.writeSubProductJSONFromSlice(w, http.StatusAccepted, subProjectSlice)
 }
 
-// -----------------------------------------------
-// --------- END OF GET ALL SUB PROJECTS  --------
-// -----------------------------------------------
+// ----------------------------------------------------
+// --------- END OF GET ALL SUB PROJECTS  -------------
+// ----------------------------------------------------
 
-// -----------------------------------------------
-// --------- START OF ADD SUB PROJECT NOTES ------
-// -----------------------------------------------
+// ----------------------------------------------------
+// --------- START OF GET ALL SUB PROJECTS BY IDS  ----
+// ----------------------------------------------------
+
+func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "sub_project_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var requestPayload IdsPayload
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	subProjects, err := data.GetSubProjectsByIds(app.convertToPostgresArray(requestPayload.Ids))
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	var subProjectSlice []data.SubProject
+	for _, subProjectPtr := range subProjects {
+		subProject := *subProjectPtr
+
+		returnedSubProject := data.SubProject{
+			ID:        subProject.ID,
+			Name:      subProject.Name,
+			Status:    subProject.Status,
+			Priority:  subProject.Priority,
+			StartDate: subProject.StartDate,
+			DueDate:   subProject.DueDate,
+			CreatedAt: subProject.CreatedAt,
+			CreatedBy: subProject.CreatedBy,
+			UpdatedAt: subProject.UpdatedAt,
+			UpdatedBy: subProject.UpdatedBy,
+			Projects:  app.parsePostgresArray(subProject.Projects),
+			Notes:     app.parsePostgresArray(subProject.Notes),
+			Invoices:  app.parsePostgresArray(subProject.Invoices),
+			Incomes:   app.parsePostgresArray(subProject.Incomes),
+			Expenses:  app.parsePostgresArray(subProject.Expenses),
+		}
+
+		subProjectSlice = append(subProjectSlice, returnedSubProject)
+	}
+
+	app.writeSubProductJSONFromSlice(w, http.StatusAccepted, subProjectSlice)
+}
+
+// ----------------------------------------------------
+// --------- END OF GET ALL SUB PROJECTS BY IDS  ------
+// ----------------------------------------------------
+
+// ----------------------------------------------------
+// --------- START OF ADD SUB PROJECT NOTES -----------
+// ----------------------------------------------------
 
 func (app *Config) AddSubProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateSubProjectNote
@@ -359,13 +420,12 @@ func (app *Config) AddSubProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "SubProject [/sub-project/create-sub-project-note]", Name: "[subProject-service] - Successful added subProject note"})
 	app.writeJSON(w, http.StatusAccepted, requestPayload)
 }
 
-// -------------------------------------------
+// -----------------------------------------------
 // --------- END OF ADD SUB PROJECT NOTES --------
-// -------------------------------------------
+// -----------------------------------------------
 
 // -----------------------------------------------
 // --------- START OF REMOVE SUB PROJECT NOTES ---
@@ -397,6 +457,5 @@ func (app *Config) RemoveSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "SubProject [/sub-project/delete-sub-project-note]", Name: "[subProject-service] - Successful deleted subProject note"})
 	app.writeJSON(w, http.StatusAccepted, requestPayload)
 }

@@ -8,7 +8,7 @@ import { updateProject } from '../../api/projects/update';
 import { State } from '../../types/state';
 import { deleteProject } from '../../api/projects/delete';
 import { popProject } from '../../redux/applicationDataSlice';
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from "@ant-design/icons";
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { ProjectStatus, ProjectStatusTypes } from '../tags/ProjectStatus';
@@ -257,7 +257,7 @@ const Project: React.FC = () => {
             description: <Text>{expense?.description}</Text>,
             cost: <Text>{expense?.amount} {expense?.currency}</Text>,
             tax: <Text>{expense?.tax} {expense?.currency}</Text>,
-            operations: <Link href={`/expense/${expense?.expense_id}`}>Details</Link>
+            operations: <Link href={`/expense/${expense?.expense_id}`}><ZoomInOutlined /></Link>
            
           }
       })
@@ -268,7 +268,7 @@ const Project: React.FC = () => {
             description: <Text>{income.description}</Text>,
             cost: <Text>{income.amount} {income.currency}</Text>,
             tax: <Text>{income.tax} {income.currency}</Text>,
-            operations: <Link href={`/income/${income.income_id}`}>Details</Link>
+            operations: <Link href={`/income/${income.income_id}`}><ZoomInOutlined /></Link>
            
           }
       })
@@ -332,7 +332,7 @@ const Project: React.FC = () => {
                       okText="Yes"
                       cancelText="No"
                   >
-                      <Button danger type="link">Delete</Button>
+                      <Button danger type="link"><DeleteOutlined /></Button>
                   </Popconfirm>
               )}
               <Button type={editing ? "default" : "primary"} onClick={() => setEditing(!editing)}>{editing ? 'Close' : 'Edit'}</Button>

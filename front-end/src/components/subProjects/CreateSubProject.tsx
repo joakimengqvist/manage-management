@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createSubProject } from '../../api/subProjects/create';
 import { State } from '../../types/state';
 import { appendProject } from '../../redux/applicationDataSlice';
+import { subProjectStatusOptions } from '../economics/options';
 
 const { Title, Text } = Typography;
 
@@ -40,6 +41,7 @@ const CreateSubProject = (props : CreateSubProject) => {
             setStartDate(value.$d)
         }
     }
+    
     const onChangeDueDate = (value : any) => {
         if (value) {
             setDueDate(value.$d)
@@ -50,8 +52,6 @@ const CreateSubProject = (props : CreateSubProject) => {
         return { label: project.name, value: project.id}
       }
     );
-
-
 
     const onSubmit = () => {
         createSubProject(
@@ -142,11 +142,7 @@ const CreateSubProject = (props : CreateSubProject) => {
                 <Text strong>Project status</Text>
                 <Select
                     style={{width: '100%'}}
-                    options={[
-                        {value: 'ongoing', label: 'ongoing'},
-                        {value: 'cancelled', label: 'cancelled'},
-                        {value: 'completed', label: 'completed'}
-                    ]}
+                    options={subProjectStatusOptions}
                     onChange={onHandleStatusChange}
                     value={status}
                 />

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, Space, Input, Typography, notification, Popconfirm } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePrivilege } from '../../api/privileges/update';
@@ -132,13 +133,13 @@ const Privilege: React.FC = () => {
                         <Popconfirm
                             placement="top"
                             title="Are you sure?"
-                            description={`Do you want to delete user ${name}`}
+                            description={`Do you want to delete privilege ${name}`}
                             onConfirm={onClickdeletePrivilege}
                             icon={<QuestionCircleOutlined style={{ color: "red" }} />}
                             okText="Yes"
                             cancelText="No"
                         >
-                            <Button danger>Delete</Button>
+                            <Button danger><DeleteOutlined /></Button>
                         </Popconfirm>
                     )}
                     <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px'}}>

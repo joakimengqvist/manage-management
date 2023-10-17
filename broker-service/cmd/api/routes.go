@@ -52,8 +52,10 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/project/get-sub-projects-by-ids", app.GetSubProjectsByIds)
 	mux.Get("/project/get-all-sub-projects", app.GetAllSubProjects)
 
-	mux.Post("/project/add-project-sub-project-connection", app.AddProjectSubProjectConnection)
-	mux.Post("/project/delete-project-sub-project-connection", app.RemoveProjectSubProjectConnection)
+	mux.Post("/project/add-projects-sub-project-connection", app.AddProjectsSubProjectConnection)
+	mux.Post("/project/delete-projects-sub-project-connection", app.RemoveProjectsSubProjectConnection)
+	mux.Post("/project/add-sub-projects-project-connection", app.AddProjectsSubProjectConnection)
+	mux.Post("/project/delete-sub-projects-project-connection", app.RemoveSubProjectsProjectConnection)
 
 	mux.Post("/notes/create-project-note", app.CreateProjectNote)
 	mux.Get("/notes/get-project-note-by-id", app.GetProjectNoteById)

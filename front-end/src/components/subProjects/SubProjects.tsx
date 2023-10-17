@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table, Button, Popconfirm, notification, Modal, Select, Typography } from 'antd';
+import { Table, Button, Popconfirm, notification, Modal, Select, Typography, Col, Row, Card } from 'antd';
 import { State } from '../../types/state';
 import { popProject } from '../../redux/applicationDataSlice';
 import { 
@@ -17,10 +17,11 @@ import { SubProject } from '../../types/subProject';
 import { deleteSubProject } from '../../api/subProjects/delete';
 import Priority from '../renderHelpers/Priority';
 import EstimatedDuration from '../renderHelpers/EstimatedDuration';
-import { useState } from 'react';
-import { AddProjectSubProjectConnection } from '../../api/subProjects/specialActions/addProjectSubProjectConnection';
+import { useEffect, useState } from 'react';
+import { AddProjectsSubProjectConnection } from '../../api/subProjects/specialActions/addProjectsSubProjectConnection';
+import { RemoveProjectsSubProjectConnection } from '../../api/subProjects/specialActions/RemoveProjectsSubProjectConnection';
 
-const { Text } = Typography;
+const { Text, Link } = Typography;
 
 const columns = [
     {
@@ -39,17 +40,15 @@ const columns = [
         key: 'priority',
     },
     {
-        estimated_duration: 'Estimated duration',
+        title: 'Estimated duration',
         dataIndex: 'estimated_duration',
         key: 'estimated_duration'
     },
-    /*
     {
-        title: 'Project',
-        dataIndex: 'project',
-        key: 'project'
+        title: 'Projects',
+        dataIndex: 'projects',
+        key: 'projects'
     },
-    */
     {
         title: '',
         dataIndex: 'operations',
@@ -69,18 +68,39 @@ const SubProjects: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalLoading, setIsModalLoading] = useState(false);
     const [modalSelectedSubProjectId, setModalSubSelectedProjectId] = useState('');
-    const [modalSelectedProjectId, setModalSelectedProjectId] = useState('');
+    const [modalSelectedAddProjects, setModalAddSelectedProjects] = useState([]);
+    const [modalRemoveSelectedProjects, setModalRemoveSelectedProjects] = useState([]);
+
+    useEffect(() => {
+        const selectedSubProject = subProjects.find(subProject => subProject.id === modalSelectedSubProjectId);
+
+        if (!selectedSubProject || !selectedSubProject.projects || selectedSubProject.projects.length === 0) return;
+
+        const options = selectedSubProject.projects.map((projectId : string) => {
+            return {
+                    label: getProjectName(projectId),
+                    value: projectId
+                }
+        });
+         
+        setModalAddSelectedProjects(options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [modalSelectedSubProjectId]);
 
     const getSubProjectName = (id : string) => subProjects.find(subProject => subProject.id === id)?.name;
+    const getProjectName = (id : string) => projects.find(project => project.id === id)?.name;
+
+    const onHandleModalSelectAddProjectIds = (value : any) => setModalAddSelectedProjects(value);
+    const onHandleModalSelectRemoveProjectIds = (value : any) => setModalRemoveSelectedProjects(value);
 
     const openModal = (subProjectId : string) => {
         setModalSubSelectedProjectId(subProjectId);
         setIsModalOpen(true);
     }
 
-    const onModalConfirm = () => {
+    const onModalAddProjects = () => {
         setIsModalLoading(true);
-        AddProjectSubProjectConnection(userId, modalSelectedSubProjectId, modalSelectedProjectId).then(response => {
+        AddProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalSelectedAddProjects).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error adding project to sub project`,
@@ -100,6 +120,37 @@ const SubProjects: React.FC = () => {
         }).catch(error => {
             api.error({
                 message: `Error adding project to sub project`,
+                description: error.toString(),
+                placement: 'bottom',
+                duration: 1.4
+            });
+            setIsModalOpen(false);
+        });
+        setIsModalLoading(false);
+    }
+
+    const onModalRemoveProjects = () => {
+        setIsModalLoading(true);
+        RemoveProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalRemoveSelectedProjects).then(response => {
+            if (response?.error) {
+                api.error({
+                    message: `Error removing project from sub project`,
+                    description: response.message,
+                    placement: 'bottom',
+                    duration: 1.4
+                });
+                return;
+            }
+            api.info({
+                message: `removed project from sub project`,
+                description: 'Succesfully removed project from sub project',
+                placement: 'bottom',
+                duration: 1.4
+            });
+            setIsModalOpen(false);
+        }).catch(error => {
+            api.error({
+                message: `Error removing project from sub project`,
                 description: error.toString(),
                 placement: 'bottom',
                 duration: 1.4
@@ -149,7 +200,7 @@ const SubProjects: React.FC = () => {
             status: <ProjectStatus status={subProject.status} />,
             priority: <Priority priority={subProject.priority} />,
             estimated_duration: <EstimatedDuration duration={subProject.estimated_duration} />,
-            /* project: <Link to={`/project/${subProject.project_id}`}>{getProjectName(subProject.project_id)}</Link>, */
+            projects: subProject.projects && subProject.projects.map((id : string) => (<Link style={{paddingLeft: '8px', paddingRight: '8px'}} href={`/project/${id}`}>{getProjectName(id)}</Link>)), 
             operations: (
                 <div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Button style={{padding:'8px'}} type="link" onClick={() => openModal(subProject.id)}><SettingOutlined /></Button>
@@ -178,19 +229,53 @@ const SubProjects: React.FC = () => {
     {contextHolder}
         <Table size="small" bordered columns={columns} dataSource={subProjectsData} />
         <Modal
-            title={`Add project to ${getSubProjectName(modalSelectedSubProjectId)}`}
+            title={`Sub project ${getSubProjectName(modalSelectedSubProjectId)} settings`}
             open={isModalOpen}
-            onOk={onModalConfirm}
             confirmLoading={isModalLoading}
             onCancel={() => setIsModalOpen(false)}
+            footer={null}
         > 
-            <Text style={{paddingBottom: '16px'}}>What project do you want to add {getSubProjectName(modalSelectedSubProjectId)} to?</Text>
-            <Select
-            style={{width: '100%', marginTop: '16px', marginBottom: '8px'}}
-            options={projectOptions}
-            onChange={(value : string) => setModalSelectedProjectId(value)}
-            value={modalSelectedProjectId}
-            />
+        <Row>
+            <Col span={24}>
+                <Card style={{marginBottom: '24px', width: '100%'}}>
+                    <Text>What projects do you want to add to {getSubProjectName(modalSelectedSubProjectId)}?</Text>
+                    <Select
+                        style={{width: '100%', marginTop: '8px'}}
+                        mode="multiple"
+                        options={projectOptions}
+                        onChange={onHandleModalSelectAddProjectIds}
+                        value={modalSelectedAddProjects}
+                    />
+                    <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '16px'}}>
+                        <Button onClick={onModalAddProjects} type="primary">Add Project</Button>
+                    </div>
+                </Card>
+            </Col>
+        </Row>
+        <Row>
+            <Col span={24}>
+                <Card style={{width: '100%'}}>
+                    <Text>What projects do you want to remove from {getSubProjectName(modalSelectedSubProjectId)}?</Text>
+                    <Select
+                        style={{width: '100%', marginTop: '8px'}}
+                        mode="multiple"
+                        options={projectOptions}
+                        onChange={onHandleModalSelectRemoveProjectIds}
+                        value={modalRemoveSelectedProjects}
+                    />
+                    <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '16px'}}>
+                        <Button onClick={onModalRemoveProjects} danger>Remove Projects</Button>
+                    </div>
+                </Card>
+            </Col>
+        </Row>
+        <Row>
+            <Col span={24}>
+                <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '24px'}}>
+                <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+                </div>
+            </Col>
+        </Row>
     </Modal>
     </>
 }

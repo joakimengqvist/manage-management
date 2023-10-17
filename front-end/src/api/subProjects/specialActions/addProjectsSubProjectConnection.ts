@@ -1,8 +1,8 @@
 import { ENDPOINTS } from "../../endpoints";
 
-export const AddProjectSubProjectConnection = async (userId : string, subProjectId : string, projectId : string) => {
+export const AddProjectsSubProjectConnection = async (userId : string, subProjectId : string, projectIds : Array<string>) => {
     const payload = {
-      project_id: projectId,
+      project_ids: projectIds,
       sub_project_id: subProjectId,
     };
 
@@ -16,7 +16,7 @@ export const AddProjectSubProjectConnection = async (userId : string, subProject
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch(ENDPOINTS.AddProjectSubProjectConnection, body)
+    const response = await fetch(ENDPOINTS.AddProjectsSubProjectConnection, body)
       .then(response => { 
         return response.json()
       })

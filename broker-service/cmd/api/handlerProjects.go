@@ -31,9 +31,9 @@ type NewProject struct {
 	Status string `json:"status"`
 }
 
-type ProjectToSubProject struct {
-	ProjectId    string `json:"project_id"`
-	SubProjectId string `json:"sub_project_id"`
+type ProjectsToSubProject struct {
+	ProjectIds   []string `json:"project_ids"`
+	SubProjectId string   `json:"sub_project_id"`
 }
 
 // -------------------------------------------
@@ -423,8 +423,8 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 // --- START OF ADD PROJECTS SUB PROJECT CONNECTION  --
 // ----------------------------------------------------
 
-func (app *Config) AddProjectSubProjectConnection(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectToSubProject
+func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ProjectsToSubProject
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -436,7 +436,7 @@ func (app *Config) AddProjectSubProjectConnection(w http.ResponseWriter, r *http
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/add-project-sub-project-connection", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://project-service/project/add-projects-sub-project-connection", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -458,7 +458,7 @@ func (app *Config) AddProjectSubProjectConnection(w http.ResponseWriter, r *http
 		app.errorJSON(w, errors.New("status unauthorized - update sub project"))
 		return
 	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling authentication service - update sub project"))
+		app.errorJSON(w, errors.New("error calling project service - update sub project"))
 		return
 	}
 
@@ -491,8 +491,8 @@ func (app *Config) AddProjectSubProjectConnection(w http.ResponseWriter, r *http
 // -- START OF REMOVE PROJECTS SUB PROJECT CONNECTION  --
 // ------------------------------------------------------
 
-func (app *Config) RemoveProjectSubProjectConnection(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectToSubProject
+func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ProjectsToSubProject
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -504,7 +504,7 @@ func (app *Config) RemoveProjectSubProjectConnection(w http.ResponseWriter, r *h
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-project-sub-project-connection", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://project-service/project/delete-projects-sub-project-connection", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

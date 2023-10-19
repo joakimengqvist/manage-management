@@ -10,15 +10,15 @@ run yarn install in the front-end folder, and then simply run make start in proj
 Go micro services
 
 ### services
-Broker-service (API service)
+* Broker-service (API service)
 
-Authentication-service
-Project-service
-External-companies-service
-Logger-service
-Mail-service
-Economics-service
-Notes-service
-Listener-service
+* Authentication-service
+* Project-service
+* External-companies-service
+* Logger-service
+* Mail-service
+* Economics-service
+* Notes-service
+* Listener-service
 
 

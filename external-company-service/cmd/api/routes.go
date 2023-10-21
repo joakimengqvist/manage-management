@@ -26,6 +26,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/create-external-company", app.CreateExternalCompany)
 	mux.Get("/get-all-external-companies", app.GetAllExternalCompanies)
 	mux.Post("/get-external-company-by-id", app.GetExternalCompanyById)
+	mux.Post("/update-external-company", app.UpdateExternalCompany)
 
 	mux.Post("/append-invoice", app.GetExternalCompanyById)
 	mux.Post("/remove-invoice", app.GetExternalCompanyById)

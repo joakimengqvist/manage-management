@@ -102,14 +102,9 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create project note successful"
-	payload.Data = jsonFromService.Data
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create project note successfully [/notes/create-project-note]", Name: "[broker-service] - Successfully created project note"})
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project note successfully [/notes/create-project-note]", Name: "[broker-service] - Successfully created project note"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -173,14 +168,9 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update project note successful"
-	payload.Data = jsonFromService.Data
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated project note successfully [/notes/update-project-note]", Name: "[broker-service] - Successfully updated project note"})
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated project note successfully [/notes/update-project-note]", Name: "[broker-service] - Successfully updated project note"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -245,13 +235,8 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get project note by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project note by id successfully [/notes/get-project-note-by-id]", Name: "[broker-service] - Successfully fetched project note"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-project-note-by-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -305,7 +290,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 		return
 	}
 
-	var jsonFromService []Note
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -313,7 +298,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -368,7 +353,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	var jsonFromService []Note
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -376,7 +361,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -426,13 +411,16 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get project note by id successful"
-	payload.Data = nil
+	var jsonFromService jsonResponse
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------

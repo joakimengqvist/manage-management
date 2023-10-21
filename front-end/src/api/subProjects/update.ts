@@ -1,10 +1,33 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const updateSubProject = async (userId : string, id : string, name : string, status : string) => {
+export const updateSubProject = async (
+  userId : string,
+  id : string,
+  name : string,
+  status : string,
+  description : string,
+  priority : number,
+  startDate : string,
+  dueDate : string,
+  estimatedDuration : number,
+  notes : string[],
+  invoices : string[],
+  incomes : string[],
+  expenses : string[],
+) => {
     const payload = {
       id: id,
       name: name,
-      status: status
+      status: status,
+      description: description,
+      priority: priority,
+      start_date: startDate,
+      due_date: dueDate,
+      estimated_duration: estimatedDuration,
+      notes: notes,
+      invoices: invoices,
+      incomes: incomes,
+      expenses: expenses,
     };
 
     const headers = new Headers();

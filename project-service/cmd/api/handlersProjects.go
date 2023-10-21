@@ -208,24 +208,25 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnedProject := data.Project{
-		ID:        project.ID,
-		Name:      project.Name,
-		Status:    project.Status,
-		Notes:     app.parsePostgresArray(project.Notes),
-		CreatedAt: project.CreatedAt,
-		CreatedBy: project.CreatedBy,
-		UpdatedAt: project.UpdatedAt,
-		UpdatedBy: project.UpdatedBy,
+		ID:          project.ID,
+		Name:        project.Name,
+		Status:      project.Status,
+		Notes:       app.parsePostgresArray(project.Notes),
+		SubProjects: app.parsePostgresArray(project.SubProjects),
+		CreatedAt:   project.CreatedAt,
+		CreatedBy:   project.CreatedBy,
+		UpdatedAt:   project.UpdatedAt,
+		UpdatedBy:   project.UpdatedBy,
 	}
 
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Fetched project: %s", project.Name),
-		Data:    project,
+		Data:    returnedProject,
 	}
 
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Successfuly fetched project"})
-	app.writeJSON(w, http.StatusAccepted, returnedProject)
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // -------------------------------------------
@@ -262,21 +263,27 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 		project := *projectPtr
 
 		returnProject := data.Project{
-			ID:        project.ID,
-			Name:      project.Name,
-			Status:    project.Status,
-			Notes:     app.parsePostgresArray(project.Notes),
-			CreatedAt: project.CreatedAt,
-			CreatedBy: project.CreatedBy,
-			UpdatedAt: project.UpdatedAt,
-			UpdatedBy: project.UpdatedBy,
+			ID:          project.ID,
+			Name:        project.Name,
+			Status:      project.Status,
+			Notes:       app.parsePostgresArray(project.Notes),
+			SubProjects: app.parsePostgresArray(project.SubProjects),
+			CreatedAt:   project.CreatedAt,
+			CreatedBy:   project.CreatedBy,
+			UpdatedAt:   project.UpdatedAt,
+			UpdatedBy:   project.UpdatedBy,
 		}
 
 		projectSlice = append(projectSlice, returnProject)
 	}
 
-	app.logItemViaRPC(w, projectSlice, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Successfuly fetched all projects"})
-	app.writeProductJSONFromSlice(w, http.StatusAccepted, projectSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all projects",
+		Data:    projectSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // -------------------------------------------
@@ -320,20 +327,27 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 		project := *projectPtr
 
 		returnedProject := data.Project{
-			ID:        project.ID,
-			Name:      project.Name,
-			Status:    project.Status,
-			Notes:     app.parsePostgresArray(project.Notes),
-			CreatedAt: project.CreatedAt,
-			CreatedBy: project.CreatedBy,
-			UpdatedAt: project.UpdatedAt,
-			UpdatedBy: project.UpdatedBy,
+			ID:          project.ID,
+			Name:        project.Name,
+			Status:      project.Status,
+			Notes:       app.parsePostgresArray(project.Notes),
+			SubProjects: app.parsePostgresArray(project.SubProjects),
+			CreatedAt:   project.CreatedAt,
+			CreatedBy:   project.CreatedBy,
+			UpdatedAt:   project.UpdatedAt,
+			UpdatedBy:   project.UpdatedBy,
 		}
 
 		projectSlice = append(projectSlice, returnedProject)
 	}
 
-	app.writeProductJSONFromSlice(w, http.StatusAccepted, projectSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all projects by ids",
+		Data:    projectSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // -------------------------------------------
@@ -367,8 +381,14 @@ func (app *Config) AddProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	payload := jsonResponse{
+		Error:   false,
+		Message: "added note to project project",
+		Data:    nil,
+	}
+
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/create-project-note]", Name: "[project-service] - Successful added project note"})
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // -------------------------------------------
@@ -405,6 +425,12 @@ func (app *Config) RemoveProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	payload := jsonResponse{
+		Error:   false,
+		Message: "deletet note from project project",
+		Data:    nil,
+	}
+
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/delete-project-note]", Name: "[project-service] - Successful deleted project note"})
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	app.writeJSON(w, http.StatusAccepted, payload)
 }

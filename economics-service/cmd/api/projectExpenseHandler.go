@@ -39,9 +39,6 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// HERE
-	// append in invoice history, and invoice in external companies
-
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Created expense %s", requestPayload.Description),
@@ -50,14 +47,6 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ----------------------------------------------------
-// --------- END OF CREATE PROJECT EXPENSE  -----------
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// ---- START OF GET ALL PROJECT EXPENSES -------------
-// ----------------------------------------------------
 
 func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request) {
 
@@ -107,8 +96,14 @@ func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request)
 		expensesSlice = append(expensesSlice, returnedSlice)
 	}
 
-	app.logItemViaRPC(w, expensesSlice, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[authentication-service] - Successfuly fetched all privileges"})
-	app.writeExpensesJSONFromSlice(w, http.StatusAccepted, expensesSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "fetched all exepnses",
+		Data:    expensesSlice,
+	}
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[authentication-service] - Successfuly fetched all privileges"})
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -172,7 +167,13 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 		expensesSlice = append(expensesSlice, returnedSlice)
 	}
 
-	app.writeExpensesJSONFromSlice(w, http.StatusAccepted, expensesSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all expenses by project id",
+		Data:    expensesSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -230,7 +231,7 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Fetched expense successfull - ID: %s", expense.ExpenseID),
+		Message: fmt.Sprintf("Fetched expense by id successfull: %s", expense.ExpenseID),
 		Data:    returnedUser,
 	}
 

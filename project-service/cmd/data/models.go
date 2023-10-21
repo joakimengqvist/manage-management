@@ -31,25 +31,27 @@ type NewProject struct {
 }
 
 type Project struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Status    string    `json:"status"`
-	Notes     []string  `json:"notes"`
-	UpdatedAt time.Time `json:"updated_at"`
-	UpdatedBy string    `json:"updated_by"`
-	CreatedAt time.Time `json:"created_at"`
-	CreatedBy string    `json:"created_by"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Status      string    `json:"status"`
+	Notes       []string  `json:"notes"`
+	SubProjects []string  `json:"sub_projects"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	UpdatedBy   string    `json:"updated_by"`
+	CreatedAt   time.Time `json:"created_at"`
+	CreatedBy   string    `json:"created_by"`
 }
 
 type PostgresProject struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Status    string    `json:"status"`
-	Notes     string    `json:"notes"`
-	UpdatedAt time.Time `json:"updated_at"`
-	UpdatedBy string    `json:"updated_by"`
-	CreatedAt time.Time `json:"created_at"`
-	CreatedBy string    `json:"created_by"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Status      string    `json:"status"`
+	Notes       string    `json:"notes"`
+	SubProjects string    `json:"sub_projects"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	UpdatedBy   string    `json:"updated_by"`
+	CreatedAt   time.Time `json:"created_at"`
+	CreatedBy   string    `json:"created_by"`
 }
 
 type NewSubProject struct {
@@ -112,7 +114,7 @@ func (u *Project) GetAllProjects() ([]*PostgresProject, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, name, status, notes, created_at, created_by, updated_at, updated_by
+	query := `select id, name, status, notes, sub_projects, created_at, created_by, updated_at, updated_by
 	from projects order by name`
 
 	rows, err := db.QueryContext(ctx, query)
@@ -130,6 +132,7 @@ func (u *Project) GetAllProjects() ([]*PostgresProject, error) {
 			&project.Name,
 			&project.Status,
 			&project.Notes,
+			&project.SubProjects,
 			&project.CreatedAt,
 			&project.CreatedBy,
 			&project.UpdatedAt,
@@ -151,7 +154,7 @@ func GetProjectsByIds(ids string) ([]*PostgresProject, error) {
 	defer cancel()
 
 	query := `
-        select id, name, status, notes, created_at, created_by, updated_at, updated_by
+        select id, name, status, notes, sub_projects, created_at, created_by, updated_at, updated_by
         from projects
         where id = ANY($1)
 		order by name
@@ -172,6 +175,7 @@ func GetProjectsByIds(ids string) ([]*PostgresProject, error) {
 			&project.Name,
 			&project.Status,
 			&project.Notes,
+			&project.SubProjects,
 			&project.CreatedAt,
 			&project.CreatedBy,
 			&project.UpdatedAt,
@@ -192,7 +196,7 @@ func (u *Project) GetProjectById(id string) (*PostgresProject, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, name, status, notes, created_at, created_by, updated_at, updated_by from projects where id = $1`
+	query := `select id, name, status, notes, sub_projects, created_at, created_by, updated_at, updated_by from projects where id = $1`
 
 	var project PostgresProject
 	row := db.QueryRowContext(ctx, query, id)
@@ -202,6 +206,7 @@ func (u *Project) GetProjectById(id string) (*PostgresProject, error) {
 		&project.Name,
 		&project.Status,
 		&project.Notes,
+		&project.SubProjects,
 		&project.CreatedAt,
 		&project.UpdatedAt,
 	)
@@ -462,7 +467,7 @@ func (u *SubProject) InsertSubProject(project PostgresSubProject, createdByUserI
 	var newID string
 	stmt := `insert into sub_projects (name, description, status, priority, start_date, due_date, estimated_duration, 
 		notes, created_at, created_by, updated_at, updated_by, invoices, incomes, expenses)
-		values ($1, $2, $3, $4, $5, $6, $7,	$8, $9, $10, $11, $12, $13, $14, $15, $16) returning id`
+		values ($1, $2, $3, $4, $5, $6, $7,	$8, $9, $10, $11, $12, $13, $14, $15) returning id`
 
 	err := db.QueryRowContext(ctx, stmt,
 		project.Name,

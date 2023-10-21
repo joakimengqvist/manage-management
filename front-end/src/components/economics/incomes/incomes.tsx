@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
-import { getAllProjectIncomes } from '../../../api/economics/incomes/getAllProjectIncomes';
+import { getAllProjectIncomes } from '../../../api/economics/incomes/getAll';
 import { ZoomInOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjectIncomesByProjectId } from '../../../api/economics/incomes/getAllProjectIncomesByProjectId';
+import { getAllProjectIncomesByProjectId } from '../../../api/economics/incomes/getAllByProjectId';
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
@@ -132,7 +132,7 @@ const Income = ({ project } : { project: string }) => {
     useEffect(() => {
         if (loggedInUserId && project === 'all') {
             getAllProjectIncomes(loggedInUserId).then(response => {
-                setIncomes(response)
+                setIncomes(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })

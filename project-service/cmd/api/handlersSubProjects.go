@@ -70,6 +70,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	response, err := app.Models.SubProject.InsertSubProject(SubProject, userId)
 	if err != nil {
+		fmt.Println("ERROR InsertSubProject", err)
 		app.errorJSON(w, errors.New("could not create subProject: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -256,11 +257,11 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Fetched subProject: %s", subProject.Name),
-		Data:    subProject,
+		Data:    returnedSubProject,
 	}
 
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get subProject by id [/auth/get-sub-project-by-id]", Name: "[subProject-service] - Successfuly fetched subProject"})
-	app.writeJSON(w, http.StatusAccepted, returnedSubProject)
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // -----------------------------------------------
@@ -317,8 +318,13 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 		subProjectSlice = append(subProjectSlice, returnSubProject)
 	}
 
-	app.logItemViaRPC(w, subProjectSlice, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[subProject-service] - Successfuly fetched all projects"})
-	app.writeSubProductJSONFromSlice(w, http.StatusAccepted, subProjectSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all subProjects",
+		Data:    subProjectSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -382,7 +388,13 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 		subProjectSlice = append(subProjectSlice, returnedSubProject)
 	}
 
-	app.writeSubProductJSONFromSlice(w, http.StatusAccepted, subProjectSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all subProjects by ids",
+		Data:    subProjectSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -420,7 +432,13 @@ func (app *Config) AddSubProjectNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "appended sub project note",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // -----------------------------------------------
@@ -457,5 +475,11 @@ func (app *Config) RemoveSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "deleted sub project note",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }

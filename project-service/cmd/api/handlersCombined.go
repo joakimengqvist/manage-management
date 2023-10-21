@@ -51,7 +51,13 @@ func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *htt
 		return
 	}
 
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Added projects to sub project",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -90,7 +96,13 @@ func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *
 		return
 	}
 
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Removed projects to sub project",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -128,7 +140,13 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 		return
 	}
 
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Added sub projects to project",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -166,7 +184,13 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 		return
 	}
 
-	app.writeJSON(w, http.StatusAccepted, requestPayload)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Removed sub projects to project",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------

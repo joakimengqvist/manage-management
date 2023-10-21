@@ -17,7 +17,7 @@ const TestingEndpoints: React.FC = () => {
         setSentPayload("empty")
         testBroker()
         .then(response => {
-            setReceivedPayload(JSON.stringify(response, undefined, 4))
+            setReceivedPayload(JSON.stringify(response.data, undefined, 4))
         })
         .catch(error => {
             setReceivedPayload(error)
@@ -28,7 +28,7 @@ const TestingEndpoints: React.FC = () => {
         setSentPayload('to: you@example.com, from: me@example.com, subject: "test email", message: "Hello world"')
         sendEmail(userId, "you@example.com", "me@example.com", "test email","Hello world")
         .then(response => {
-            setReceivedPayload(JSON.stringify(response, undefined, 4))
+            setReceivedPayload(JSON.stringify(response.data, undefined, 4))
         })
         .catch(error => {
             setReceivedPayload(error)
@@ -38,7 +38,7 @@ const TestingEndpoints: React.FC = () => {
     const testGetAllUsersButton = () => {
         getAllUsers(userId)
         .then(response => {
-        setReceivedPayload(JSON.stringify(response, undefined, 4))
+        setReceivedPayload(JSON.stringify(response.data, undefined, 4))
         })
         .catch(error => {
         setReceivedPayload(error)
@@ -48,7 +48,7 @@ const TestingEndpoints: React.FC = () => {
     const testGetAllPrivilegesButton = () => {
         getAllPrivileges(userId)
         .then(response => {
-        setReceivedPayload(JSON.stringify(response, undefined, 4))
+        setReceivedPayload(JSON.stringify(response.data, undefined, 4))
         })
         .catch(error => {
         setReceivedPayload(error)
@@ -58,7 +58,7 @@ const TestingEndpoints: React.FC = () => {
     const testGetAllProjectsButton = () => {
         getAllProjects(userId)
         .then(response => {
-        setReceivedPayload(JSON.stringify(response, undefined, 4))
+        setReceivedPayload(JSON.stringify(response.data, undefined, 4))
         })
         .catch(error => {
         setReceivedPayload(error)

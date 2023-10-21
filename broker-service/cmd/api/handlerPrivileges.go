@@ -54,7 +54,7 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
 	defer response.Body.Close()
 
-	var jsonFromService []PrivilegePayload
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -127,14 +127,9 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create privilege successful"
-	payload.Data = jsonFromService.Data
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create privilege successfully [/auth/create-privilege]", Name: "[broker-service] - Successfully created privilege"})
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create privilege successfully [/auth/create-privilege]", Name: "[broker-service] - Successfully created privilege"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -199,13 +194,8 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get privilege by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get privilege by id successfully [/auth/get-privilege-by-id]", Name: "[broker-service] - Successfully fetched privilege"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get privilege by id successfully [/auth/get-privilege-by-id]", Name: "[broker-service] - Successfully fetched privilege"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -269,14 +259,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update privilege successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated privilege successfully [/auth/update-privilege]", Name: "[broker-service] - Successfully updated privilege"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -340,14 +323,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "delete privilege successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete privilege successfully [/auth/delete-privilege]", Name: "[broker-service] - Successfully deleteted privilege"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------

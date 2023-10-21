@@ -52,8 +52,13 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 		privilegesSlice = append(privilegesSlice, returnedSlice)
 	}
 
-	app.logItemViaRPC(w, privilegesSlice, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[authentication-service] - Successfuly fetched all privileges"})
-	app.writePrivilegesJSONFromSlice(w, http.StatusAccepted, privilegesSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Get all privileges",
+		Data:    privilegesSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {

@@ -30,8 +30,7 @@ const CreatePrivilege: React.FC = () => {
                       return
                   }
                 api.info({
-                    message: `Created privilege`,
-                    description: 'Succesfully created privilege.',
+                    message: response.message,
                     placement: 'bottom',
                     duration: 1.4
                   });

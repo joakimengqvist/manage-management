@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
 import { ExpenseNote } from '../../../types/notes';
 import { ExpenseObject } from '../../../types/expense'
-import { getExpenseById } from '../../../api/economics/expenses/getExpenseById';
+import { getExpenseById } from '../../../api/economics/expenses/getById';
 import { getAllExpenseNotesByExpenseId } from '../../../api/notes/expense/getAllByIncomeId';
 import { createExpenseNote } from '../../../api/notes/expense/create'
 import CreateNote from '../../notes/CreateNote';
@@ -15,6 +15,7 @@ import Notes from '../../notes/Notes'
 import { NOTE_TYPE } from '../../../enums/notes';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { ExpenseAndIncomeStatus } from '../../tags/ExpenseAndIncomeStatus';
+import UpdateProjectExpense from './updateProjectExpense';
 
 const { Text, Title, Link } = Typography;
 
@@ -25,6 +26,7 @@ const Expense: React.FC = () => {
     const [expenseNotes, setExpenseNotes] = useState<Array<ExpenseNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
+    const [editing, setEditing] = useState(false);
     const users = useSelector((state : State) => state.application.users);
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const projects = useSelector((state : State) => state.application.projects);
@@ -39,7 +41,7 @@ const Expense: React.FC = () => {
                 console.log('error fetching', error)
             })
             getAllExpenseNotesByExpenseId(loggedInUser.id, expenseId).then(response => {
-                setExpenseNotes(response)
+                setExpenseNotes(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
@@ -68,10 +70,9 @@ const Expense: React.FC = () => {
         email: loggedInUser.email
 
     }
-    createExpenseNote(user, expenseId, noteTitle, note).then(() => {
+    createExpenseNote(user, expenseId, noteTitle, note).then((response) => {
         api.info({
-            message: `Created note`,
-            description: "Succesfully created note.",
+            message: response.message,
             placement: "bottom",
             duration: 1.2,
         });
@@ -92,6 +93,7 @@ const Expense: React.FC = () => {
             {contextHolder}
             
             <Col span={15}>
+                {!editing && (
                 <Row>
                     <Col span={24}>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -100,11 +102,15 @@ const Expense: React.FC = () => {
                                 {expense.description}<br />
                                 {formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}<br />
                             </span>
-                            <Button primary>Edit expense info</Button>
+                            <Button primary onClick={() => setEditing(true)}>Edit expense info</Button>
                         </div>
                     </Col>
                     <Divider style={{marginTop: '16px', marginBottom: '16px'}}/>
                 </Row>
+                )}
+                {editing ? (
+                    <UpdateProjectExpense expense={expense} setEditing={setEditing} />
+                ) : (
                 <Row>
                     <Col span={8}  style={{padding: '0px 12px 12px 0px'}}>
                         <Text strong>Category</Text><br/>
@@ -137,6 +143,7 @@ const Expense: React.FC = () => {
                     </Col>
                     <Divider style={{marginTop: '8px'}}/>
                 </Row>
+                )}
             </Col>
             <Col span={1}></Col>
             <Col span={8}>

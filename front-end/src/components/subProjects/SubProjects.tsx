@@ -111,8 +111,7 @@ const SubProjects: React.FC = () => {
                 return;
             }
             api.info({
-                message: `added project to sub project`,
-                description: 'Succesfully added project to sub project',
+                message: response.message,
                 placement: 'bottom',
                 duration: 1.4
             });
@@ -142,8 +141,7 @@ const SubProjects: React.FC = () => {
                 return;
             }
             api.info({
-                message: `removed project from sub project`,
-                description: 'Succesfully removed project from sub project',
+                message: response.message,
                 placement: 'bottom',
                 duration: 1.4
             });
@@ -173,8 +171,7 @@ const SubProjects: React.FC = () => {
                     return
                 }
                 api.info({
-                    message: `Deleted subProject`,
-                    description: 'Succesfully deleted sub project.',
+                    message: response.message,
                     placement: 'bottom',
                     duration: 1.4
                   });

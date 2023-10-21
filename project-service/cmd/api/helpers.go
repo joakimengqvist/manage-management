@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"project-service/cmd/data"
 	"strings"
 )
 
@@ -54,52 +53,6 @@ func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header
 	_, err = w.Write(out)
 	if err != nil {
 		log.Println("WRITE HEADER", err)
-		return err
-	}
-
-	return nil
-}
-
-func (app *Config) writeProductJSONFromSlice(w http.ResponseWriter, status int, data []data.Project, headers ...http.Header) error {
-
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			w.Header()[key] = value
-		}
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(status)
-	_, err = w.Write(out)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (app *Config) writeSubProductJSONFromSlice(w http.ResponseWriter, status int, data []data.SubProject, headers ...http.Header) error {
-
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			w.Header()[key] = value
-		}
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(status)
-	_, err = w.Write(out)
-	if err != nil {
 		return err
 	}
 

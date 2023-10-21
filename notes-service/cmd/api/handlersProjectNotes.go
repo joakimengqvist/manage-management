@@ -197,8 +197,13 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.logItemViaRPC(w, noteSlice, RPCLogData{Action: "Get all project notes by project id [/notes/get-all-notes-by-project-id]", Name: "[notes-service] - Successfuly fetched all notes by project id"})
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "get all project notes by project id",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------
@@ -256,8 +261,13 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.logItemViaRPC(w, noteSlice, RPCLogData{Action: "Get all project notes by project id [/notes/get-all-notes-by-project-id]", Name: "[notes-service] - Successfuly fetched all notes by project id"})
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "get all project notes by user id",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------

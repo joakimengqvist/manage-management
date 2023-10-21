@@ -94,14 +94,9 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create project successful"
-	payload.Data = jsonFromService.Data
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create project successfully [/project/create-project]", Name: "[broker-service]"})
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project successfully [/project/create-project]", Name: "[broker-service]"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -165,14 +160,9 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update project successful"
-	payload.Data = jsonFromService.Data
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated project successfully [/project/update-project]", Name: "[broker-service] - Successfully updated project"})
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated project successfully [/project/update-project]", Name: "[broker-service] - Successfully updated project"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -236,14 +226,9 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "delete project successful"
-	payload.Data = jsonFromService.Data
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete project successfully [/project/delete-project]", Name: "[broker-service] - Successfully deleteted project"})
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project successfully [/project/delete-project]", Name: "[broker-service] - Successfully deleteted project"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -308,13 +293,8 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get project by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project by id successfully [/project/get-project-by-id]", Name: "[broker-service] - Successfully fetched project"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project by id successfully [/project/get-project-by-id]", Name: "[broker-service] - Successfully fetched project"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -349,7 +329,7 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	defer response.Body.Close()
 
-	var jsonFromService []Project
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -403,7 +383,7 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	defer response.Body.Close()
 
-	var jsonFromService []Project
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -475,12 +455,7 @@ func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update sub project successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ------------------------------------------------------
@@ -543,12 +518,7 @@ func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update sub project successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ------------------------------------------------------

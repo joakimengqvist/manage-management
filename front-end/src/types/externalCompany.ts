@@ -17,7 +17,9 @@ export type ExternalCompany = {
 	bank_account_info: string,
 	tax_identification_number: string,
 	created_at: string
+	created_by: string
 	updated_at: string
+	updated_by: string
 	status: ExternalCompanyStatusTypes
 	assigned_projects: Array<string>
 	invoice_pending: Array<string>

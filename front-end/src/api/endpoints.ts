@@ -30,7 +30,7 @@ export enum ENDPOINTS {
     GetSubProjectById = "http://localhost:8080/project/get-sub-project-by-id",
     GetSubProjectsByIds = "http://localhost:8080/project/get-sub-projects-by-ids",
     GetAllSubProjects = "http://localhost:8080/project/get-all-sub-projects",
-    
+
     AddProjectsSubProjectConnection = "http://localhost:8080/project/add-projects-sub-project-connection",
     RemoveProjectsSubProjectConnection = "http://localhost:8080/project/delete-projects-sub-project-connection",
     AddSubProjectsProjectConnection = "http://localhost:8080/project/add-sub-projects-project-connection",
@@ -42,7 +42,7 @@ export enum ENDPOINTS {
     UpdateProjectNote = "http://localhost:8080/notes/update-project-note",
     GetAllProjectNotesByProjectId = "http://localhost:8080/notes/get-all-project-notes-by-project-id",
     GetAllProjectNotesByUserId = "http://localhost:8080/notes/get-all-project-notes-by-user-id",
-    DeleteProjectNote = "http://localhost:8080/notes/delete-project",
+    DeleteProjectNote = "http://localhost:8080/notes/delete-project-note",
 
     // PROJECT INCOMES
     CreateProjectIncome = "http://localhost:8080/economics/create-project-income",

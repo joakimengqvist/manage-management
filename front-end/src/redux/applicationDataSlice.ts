@@ -136,6 +136,7 @@ export const staticDataSlice = createSlice({
           privileges: [],
           users: [],
           projects: [],
+          subProjects: [],
           externalCompanies: [],
       }
       localStorage.setItem(applicationStateName, JSON.stringify(updatedData))

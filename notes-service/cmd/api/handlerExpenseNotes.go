@@ -134,7 +134,13 @@ func (app *Config) GetAllExpenseNotesByUserId(w http.ResponseWriter, r *http.Req
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all expense notes by user id successfull",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------
@@ -191,7 +197,13 @@ func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all expense notes by expense id successfull",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------

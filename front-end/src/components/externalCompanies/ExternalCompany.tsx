@@ -13,18 +13,24 @@ import Notes from '../notes/Notes';
 import { NOTE_TYPE } from '../../enums/notes';
 import { createExternalCompanyNote } from '../../api/notes/externalCompany/create';
 import { getAllExternalCompanyNotesByExternalCompanyId } from '../../api/notes/externalCompany/getAllByExternalCompanyId';
+import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
+import UpdateProjectExpense from './UpdateExternalCompany';
 
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 
 const ExternalCompanyDetails: React.FC = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
+    const users = useSelector((state : State) => state.application.users);
     const [externalCompanyNotes, setExternalCompanyNotes] = useState<Array<ExternalCompanyNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
+    const [editing, setEditing] = useState(false);
     const [externalCompany, setExternalCompany] = useState<null | ExternalCompany>(null);
     const { id } =  useParams(); 
     const externalCompanyId = id || '';
+
+    const getUserName = (userId : string) => users.find(user => user.id === userId).first_name;
 
     useEffect(() => {
         if (loggedInUser.id) {
@@ -34,7 +40,7 @@ const ExternalCompanyDetails: React.FC = () => {
                 console.log('error fetching', error)
             })
             getAllExternalCompanyNotesByExternalCompanyId(loggedInUser.id, externalCompanyId).then(response => {
-                setExternalCompanyNotes(response)
+                setExternalCompanyNotes(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
@@ -56,10 +62,9 @@ const ExternalCompanyDetails: React.FC = () => {
             email: loggedInUser.email
     
         }
-        createExternalCompanyNote(user, externalCompanyId, noteTitle, note).then(() => {
+        createExternalCompanyNote(user, externalCompanyId, noteTitle, note).then((response) => {
             api.info({
-                message: `Created note`,
-                description: "Succesfully created note.",
+                message: response.message,
                 placement: "bottom",
                 duration: 1.2,
             });
@@ -76,17 +81,22 @@ const ExternalCompanyDetails: React.FC = () => {
     return (<>
         <Card style={{ padding: 0}}>
             {contextHolder}
-            {externalCompany && (<>
+                {externalCompany && (
                     <Row>
                         <Col span={15}>
+                            {!editing && (
                             <Row>
                                 <Col span={24}>
                                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                         <Title style={{margin: '0px'}} level={4}>{externalCompany.company_name}</Title>
-                                        <Button primary>Edit company info</Button>
+                                        <Button primary onClick={() => setEditing(true)}>Edit company info</Button>
                                     </div>
                                 </Col>
                             </Row>
+                            )}
+                            {editing ? (
+                                <UpdateProjectExpense externalCompany={externalCompany} setEditing={setEditing} />
+                            ) : (
                             <Row>
                                 <Col span={7}  style={{padding: '0px 12px 12px 0px'}}>
                                     <Title style={{marginTop: '12px', marginBottom: '4px'}} level={5}>Address info</Title>
@@ -115,8 +125,23 @@ const ExternalCompanyDetails: React.FC = () => {
                                     <div style={{display: 'flex', marginBottom: '2px'}}>
                                         <Text strong style={{minWidth: '200px'}}>ID:</Text><Text>{externalCompany.id}</Text>
                                     </div>
+                                    <Title style={{marginTop: '12px', marginBottom: '4px'}} level={5}>Other info</Title>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Created at:</Text><Text>{formatDateTimeToYYYYMMDDHHMM(externalCompany.created_at)}</Text>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Created by:</Text><Link href={`/user/${externalCompany.created_by}`}>{getUserName(externalCompany.created_by)}</Link>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Updated at:</Text><Text>{formatDateTimeToYYYYMMDDHHMM(externalCompany.updated_at)}</Text>
+                                    </div>
+                                    <div style={{display: 'flex', marginBottom: '2px'}}>
+                                        <Text strong style={{minWidth: '200px'}}>Updated by:</Text><Link href={`/user/${externalCompany.created_by}`}>{getUserName(externalCompany.updated_by)}</Link>
+                                    </div>
+                                    
                                 </Col>
                             </Row>
+                            )}
                         </Col>
                        
                         <Col span={1}></Col>
@@ -137,7 +162,7 @@ const ExternalCompanyDetails: React.FC = () => {
                             </Card>
                         </Col>
                     </Row> 
-                </>)}
+                )}
         </Card>
     </>)
 

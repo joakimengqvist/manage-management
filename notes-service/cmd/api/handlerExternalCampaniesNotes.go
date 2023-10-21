@@ -134,7 +134,13 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched external company notes by user id",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // --------------------------------------------------------------------
@@ -191,7 +197,13 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched external company notes by external company id",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------------------------

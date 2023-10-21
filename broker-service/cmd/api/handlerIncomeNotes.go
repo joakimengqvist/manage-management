@@ -100,12 +100,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create income note successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -167,12 +162,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update income note successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -235,12 +225,7 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get income note by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -292,7 +277,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	var jsonFromService []IncomeNote
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -352,7 +337,7 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	var jsonFromService []IncomeNote
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -409,12 +394,15 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get income note by id successful"
-	payload.Data = nil
+	var jsonFromService jsonResponse
 
-	app.writeJSON(w, http.StatusAccepted, payload)
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------

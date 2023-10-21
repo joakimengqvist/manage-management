@@ -104,7 +104,13 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 		incomesSlice = append(incomesSlice, returnedSlice)
 	}
 
-	app.writeIncomesJSONFromSlice(w, http.StatusAccepted, incomesSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched incomes successfull",
+		Data:    incomesSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -167,7 +173,13 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 		incomesSlice = append(incomesSlice, returnedSlice)
 	}
 
-	app.writeIncomesJSONFromSlice(w, http.StatusAccepted, incomesSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("Fetched incomes by project id successfull: %s", requestPayload.ID),
+		Data:    incomesSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ----------------------------------------------------
@@ -226,7 +238,7 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Fetched income successfull - ID: %s", income.IncomeID),
+		Message: fmt.Sprintf("Fetched income by id successfull: %s", income.IncomeID),
 		Data:    returnedUser,
 	}
 

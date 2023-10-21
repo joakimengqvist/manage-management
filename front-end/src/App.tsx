@@ -39,6 +39,7 @@ import SubProjects from './routes/SubProjects';
 import SubProjectCreate from './routes/SubProjectCreate';
 import { getAllSubProjects } from './api/subProjects/getAll';
 import ProjectCreate from './routes/ProjectCreate';
+import SubProject from './routes/SubProject';
 
 const { Header, Sider, Content } = Layout;
 
@@ -65,19 +66,19 @@ const App: React.FC = () => {
 
     if (loggedInUserId && authenticated) {
       if (hasPrivilege(userPrivileges, PRIVILEGES.privilege_read)) {
-        getAllPrivileges(loggedInUserId).then(response => dispatch(fetchPrivileges(response))).catch(() => {})
+        getAllPrivileges(loggedInUserId).then(response => dispatch(fetchPrivileges(response.data))).catch(() => {})
       }
       if (hasPrivilege(userPrivileges, PRIVILEGES.user_read)) {
-        getAllUsers(loggedInUserId).then(response => dispatch(fetchUsers(response))).catch(() => {})
+        getAllUsers(loggedInUserId).then(response => dispatch(fetchUsers(response.data))).catch(() => {})
       }
       if (hasPrivilege(userPrivileges, PRIVILEGES.project_read)) {
-        getAllProjects(loggedInUserId).then(response => dispatch(fetchProjects(response))).catch(() => {})
+        getAllProjects(loggedInUserId).then(response => dispatch(fetchProjects(response.data))).catch(() => {})
       }
       if (hasPrivilege(userPrivileges, PRIVILEGES.sub_project_read)) {
-        getAllSubProjects(loggedInUserId).then(response => dispatch(fetchSubProjects(response))).catch(() => {})
+        getAllSubProjects(loggedInUserId).then(response => dispatch(fetchSubProjects(response.data))).catch(() => {})
       }
       if (hasPrivilege(userPrivileges, PRIVILEGES.external_company_read)) {
-        getAllExternalCompanies(loggedInUserId).then(response => dispatch(fetchExternalCompanies(response))).catch(() => {})
+        getAllExternalCompanies(loggedInUserId).then(response => dispatch(fetchExternalCompanies(response.data))).catch(() => {})
       }
     }
 }, [loggedInUserId])
@@ -112,7 +113,7 @@ const App: React.FC = () => {
 
             <Route path="/sub-projects" element={<SubProjects />} />
             <Route path="/create-sub-project" element={<SubProjectCreate />} />
-            <Route path="/create-sub-project/project-id/:projectId" element={<SubProjectCreate />} />
+            <Route path="/sub-project/:id" element={<SubProject />} />
 
             <Route path="/privileges" element={<Privileges />} />
             <Route path="/privilege/:id" element={<Privilege />} />

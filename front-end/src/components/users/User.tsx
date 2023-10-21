@@ -131,8 +131,8 @@ const User: React.FC = () => {
   useEffect(() => {
     if (loggedInUserId) {
       getAllProjectNotesByUserId(loggedInUserId, userId).then(response => {
-        if (response?.length) {
-          setProjectNotes(response);
+        if (response.data?.length) {
+          setProjectNotes(response.data);
         } else {
           setProjectNotes([]);
         }
@@ -141,8 +141,8 @@ const User: React.FC = () => {
       });
    
       getAllExpenseNotesByUserId(loggedInUserId, userId).then(response => {
-        if (response?.length) {
-          setExpenseNotes(response);
+        if (response.data?.length) {
+          setExpenseNotes(response.data);
         } else {
           setExpenseNotes([]);
         }
@@ -151,8 +151,8 @@ const User: React.FC = () => {
       });
 
       getAllIncomeNotesByUserId(loggedInUserId, userId).then(response => {
-        if (response?.length) {
-          setIncomeNotes(response);
+        if (response.data?.length) {
+          setIncomeNotes(response.data);
         } else {
           setIncomeNotes([]);
         }
@@ -162,8 +162,8 @@ const User: React.FC = () => {
 
     
       getAllExternalCompanyNotesByUserId(loggedInUserId, userId).then(response => {
-        if (response?.length) {
-          setExternalCompaniesNotes(response);
+        if (response.data?.length) {
+          setExternalCompaniesNotes(response.data);
         } else {
           setExternalCompaniesNotes([]);
         }
@@ -201,8 +201,7 @@ const User: React.FC = () => {
           return
         }
         api.info({
-          message: `Updated user`,
-          description: "Succesfully updated user.",
+          message: response.message,
           placement: "bottom",
           duration: 1.2,
         });
@@ -231,8 +230,7 @@ const User: React.FC = () => {
           return
         }
         api.info({
-          message: `Deleted user`,
-          description: "Succesfully deleted user.",
+          message: response.message,
           placement: "bottom",
           duration: 1.2,
         });

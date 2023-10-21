@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
-import { createProjectIncome } from '../../../api/economics/incomes/createProjectIncome';
+import { createProjectIncome } from '../../../api/economics/incomes/create';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
 
 const { Title, Text } = Typography;
@@ -86,8 +86,7 @@ const CreateProjectIncome: React.FC = () => {
                 return
             }
             api.info({
-                message: `Created project income`,
-                description: 'Succesfully created project income.',
+                message: response.message,
                 placement: 'bottom',
                 duration: 1.4
             });

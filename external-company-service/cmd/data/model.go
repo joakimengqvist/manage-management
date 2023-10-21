@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 )
@@ -43,8 +44,10 @@ type ExternalCompany struct {
 	BillingCurrency           string    `json:"billing_currency"`
 	BankAccountInfo           string    `json:"bank_account_info"`
 	TaxIdentificationNumber   string    `json:"tax_identification_number"`
-	CreatedAt                 time.Time `json:"created_at"`
-	UpdatedAt                 time.Time `json:"updated_at"`
+	CreatedAt                 time.Time `json:"created_at,omitempty"`
+	CreatedBy                 string    `json:"created_by,omitempty"`
+	UpdatedAt                 time.Time `json:"updated_at,omitempty"`
+	UpdatedBy                 string    `json:"updated_by,omitempty"`
 	Status                    string    `json:"status"`
 	AssignedProjects          []string  `json:"assigned_projects"`
 	InvoicePending            []string  `json:"invoice_pending"`
@@ -69,7 +72,9 @@ type ExternalCompanyPostgres struct {
 	BankAccountInfo           string    `json:"bank_account_info"`
 	TaxIdentificationNumber   string    `json:"tax_identification_number"`
 	CreatedAt                 time.Time `json:"created_at"`
+	CreatedBy                 string    `json:"created_by"`
 	UpdatedAt                 time.Time `json:"updated_at"`
+	UpdatedBy                 string    `json:"updated_by"`
 	Status                    string    `json:"status"`
 	AssignedProjects          string    `json:"assigned_projects"`
 	InvoicePending            string    `json:"invoice_pending"`
@@ -93,7 +98,9 @@ type NewExternalCompany struct {
 	BankAccountInfo           string    `json:"bank_account_info"`
 	TaxIdentificationNumber   string    `json:"tax_identification_number"`
 	CreatedAt                 time.Time `json:"created_at"`
+	CreatedBy                 string    `json:"created_by"`
 	UpdatedAt                 time.Time `json:"updated_at"`
+	UpdatedBy                 string    `json:"updated_by"`
 	Status                    string    `json:"status"`
 	AssignedProjects          string    `json:"assigned_projects"`
 	InvoicePending            string    `json:"invoice_pending"`
@@ -107,8 +114,8 @@ func InsertExternalCompany(company NewExternalCompany) (string, error) {
 
 	var newID string
 
-	stmt := `insert into external_companies (company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, updated_at, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+	stmt := `insert into external_companies (company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
 		RETURNING id`
 
 	err := db.QueryRowContext(ctx, stmt,
@@ -127,7 +134,9 @@ func InsertExternalCompany(company NewExternalCompany) (string, error) {
 		company.BankAccountInfo,
 		company.TaxIdentificationNumber,
 		time.Now(),
+		company.CreatedBy,
 		time.Now(),
+		company.CreatedBy,
 		company.Status,
 		company.AssignedProjects,
 		company.InvoicePending,
@@ -142,11 +151,73 @@ func InsertExternalCompany(company NewExternalCompany) (string, error) {
 	return newID, nil
 }
 
+func UpdateExternalCompany(p ExternalCompanyPostgres) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update external_companies set
+		company_name = $1,
+		company_registration_number = $2,
+		contact_person = $3,
+		contact_email = $4,
+		contact_phone = $5,
+		address = $6,
+		city = $7,
+		state_province = $8,
+		country = $9,
+		postal_code = $10,
+		payment_terms = $11,
+		billing_currency = $12,
+		bank_account_info = $13,
+		tax_identification_number = $14,
+		updated_at = $15,
+		updated_by = $16,
+		status = $17,
+		assigned_projects = $18,
+		invoice_pending = $19,
+		invoice_history = $20,
+		contractual_agreements = $21
+		where id = $22
+	`
+
+	_, err := db.ExecContext(ctx, stmt,
+		p.CompanyName,
+		p.CompanyRegistrationNumber,
+		p.ContactPerson,
+		p.ContactEmail,
+		p.ContactPhone,
+		p.Address,
+		p.City,
+		p.StateProvince,
+		p.Country,
+		p.PostalCode,
+		p.PaymentTerms,
+		p.BillingCurrency,
+		p.BankAccountInfo,
+		p.TaxIdentificationNumber,
+		time.Now(),
+		p.UpdatedBy,
+		p.Status,
+		p.AssignedProjects,
+		p.InvoicePending,
+		p.InvoiceHistory,
+		p.ContractualAgreements,
+		p.ID,
+	)
+
+	if err != nil {
+		fmt.Println("Error updating sub project", err)
+		return err
+	}
+
+	return nil
+}
+
 func GetAllExternalCompanies() ([]*ExternalCompanyPostgres, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, updated_at, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements
+	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements
 	from external_companies order by updated_at desc`
 
 	rows, err := db.QueryContext(ctx, query)
@@ -176,7 +247,9 @@ func GetAllExternalCompanies() ([]*ExternalCompanyPostgres, error) {
 			&company.BankAccountInfo,
 			&company.TaxIdentificationNumber,
 			&company.CreatedAt,
+			&company.CreatedBy,
 			&company.UpdatedAt,
+			&company.UpdatedBy,
 			&company.Status,
 			&company.AssignedProjects,
 			&company.InvoicePending,
@@ -198,7 +271,7 @@ func GetExternalCompanyById(id string) (*ExternalCompanyPostgres, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, updated_at, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements from external_companies where id = $1`
+	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements from external_companies where id = $1`
 
 	var company ExternalCompanyPostgres
 	row := db.QueryRowContext(ctx, query, id)
@@ -220,7 +293,9 @@ func GetExternalCompanyById(id string) (*ExternalCompanyPostgres, error) {
 		&company.BankAccountInfo,
 		&company.TaxIdentificationNumber,
 		&company.CreatedAt,
+		&company.CreatedBy,
 		&company.UpdatedAt,
+		&company.UpdatedBy,
 		&company.Status,
 		&company.AssignedProjects,
 		&company.InvoicePending,

@@ -2,7 +2,7 @@ import { PaymentStatusTypes } from "../components/tags/ExpenseAndIncomeStatus"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type IncomeObject = {
-	income_id: string
+	id: string
 	project_id: string
     income_date: any
 	income_category: string

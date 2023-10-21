@@ -62,8 +62,7 @@ const Privilege: React.FC = () => {
               }
                 setEditing(false)
                 api.info({
-                    message: `Updated privilege`,
-                    description: 'Succesfully updated privilege.',
+                    message: response.message,
                     placement: 'bottom',
                     duration: 1.4
                 });
@@ -91,8 +90,7 @@ const Privilege: React.FC = () => {
               return
             }
             api.info({
-              message: `Deleted privilege`,
-              description: "Succesfully deleted privilege.",
+              message: response.message,
               placement: "bottom",
               duration: 1.2,
             });

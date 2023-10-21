@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"external-company-service/cmd/data"
 	"io"
 	"log"
 	"net/http"
@@ -116,27 +115,4 @@ func (app *Config) parsePostgresArrayInteger(postgresArray string) []int {
 	}
 
 	return arrayInt
-}
-
-func (app *Config) writeExternalCompaniesJSONFromSlice(w http.ResponseWriter, status int, data []data.ExternalCompany, headers ...http.Header) error {
-
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			w.Header()[key] = value
-		}
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(status)
-	_, err = w.Write(out)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

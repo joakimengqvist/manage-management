@@ -129,12 +129,7 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create project expense successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -196,12 +191,7 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create project income successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -251,7 +241,7 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 		return
 	}
 
-	var jsonFromService []ProjectExpense
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -259,12 +249,7 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get expense by project id successful"
-	payload.Data = jsonFromService
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // --------------------------------------------------------
@@ -314,7 +299,7 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var jsonFromService []ProjectIncome
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -322,12 +307,7 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get incomes by project id successful"
-	payload.Data = jsonFromService
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // --------------------------------------------------------
@@ -360,7 +340,7 @@ func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request)
 
 	defer response.Body.Close()
 
-	var jsonFromService []ProjectExpense
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -401,7 +381,7 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 
 	defer response.Body.Close()
 
-	var jsonFromService []ProjectIncome
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -471,14 +451,7 @@ func (app *Config) UpdateProjectExpense(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update expense successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated expense successfully [/economics/update-expense]", Name: "[broker-service] - Successfully updated expense"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -540,14 +513,7 @@ func (app *Config) UpdateProjectIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update income successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated income successfully [/economics/update-income]", Name: "[broker-service] - Successfully updated income"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -610,12 +576,7 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get project expsense by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------------
@@ -678,12 +639,7 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get project income by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------------

@@ -5,7 +5,7 @@ import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd'
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
-import { getIncomeById } from '../../../api/economics/incomes/getIncomeById';
+import { getIncomeById } from '../../../api/economics/incomes/getById';
 import CreateNote from '../../notes/CreateNote';
 import { createIncomeNote } from '../../../api/notes/income/create';
 import { IncomeNote } from '../../../types/notes';
@@ -15,6 +15,7 @@ import { NOTE_TYPE } from '../../../enums/notes';
 import { getAllIncomeNotesByIncomeId } from '../../../api/notes/income/getAllByIncomeId';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { ExpenseAndIncomeStatus } from '../../tags/ExpenseAndIncomeStatus';
+import UpdateProjectIncome from './updateProjectIncom';
 
 const { Text, Title, Link } = Typography;
 
@@ -25,6 +26,7 @@ const Income: React.FC = () => {
     const [incomeNotes, setIncomeNotes] = useState<Array<IncomeNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
+    const [editing, setEditing] = useState(false);
     const users = useSelector((state : State) => state.application.users);
     const projects = useSelector((state : State) => state.application.projects);
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
@@ -39,7 +41,7 @@ const Income: React.FC = () => {
                 console.log('error fetching', error)
             })
             getAllIncomeNotesByIncomeId(loggedInUser.id, incomeId).then(response => {
-                setIncomeNotes(response)
+                setIncomeNotes(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
@@ -68,10 +70,9 @@ const Income: React.FC = () => {
             email: loggedInUser?.email
     
         }
-        createIncomeNote(user, incomeId, noteTitle, note).then(() => {
+        createIncomeNote(user, incomeId, noteTitle, note).then((response) => {
             api.info({
-                message: `Created note`,
-                description: "Succesfully created note.",
+                message:response.message,
                 placement: "bottom",
                 duration: 1.2,
             });
@@ -89,21 +90,25 @@ const Income: React.FC = () => {
             {income && (
             <Row>
             {contextHolder}
-            
             <Col span={15}>
-                <Row>
-                    <Col span={24} style={{marginBottom: '0px'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <span>
-                                <Link style={{fontSize: '16px'}}href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link><br />
-                                {income.description}<br />
-                                {formatDateTimeToYYYYMMDDHHMM(income.income_date)}<br />
-                            </span>
-                            <Button primary>Edit income info</Button>
-                        </div>
-                    </Col>
-                    <Divider style={{marginTop: '16px', marginBottom: '16px'}}/>
-                </Row>
+                {!editing && (
+                    <Row>
+                        <Col span={24} style={{marginBottom: '0px'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <span>
+                                    <Link style={{fontSize: '16px'}}href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link><br />
+                                    {income.description}<br />
+                                    {formatDateTimeToYYYYMMDDHHMM(income.income_date)}<br />
+                                </span>
+                                <Button onClick={() => setEditing(true)}>Edit income info</Button>
+                            </div>
+                        </Col>
+                        <Divider style={{marginTop: '16px', marginBottom: '16px'}}/>
+                    </Row>
+                )}
+                {editing ? (
+                    <UpdateProjectIncome income={income} setEditing={setEditing} />
+                ) : (
                 <Row>
                     <Col span={8}  style={{padding: '0px 12px 12px 0px'}}>
                         <Text strong>Category</Text><br/>
@@ -131,10 +136,11 @@ const Income: React.FC = () => {
                             <Text strong>Modified at</Text><br/>
                             {formatDateTimeToYYYYMMDDHHMM(income.modified_at)}<br/>
                             <Text strong>Income ID</Text><br/>
-                            {income.income_id}<br/>
+                            {income.id}<br/>
                     </Col>
                     <Divider style={{marginTop: '12px'}}/>
                 </Row>
+                )}
             </Col>
             <Col span={1}></Col>
             <Col span={8}>

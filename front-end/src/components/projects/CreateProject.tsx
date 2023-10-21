@@ -32,8 +32,7 @@ const CreateProject: React.FC = () => {
                     return
                 }
                 api.info({
-                    message: `Created project`,
-                    description: 'Succesfully created project.',
+                    message: response.message,
                     placement: 'bottom',
                     duration: 1.4
                   });

@@ -94,12 +94,7 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create external company note successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ----------------------------------------------------
@@ -161,12 +156,7 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update external company note successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ----------------------------------------------------
@@ -229,12 +219,7 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get external company note by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // --------------------------------------------------------------
@@ -284,11 +269,16 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 		return
 	}
 
-	var jsonFromService []ExternalCompanyNote
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
 		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -342,7 +332,7 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 		return
 	}
 
-	var jsonFromService []ExternalCompanyNote
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -399,12 +389,15 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get external company note by id successful"
-	payload.Data = nil
+	var jsonFromService jsonResponse
 
-	app.writeJSON(w, http.StatusAccepted, payload)
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ----------------------------------------------------

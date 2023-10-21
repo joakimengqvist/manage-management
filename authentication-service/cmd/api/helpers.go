@@ -1,7 +1,6 @@
 package main
 
 import (
-	"authentication/cmd/data"
 	"encoding/json"
 	"errors"
 	"io"
@@ -55,52 +54,6 @@ func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header
 	_, err = w.Write(out)
 	if err != nil {
 		log.Println("WRITE HEADER", err)
-		return err
-	}
-
-	return nil
-}
-
-func (app *Config) writeUsersJSONFromSlice(w http.ResponseWriter, status int, data []data.ReturnedUser, headers ...http.Header) error {
-
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			w.Header()[key] = value
-		}
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(status)
-	_, err = w.Write(out)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (app *Config) writePrivilegesJSONFromSlice(w http.ResponseWriter, status int, data []data.Privilege, headers ...http.Header) error {
-
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			w.Header()[key] = value
-		}
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(status)
-	_, err = w.Write(out)
-	if err != nil {
 		return err
 	}
 

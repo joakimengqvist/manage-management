@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Col, DatePicker, Row, Typography } from 'antd';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,16 +10,10 @@ import { subProjectStatusOptions } from '../economics/options';
 
 const { Title, Text } = Typography;
 
-interface CreateSubProject {
-    projectIdParam: string | undefined;
-}
-
-const CreateSubProject = (props : CreateSubProject) => {
-    const { projectIdParam } = props;
+const CreateSubProject = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('');
@@ -27,11 +21,6 @@ const CreateSubProject = (props : CreateSubProject) => {
     const [startDate, setStartDate] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [estimatedDuration, setEstimatedDuration] = useState(0);
-    const [projectId, setProjectId] = useState('');
-
-    useEffect(() => {
-        if (projectIdParam) setProjectId(projectIdParam);
-    }, [projectIdParam])
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
     const onHandleStatusChange = (value : any) => setStatus(value);
@@ -48,11 +37,6 @@ const CreateSubProject = (props : CreateSubProject) => {
         }
     }
 
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
-
     const onSubmit = () => {
         createSubProject(
             userId, 
@@ -63,7 +47,6 @@ const CreateSubProject = (props : CreateSubProject) => {
             startDate, 
             dueDate, 
             estimatedDuration, 
-            projectId, 
             [],
             [],
             [],
@@ -79,8 +62,7 @@ const CreateSubProject = (props : CreateSubProject) => {
                 return
             }
             api.info({
-                message: `Created subProject`,
-                description: 'Succesfully created subProject.',
+                message: response.message,
                 placement: 'bottom',
                 duration: 1.4
                 });
@@ -170,14 +152,6 @@ const CreateSubProject = (props : CreateSubProject) => {
                     ]}
                     onChange={(value) => setEstimatedDuration(Number(value))}
                     value={estimatedDuration}
-                />
-                <Text strong>Project id</Text>
-                <Select
-                    style={{width: '100%'}}
-                    options={projectOptions}
-                    disabled={Boolean(projectIdParam)}
-                    onChange={(value) => setProjectId(value)}
-                    value={projectId}
                 />
                 </Space>
                 </Col>

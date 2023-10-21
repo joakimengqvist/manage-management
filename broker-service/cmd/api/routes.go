@@ -99,6 +99,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/external-company/create-external-company", app.CreateExternalCompany)
 	mux.Get("/external-company/get-all-external-companies", app.GetAllExternalCompanies)
 	mux.Post("/external-company/get-external-company-by-id", app.GetExternalCompanyById)
+	mux.Post("/external-company/update-external-company", app.UpdateExternalCompany)
 
 	mux.Post("/email/send", app.SendEmail)
 

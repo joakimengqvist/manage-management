@@ -24,8 +24,10 @@ type ExternalCompany struct {
 	BillingCurrency           string    `json:"billing_currency"`
 	BankAccountInfo           string    `json:"bank_account_info"`
 	TaxIdentificationNumber   string    `json:"tax_identification_number"`
-	CreatedAt                 time.Time `json:"created_at"`
-	UpdatedAt                 time.Time `json:"updated_at"`
+	CreatedAt                 time.Time `json:"created_at,omitempty"`
+	CreatedBy                 string    `json:"created_by,omitempty"`
+	UpdatedAt                 time.Time `json:"updated_at,omitempty"`
+	UpdatedBy                 string    `json:"updated_by,omitempty"`
 	Status                    string    `json:"status"`
 	AssignedProjects          []string  `json:"assigned_projects"`
 	InvoicePending            []string  `json:"invoice_pending"`
@@ -88,17 +90,66 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create external company successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ----------------------------------------------------
 // ------ END OF CREATE EXTERNAL COMPANY --------------
 // ----------------------------------------------------
+
+func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request) {
+	var requestPayload ExternalCompany
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://external-company-service/update-external-company", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - update external company"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling economics service - update external company"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
 
 // ----------------------------------------------------
 // ------ START OF GET ALL EXTERNAL COMPANIES ---------
@@ -128,7 +179,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 
 	defer response.Body.Close()
 
-	var jsonFromService []ExternalCompany
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -200,12 +251,7 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get external company by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------------

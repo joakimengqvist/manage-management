@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { useSelector } from 'react-redux';
-import { Button, Input, Space, Card, notification, Select } from 'antd';
+import { Button, Input, Space, notification, Select } from 'antd';
 import { State } from '../../types/state';
-import { createExternalCompany } from '../../api/externalCompanies/create';
 import { externalCompanyOptions } from './options';
+import { updateExternalCompany } from '../../api/externalCompanies/update';
+import { ExternalCompany } from '../../types/externalCompany';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
-const CreateProjectExpense: React.FC = () => {
+const UpdateProjectExpense = ({ externalCompany, setEditing } : { externalCompany : ExternalCompany, setEditing : (open : boolean) => void }) => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const allProjects = useSelector((state: State) => state.application.projects);
@@ -33,6 +34,29 @@ const CreateProjectExpense: React.FC = () => {
     const [invoiceHistory, setInvoiceHistory] = useState<Array<string>>([]);
     const [contractualAgreements, setContractualAgreements] = useState<Array<string>>([]);
 
+    useEffect(() => {
+        setCompanyName(externalCompany.company_name);
+        setCompanyRegistrationNumber(externalCompany.company_registration_number);
+        setContactPerson(externalCompany.contact_person);
+        setContactEmail(externalCompany.contact_email);
+        setContactPhone(externalCompany.contact_phone);
+        setAddress(externalCompany.address);
+        setCity(externalCompany.city);
+        setStateProvince(externalCompany.state_province);
+        setCountry(externalCompany.country);
+        setPostalCode(externalCompany.postal_code);
+        setPaymentTerms(externalCompany.payment_terms);
+        setBillingCurrency(externalCompany.billing_currency);
+        setBankAccountInfo(externalCompany.bank_account_info);
+        setTaxIdentificationNumber(externalCompany.tax_identification_number);
+        setStatus(externalCompany.status);
+        setAssignedProjects(externalCompany.assigned_projects);
+        setInvoicePending(externalCompany.invoice_pending);
+        setInvoiceHistory(externalCompany.invoice_history);
+        setContractualAgreements(externalCompany.contractual_agreements);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const projectOptions = allProjects.map(project => {
         return { label: project.name, value: project.id}
       }
@@ -46,8 +70,9 @@ const CreateProjectExpense: React.FC = () => {
 
 
     const onSubmit = () => {
-        createExternalCompany(
+        updateExternalCompany(
             userId,
+            externalCompany.id,
             companyName,
             companyRegistrationNumber,
             contactPerson,
@@ -68,7 +93,7 @@ const CreateProjectExpense: React.FC = () => {
             invoiceHistory,
             contractualAgreements,
         ).then(response => {
-            if (response?.error || !response?.data) {
+            if (response?.error) {
                 api.error({
                     message: `Create external company failed`,
                     description: response.message,
@@ -93,33 +118,19 @@ const CreateProjectExpense: React.FC = () => {
         })
     };
 
-    const setMockedData = () => {
-        setCompanyName('Engqvist staff')
-        setCompanyRegistrationNumber(generateRandomNumberString());
-        setContactPerson('Joakim Engqvist');
-        setContactEmail('joakim@engqvist.se');
-        setContactPhone('0730522473');
-        setAddress('Luxgatan 8');
-        setCity('Stockholm');
-        setStateProvince('Stockholm');
-        setCountry('Sweden');
-        setPostalCode('11262');
-        setPaymentTerms('payment-terms-partner');
-        setBillingCurrency('SEK');
-        setBankAccountInfo(generateRandomStringIBAN());
-        setTaxIdentificationNumber(generateRandomNumberString());
-        setStatus('active');
-        setInvoicePending(['invoice-one', 'invoice-two'])
-        setInvoiceHistory(['invoice-one-history', 'invoice-two-history'])
-        setContractualAgreements(['contractualAgreements-one', 'contractualAgreements-two'])
-    }
-
   return (
-        <Card style={{ maxWidth: '1100px'}}>
+        <>
             {contextHolder}
-            <Title level={4}>Create external company</Title>
             <Row>
-                <Col span={6} style={{padding: '12px 12px 12px 0px'}}>
+                <Col span={24}>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px'}}>
+                        <Button onClick={() => setEditing(false)}>Close</Button>
+                        <Button type="primary" onClick={onSubmit}>Save</Button>
+                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={12} style={{padding: '12px 12px 12px 0px'}}>
                     <Space direction="vertical" style={{width: '100%'}}>
                         <Text strong>Company name</Text>
                         <Input
@@ -158,7 +169,7 @@ const CreateProjectExpense: React.FC = () => {
                         />
                         </Space>
                         </Col>
-                        <Col span={6} style={{padding: '12px 12px 12px 0px'}}>
+                        <Col span={12} style={{padding: '12px 12px 12px 0px'}}>
                     <Space direction="vertical" style={{width: '100%'}}>
                         <Text strong>Address</Text>
                         <Input
@@ -197,7 +208,9 @@ const CreateProjectExpense: React.FC = () => {
                         />
                         </Space>
                         </Col>
-                        <Col span={6} style={{padding: '12px 12px 12px 0px'}}>
+                        </Row>
+                        <Row>
+                        <Col span={12} style={{padding: '12px 12px 12px 0px'}}>
                     <Space direction="vertical" style={{width: '100%'}}>
                         <Text strong>Payment terms</Text>
                         <Input
@@ -229,7 +242,7 @@ const CreateProjectExpense: React.FC = () => {
                         />
                         </Space>
                         </Col>
-                        <Col span={6} style={{padding: '12px 12px 12px 0px'}}>
+                        <Col span={12} style={{padding: '12px 12px 12px 0px'}}>
                     <Space direction="vertical" style={{width: '100%'}}>
                         <Text strong>Status</Text>
                         <Select
@@ -287,39 +300,15 @@ const CreateProjectExpense: React.FC = () => {
                 </Col>
             </Row>
             <Row>
-                <Col>
-                    <div style={{display: 'flex', justifyContent: 'space-between', gap: '16px', marginTop: '8px'}}>
-                        <Button onClick={setMockedData}>Populate with mock</Button>
-                        <Button type="primary" onClick={onSubmit}>Create external company</Button>
+                <Col span={24}>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px'}}>
+                        <Button onClick={() => setEditing(false)}>Close</Button>
+                        <Button type="primary" onClick={onSubmit}>Save</Button>
                     </div>
                 </Col>
             </Row>
-        </Card>
+        </>
   );
 };
 
-export default CreateProjectExpense;
-
-function generateRandomNumberString() {
-    let result = '';
-    const numbers = '0123456789';
-  
-    for (let i = 0; i < 10; i++) {
-      const randomIndex = Math.floor(Math.random() * numbers.length);
-      result += numbers.charAt(randomIndex);
-    }
-  
-    return result;
-  }
-
-  function generateRandomStringIBAN() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-  
-    for (let i = 0; i < 20; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters.charAt(randomIndex);
-    }
-  
-    return result;
-  }
+export default UpdateProjectExpense;

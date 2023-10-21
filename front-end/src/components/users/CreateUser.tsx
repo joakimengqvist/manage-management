@@ -73,8 +73,7 @@ const CreateUser: React.FC = () => {
                     return
                 }
                 api.info({
-                    message: `Created user`,
-                    description: 'Succesfully created user.',
+                    message: response.message,
                     placement: 'bottom',
                     duration: 1.4
                   });

@@ -53,7 +53,7 @@ const Users: React.FC = () => {
 
     useEffect(() => {
         if (loggedInUserId) {
-            getAllUsers(loggedInUserId).then(response => dispatch(fetchUsers(response))).catch(() => {});
+            getAllUsers(loggedInUserId).then(response => dispatch(fetchUsers(response.data))).catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedInUserId])
@@ -73,8 +73,7 @@ const Users: React.FC = () => {
                       return
                 }
                 api.info({
-                    message: `Deleted user`,
-                    description: 'Succesfully deleted user.',
+                    message: response.message,
                     placement: 'bottom',
                     duration: 1.4
                   });

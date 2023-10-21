@@ -134,7 +134,13 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched income by user id",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------
@@ -191,7 +197,13 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 		noteSlice = append(noteSlice, returnedNote)
 	}
 
-	app.writeJSON(w, http.StatusAccepted, noteSlice)
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched income by income id",
+		Data:    noteSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // ------------------------------------------------

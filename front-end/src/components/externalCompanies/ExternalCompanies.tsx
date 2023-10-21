@@ -59,7 +59,7 @@ const Expenses = ({ project } : { project: string }) => {
     useEffect(() => {
         if (loggedInUserId) {
             getAllExternalCompanies(loggedInUserId).then(response => {
-                setExternalCompanies(response)
+                setExternalCompanies(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })

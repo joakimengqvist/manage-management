@@ -122,14 +122,8 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "create subProject successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create subProject successfully [/project/create-sub-project]", Name: "[broker-service]"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create subProject successfully [/project/create-sub-project]", Name: "[broker-service]"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -193,14 +187,8 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update subProject successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Updated subProject successfully [/project/update-sub-project]", Name: "[broker-service] - Successfully updated subProject"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated subProject successfully [/project/update-sub-project]", Name: "[broker-service] - Successfully updated subProject"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -264,14 +252,8 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "delete subProject successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete subProject successfully [/project/delete-sub-project]", Name: "[broker-service] - Successfully deleteted subProject"})
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete subProject successfully [/project/delete-sub-project]", Name: "[broker-service] - Successfully deleteted subProject"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ----------------------------------------------
@@ -336,13 +318,8 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "get subProject by id successful"
-	payload.Data = jsonFromService.Data
-
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get subProject by id successfully [/project/get-sub-project-by-id]", Name: "[broker-service] - Successfully fetched subProject"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get subProject by id successfully [/project/get-sub-project-by-id]", Name: "[broker-service] - Successfully fetched subProject"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------
@@ -377,7 +354,7 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	defer response.Body.Close()
 
-	var jsonFromService []SubProject
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -431,7 +408,7 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	defer response.Body.Close()
 
-	var jsonFromService []SubProject
+	var jsonFromService jsonResponse
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
@@ -503,12 +480,7 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update sub project successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ------------------------------------------------------
@@ -571,12 +543,7 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "update sub project successful"
-	payload.Data = jsonFromService.Data
-
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // ------------------------------------------------------

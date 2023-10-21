@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"notes-service/cmd/data"
 )
 
 type jsonResponse struct {
@@ -71,27 +70,4 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) er
 	payload.Message = err.Error()
 
 	return app.writeJSON(w, statusCode, payload)
-}
-
-func (app *Config) writeProjectNotesJSONFromSlice(w http.ResponseWriter, status int, data []data.ProjectNote, headers ...http.Header) error {
-
-	out, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	if len(headers) > 0 {
-		for key, value := range headers[0] {
-			w.Header()[key] = value
-		}
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(status)
-	_, err = w.Write(out)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

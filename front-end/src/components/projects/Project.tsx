@@ -14,11 +14,11 @@ import { PRIVILEGES } from '../../enums/privileges';
 import { ProjectStatus, ProjectStatusTypes } from '../tags/ProjectStatus';
 import { createProjectNote } from '../../api/notes/project/create';
 import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectId';
-import { getAllProjectExpensesByProjectId } from '../../api/economics/expenses/getAllProjectExpensesByProjectId';
+import { getAllProjectExpensesByProjectId } from '../../api/economics/expenses/getAllByProjectId';
 import { ExpenseObject } from '../../types/expense';
 import { IncomeObject } from '../../types/income';
 import * as React from 'react';
-import { getAllProjectIncomesByProjectId } from '../../api/economics/incomes/getAllProjectIncomesByProjectId';
+import { getAllProjectIncomesByProjectId } from '../../api/economics/incomes/getAllByProjectId';
 import CreateNote from '../notes/CreateNote';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import { NOTE_TYPE } from '../../enums/notes';
@@ -121,7 +121,9 @@ const Project: React.FC = () => {
         }
         if (projectNotes && projectNotes.length === 0 && loggedInUser?.id) {
           getAllProjectNotesByProjectId(loggedInUser.id, projectId).then(response => {
-            setProjectNotes(response)
+            if (!response.error && response.data) {
+              setProjectNotes(response.data)
+            }
           }).catch(error => {
             console.log('error fetching project notes', error)
           })
@@ -167,8 +169,7 @@ const Project: React.FC = () => {
             }
             setEditing(false)
             api.info({
-                message: `Updated project`,
-                description: 'Succesfully updated project?.',
+                message: response.message,
                 placement: 'bottom',
                 duration: 1.4
             });
@@ -196,8 +197,7 @@ const Project: React.FC = () => {
               return
             }
             api.info({
-              message: `Deleted project`,
-              description: "Succesfully deleted project?.",
+              message: response.message,
               placement: "bottom",
               duration: 1.2,
             });
@@ -228,10 +228,9 @@ const Project: React.FC = () => {
           email: loggedInUser.email
 
         }
-        createProjectNote(user, projectId, noteTitle, note).then(() => {
+        createProjectNote(user, projectId, noteTitle, note).then((response) => {
           api.info({
-            message: `Created note`,
-            description: "Succesfully created note.",
+            message: response.message,
             placement: "bottom",
             duration: 1.2,
           });
@@ -268,7 +267,7 @@ const Project: React.FC = () => {
             description: <Text>{income.description}</Text>,
             cost: <Text>{income.amount} {income.currency}</Text>,
             tax: <Text>{income.tax} {income.currency}</Text>,
-            operations: <Link href={`/income/${income.income_id}`}><ZoomInOutlined /></Link>
+            operations: <Link href={`/income/${income.id}`}><ZoomInOutlined /></Link>
            
           }
       })

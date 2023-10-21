@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"economics-service/cmd/data"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -110,7 +109,6 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 	request, err := http.NewRequest("POST", "http://authentication-service/auth/check-privilege", bytes.NewBuffer(jsonData))
 
 	if err != nil {
-		app.errorJSON(w, err)
 		return false, err
 	}
 
@@ -118,17 +116,14 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 
 	response, err := client.Do(request)
 	if err != nil {
-		app.errorJSON(w, err)
 		return false, err
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - check privilege project "+payload.Action))
 		return false, nil
 	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling authentication service - check privilege project "+payload.Action))
 		return false, nil
 	}
 
@@ -152,7 +147,6 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 
 	client, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
-		app.errorJSON(w, err)
 		return
 	}
 
@@ -164,7 +158,6 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 
 	err = client.Call("RPCServer.LogInfo", rpcPayload, nil)
 	if err != nil {
-		app.errorJSON(w, err)
 		return
 	}
 }

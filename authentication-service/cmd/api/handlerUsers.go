@@ -265,6 +265,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	users, err := app.Models.User.GetAllUsers()
 	if err != nil {
+
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -289,8 +290,15 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		userSlice = append(userSlice, returnedUser)
 	}
 
-	app.logItemViaRPC(w, userSlice, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[authentication-service] - Successfuly fetched all users"})
-	app.writeUsersJSONFromSlice(w, http.StatusAccepted, userSlice)
+	fmt.Println(userSlice)
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all users",
+		Data:    userSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 type UpdateUserNotesRequest struct {

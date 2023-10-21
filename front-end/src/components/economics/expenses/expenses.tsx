@@ -7,9 +7,9 @@ import { State } from '../../../types/state';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
 import { ZoomInOutlined } from '@ant-design/icons';
-import { getAllProjectExpenses } from '../../../api/economics/expenses/getAllProjectExpenses';
+import { getAllProjectExpenses } from '../../../api/economics/expenses/getAll';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjectExpensesByProjectId } from '../../../api/economics/expenses/getAllProjectExpensesByProjectId';
+import { getAllProjectExpensesByProjectId } from '../../../api/economics/expenses/getAllByProjectId';
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
@@ -132,7 +132,7 @@ const Expenses = ({ project } : { project: string }) => {
     useEffect(() => {
         if (loggedInUserId && project === 'all') {
             getAllProjectExpenses(loggedInUserId).then(response => {
-                setExpenses(response)
+                setExpenses(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })

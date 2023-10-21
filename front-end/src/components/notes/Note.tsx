@@ -63,8 +63,7 @@ const Note = (props: NoteProps) => {
             noteFailedNotification(response.message, action)
         }
         api.info({
-            message: `${action} note success`,
-            description: `Succesfully ${action} ${replaceUnderscore(type)} note`,
+            message: response.message,
             placement: 'bottom',
             duration: 1.4
         });
@@ -119,7 +118,7 @@ const Note = (props: NoteProps) => {
         if (!note.expense) return;
         updateExpenseNote(note.id, noteAuthor, note.expense, noteTitle, noteBody)
         .then(response => {
-            noteSuccessNotification(response, 'Updated');
+            noteSuccessNotification(response.data, 'Updated');
           })
           .catch((error) => {
             noteFailedNotification(error.toString(), 'Updated')
@@ -129,7 +128,7 @@ const Note = (props: NoteProps) => {
       if (!note.income) return;
         updateIncomeNote(note.id, noteAuthor, note.income, noteTitle, noteBody)
         .then(response => {
-            noteSuccessNotification(response, 'Updated');
+            noteSuccessNotification(response.data, 'Updated');
           })
           .catch((error) => {
             noteFailedNotification(error.toString(), 'Updated')
@@ -139,7 +138,7 @@ const Note = (props: NoteProps) => {
       if (!note.project) return;
         updateProjectNote(note.id, noteAuthor, note.project, noteTitle, noteBody)
         .then(response => {
-            noteSuccessNotification(response, 'Updated');
+            noteSuccessNotification(response.data, 'Updated');
           })
           .catch((error) => {
             noteFailedNotification(error.toString(), 'Updated')
@@ -149,7 +148,7 @@ const Note = (props: NoteProps) => {
       if (!note.external_company) return;
         updateExternalCompanyNote(note.id, noteAuthor, note.external_company, noteTitle, noteBody)
         .then(response => {
-            noteSuccessNotification(response, 'Updated');
+            noteSuccessNotification(response.data, 'Updated');
           })
           .catch((error) => {
             noteFailedNotification(error.toString(), 'Updated')

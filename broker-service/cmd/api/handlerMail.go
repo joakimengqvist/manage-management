@@ -61,12 +61,16 @@ func (app *Config) sendMail(w http.ResponseWriter, rpl RequestPayload) {
 		}
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "Message sent to " + rpl.Mail.To
+	var jsonFromService jsonResponse
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Send email success [/email/send]", Name: "[broker-service] - succesfully sent email"})
-	app.writeJSON(w, http.StatusAccepted, payload)
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Send email success [/email/send]", Name: "[broker-service] - succesfully sent email"})
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 // -------------------------------------------

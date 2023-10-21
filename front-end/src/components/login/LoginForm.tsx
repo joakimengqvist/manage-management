@@ -20,7 +20,7 @@ const LoginForm: React.FC = () => {
         return
       }
       setLoginErrorFeedback('');
-      dispatch(authenticate(response))
+      dispatch(authenticate(response.data))
 
     }).catch(error => {
       setLoginErrorFeedback(error)

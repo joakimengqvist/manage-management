@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
-import { createProjectExpense } from '../../../api/economics/expenses/createProjectExpense';
+import { createProjectExpense } from '../../../api/economics/expenses/create';
 import { paymentMethodOptions, IncomeAndExpenseStatusOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseCategoryOptions } from '../options';
 
 const { Title, Text } = Typography;
@@ -74,7 +74,7 @@ const CreateProjectExpense: React.FC = () => {
             paymentMethod,
             userId,
         ).then(response => {
-            if (response?.error || !response?.data) {
+            if (response?.error) {
                 api.error({
                     message: `Create project expense failed`,
                     description: response.message,
@@ -84,8 +84,7 @@ const CreateProjectExpense: React.FC = () => {
                 return
             }
             api.info({
-                message: `Created project expense`,
-                description: 'Succesfully created project expense.',
+                message: response.message,
                 placement: 'bottom',
                 duration: 1.4
             });

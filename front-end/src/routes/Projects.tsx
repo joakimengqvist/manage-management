@@ -12,17 +12,13 @@ const ProjectDetails: React.FC = () => {
     return (
         <div style={{padding: '12px 8px'}}>
             <Row>
-            <Col span={24}>
+                <Col span={24}>
                     <div style={{display: 'flex', justifyContent: 'flex-end', paddingBottom: '8px', paddingRight: '4px'}}>
                         <Button type="primary" onClick={() => navigate("/create-project")}>Create new project</Button>
                     </div>
                 </Col>
                 <Col span={24}>
-                {hasPrivilege(userPrivileges, PRIVILEGES.project_read) &&
-                    <div style={{padding: '4px'}}>
-                        <Projects />
-                    </div>
-                }
+                {hasPrivilege(userPrivileges, PRIVILEGES.project_read) && <Projects />}
                 </Col>
             </Row>
         </div>

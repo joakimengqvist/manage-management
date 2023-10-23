@@ -10,10 +10,6 @@ export const updateSubProject = async (
   startDate : string,
   dueDate : string,
   estimatedDuration : number,
-  notes : string[],
-  invoices : string[],
-  incomes : string[],
-  expenses : string[],
 ) => {
     const payload = {
       id: id,
@@ -24,10 +20,6 @@ export const updateSubProject = async (
       start_date: startDate,
       due_date: dueDate,
       estimated_duration: estimatedDuration,
-      notes: notes,
-      invoices: invoices,
-      incomes: incomes,
-      expenses: expenses,
     };
 
     const headers = new Headers();

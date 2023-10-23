@@ -7,11 +7,7 @@ import (
 	"net/http"
 )
 
-// ----------------------------------------------------
-// --------- START OF CREATE PROJECT INCOME  ----------
-// ----------------------------------------------------
-
-func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
+func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_write")
@@ -25,7 +21,7 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var requestPayload data.NewProjectIncome
+	var requestPayload data.NewIncome
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -48,20 +44,49 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// ---- END OF CREATE PROJECT INCOME  -----------------
-// ----------------------------------------------------
+func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
-// ----------------------------------------------------
-// ---- START OF GET ALL PROJECT INCOMES --------------
-// ----------------------------------------------------
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "economics_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
 
-func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) {
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var income data.Income
+
+	err = app.readJSON(w, r, &income)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = income.UpdateIncome(userId)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update income: "+err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("updated income with Id: %s", fmt.Sprint(income.ID)),
+		Data:    income,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_read")
 	if err != nil {
-		fmt.Println("GetAllProjectExpenses - authenticated error", err)
+		fmt.Println("GetAllExpenses - authenticated error", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -72,19 +97,19 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	incomes, err := data.GetAllProjectIncomes()
+	incomes, err := data.GetAllIncomes()
 	if err != nil {
-		fmt.Println("GetAllProjectExpenses - expenses error", err)
+		fmt.Println("GetAllExpenses - incomes error", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	var incomesSlice []data.ProjectIncome
+	var incomesSlice []data.Income
 	for _, incomePtr := range incomes {
 		income := *incomePtr
 
-		returnedSlice := data.ProjectIncome{
-			IncomeID:       income.IncomeID,
+		returnedSlice := data.Income{
+			ID:             income.ID,
 			ProjectID:      income.ProjectID,
 			IncomeDate:     income.IncomeDate,
 			IncomeCategory: income.IncomeCategory,
@@ -97,8 +122,8 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 			PaymentMethod:  income.PaymentMethod,
 			CreatedBy:      income.CreatedBy,
 			CreatedAt:      income.CreatedAt,
-			ModifiedBy:     income.ModifiedBy,
-			ModifiedAt:     income.ModifiedAt,
+			UpdatedBy:      income.UpdatedBy,
+			UpdatedAt:      income.UpdatedAt,
 		}
 
 		incomesSlice = append(incomesSlice, returnedSlice)
@@ -148,12 +173,12 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var incomesSlice []data.ProjectIncome
+	var incomesSlice []data.Income
 	for _, incomesPtr := range incomes {
 		income := *incomesPtr
 
-		returnedSlice := data.ProjectIncome{
-			IncomeID:       income.IncomeID,
+		returnedSlice := data.Income{
+			ID:             income.ID,
 			ProjectID:      income.ProjectID,
 			IncomeDate:     income.IncomeDate,
 			IncomeCategory: income.IncomeCategory,
@@ -166,8 +191,8 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 			PaymentMethod:  income.PaymentMethod,
 			CreatedBy:      income.CreatedBy,
 			CreatedAt:      income.CreatedAt,
-			ModifiedBy:     income.ModifiedBy,
-			ModifiedAt:     income.ModifiedAt,
+			UpdatedBy:      income.UpdatedBy,
+			UpdatedAt:      income.UpdatedAt,
 		}
 
 		incomesSlice = append(incomesSlice, returnedSlice)
@@ -187,10 +212,10 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 // ----------------------------------------------------
 
 // ----------------------------------------------------
-// -- START OF GET PROJECT INCOME (ID) ----------------
+// -- START OF GET INCOME (ID) ------------------------
 // ----------------------------------------------------
 
-func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
@@ -218,8 +243,8 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	returnedUser := data.ProjectIncome{
-		IncomeID:       income.IncomeID,
+	returnedUser := data.Income{
+		ID:             income.ID,
 		ProjectID:      income.ProjectID,
 		IncomeDate:     income.IncomeDate,
 		IncomeCategory: income.IncomeCategory,
@@ -232,19 +257,19 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 		PaymentMethod:  income.PaymentMethod,
 		CreatedBy:      income.CreatedBy,
 		CreatedAt:      income.CreatedAt,
-		ModifiedBy:     income.ModifiedBy,
-		ModifiedAt:     income.ModifiedAt,
+		UpdatedBy:      income.UpdatedBy,
+		UpdatedAt:      income.UpdatedAt,
 	}
 
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Fetched income by id successfull: %s", income.IncomeID),
+		Message: fmt.Sprintf("Fetched income by id successfull: %s", income.ID),
 		Data:    returnedUser,
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// -- END OF GET PROJECT INCOME (ID) ------------------
-// ----------------------------------------------------
+// --------------------------------------------
+// -- END OF GET INCOME (ID) ------------------
+// --------------------------------------------

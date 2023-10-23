@@ -134,11 +134,11 @@ const Expense: React.FC = () => {
                             <Text strong>Created at</Text><br/>
                             {formatDateTimeToYYYYMMDDHHMM(expense.created_at)}<br/>
                             <Text strong>Modified by</Text><br/>
-                            <Link href={`/user/${expense.modified_by}`}>{getUserName(expense.modified_by)}</Link><br/>
+                            <Link href={`/user/${expense.updated_by}`}>{getUserName(expense.updated_by)}</Link><br/>
                             <Text strong>Modified at</Text><br/>
-                            {formatDateTimeToYYYYMMDDHHMM(expense.modified_at)}<br/>
+                            {formatDateTimeToYYYYMMDDHHMM(expense.updated_at)}<br/>
                             <Text strong>Expense ID</Text><br/>
-                            {expense.expense_id}<br/>
+                            {expense.id}<br/>
                             
                     </Col>
                     <Divider style={{marginTop: '8px'}}/>

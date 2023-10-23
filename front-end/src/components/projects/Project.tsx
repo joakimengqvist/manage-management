@@ -14,11 +14,11 @@ import { PRIVILEGES } from '../../enums/privileges';
 import { ProjectStatus, ProjectStatusTypes } from '../tags/ProjectStatus';
 import { createProjectNote } from '../../api/notes/project/create';
 import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectId';
-import { getAllProjectExpensesByProjectId } from '../../api/economics/expenses/getAllByProjectId';
+import { getAllExpensesByProjectId } from '../../api/economics/expenses/getAllByProjectId';
 import { ExpenseObject } from '../../types/expense';
 import { IncomeObject } from '../../types/income';
 import * as React from 'react';
-import { getAllProjectIncomesByProjectId } from '../../api/economics/incomes/getAllByProjectId';
+import { getAllIncomesByProjectId } from '../../api/economics/incomes/getAllByProjectId';
 import CreateNote from '../notes/CreateNote';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import { NOTE_TYPE } from '../../enums/notes';
@@ -129,7 +129,7 @@ const Project: React.FC = () => {
           })
         }
         if (projectExpenses && projectExpenses.length === 0 && loggedInUser?.id) {
-          getAllProjectExpensesByProjectId(loggedInUser.id, projectId).then(response => {
+          getAllExpensesByProjectId(loggedInUser.id, projectId).then(response => {
             if (!response.error && response.data) {
               setProjectExpenses(response.data)
             }
@@ -138,7 +138,7 @@ const Project: React.FC = () => {
           })
         }
         if (projectIncomes && projectIncomes.length === 0 && loggedInUser?.id) {
-          getAllProjectIncomesByProjectId(loggedInUser.id, projectId).then(response => {
+          getAllIncomesByProjectId(loggedInUser.id, projectId).then(response => {
             if (!response.error && response.data) {
               setProjectIncomes(response.data)
             }
@@ -256,7 +256,7 @@ const Project: React.FC = () => {
             description: <Text>{expense?.description}</Text>,
             cost: <Text>{expense?.amount} {expense?.currency}</Text>,
             tax: <Text>{expense?.tax} {expense?.currency}</Text>,
-            operations: <Link href={`/expense/${expense?.expense_id}`}><ZoomInOutlined /></Link>
+            operations: <Link href={`/expense/${expense?.id}`}><ZoomInOutlined /></Link>
            
           }
       })

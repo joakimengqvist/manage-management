@@ -11,9 +11,7 @@ const CreateExpense: React.FC = () => {
     
     return (
         <div style={{padding: '12px 8px'}}>
-            <div style={{padding: '4px'}}>
-                <CreateExternalCompany />
-            </div>
+            <CreateExternalCompany />
         </div>
     )
 

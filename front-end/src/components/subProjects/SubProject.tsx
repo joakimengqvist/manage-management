@@ -1,22 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Card, Space, Typography, notification, Popconfirm, Divider, Col, Row } from 'antd';
+import { useParams } from 'react-router-dom'
+import { Button, Card, Space, Typography, notification, Col, Row, Divider } from 'antd';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
-import { popProject } from '../../redux/applicationDataSlice';
-import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import { hasPrivilege } from '../../helpers/hasPrivileges';
-import { PRIVILEGES } from '../../enums/privileges';
 import { ProjectStatus } from '../tags/ProjectStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import { SubProject } from '../../types/subProject';
 import { getSubProjectById } from '../../api/subProjects/getById';
-import { deleteSubProject } from '../../api/subProjects/delete';
+import UpdateSubProject from './UpdateSubProject';
 
-const { Text, Link } = Typography;
+const { Text, Title, Link } = Typography;
 
 const tabList = [
   {
@@ -30,8 +27,6 @@ const tabList = [
 ];
 
 const Project: React.FC = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
     const users = useSelector((state : State) => state.application.users);
@@ -60,39 +55,7 @@ const Project: React.FC = () => {
         }
     }, []);
 
-    const onClickdeleteProject = async () => {
-        await deleteSubProject(loggedInUser.id, subProjectId)
-          .then(response => {
-            if (response?.error) {
-              api.error({
-                  message: `Deleted project failed`,
-                  description: response.message,
-                  placement: 'bottom',
-                  duration: 1.4
-                });
-              return
-            }
-            api.info({
-              message: response.message,
-              placement: "bottom",
-              duration: 1.2,
-            });
-            dispatch(popProject(subProjectId));
-            setTimeout(() => {
-              navigate("/projects");
-            }, 1000);
-          })
-          .catch((error) => {
-            api.error({
-              message: `Error deleting project`,
-              description: error.toString(),
-              placement: "bottom",
-              duration: 1.4,
-            });
-          });
-      };
-
-      const getUserName = (id : string) => {
+    const getUserName = (id : string) => {
         const user = users.find(user => user.id === id);
         return `${user?.first_name} ${user?.last_name}`;
     };
@@ -100,7 +63,16 @@ const Project: React.FC = () => {
       const contentList: Record<string, React.ReactNode> = {
         projectInformation: (
           <div style={{padding: '24px'}}>
-            {subProject && (
+            {!editing && (
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <Title level={4}>Sub project</Title>
+                <Button type={editing ? "default" : "primary"} onClick={() => setEditing(!editing)}>{editing ? 'Close' : 'Edit'}</Button>
+            </div>
+          )}
+            {subProject && (<>
+            {editing ? (
+                <UpdateSubProject subProject={subProject} setEditing={setEditing} />
+            ) : (
           <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
           <Space direction="vertical" style={{minWidth: '320px'}}>
               <Text strong>Project name</Text>
@@ -124,23 +96,7 @@ const Project: React.FC = () => {
           </div>
           </div>
           )}
-          <Divider />
-          <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px'}}>
-              {editing && hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) && (
-                  <Popconfirm
-                      placement="top"
-                      title="Are you sure?"
-                      description={`Do you want to delete user ${name}`}
-                      onConfirm={onClickdeleteProject}
-                      icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                      okText="Yes"
-                      cancelText="No"
-                  >
-                      <Button danger type="link"><DeleteOutlined /></Button>
-                  </Popconfirm>
-              )}
-              <Button type={editing ? "default" : "primary"} onClick={() => setEditing(!editing)}>{editing ? 'Close' : 'Edit'}</Button>
-          </div>
+          </>)}
           </div>
         ),
         subProjectFiles: <p>Project files</p>,

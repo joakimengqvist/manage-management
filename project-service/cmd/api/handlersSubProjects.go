@@ -118,15 +118,12 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 	updatedSubProject := data.PostgresSubProject{
 		ID:                requestPayload.ID,
 		Name:              requestPayload.Name,
+		Description:       requestPayload.Description,
 		Status:            requestPayload.Status,
 		Priority:          requestPayload.Priority,
 		StartDate:         requestPayload.StartDate,
 		DueDate:           requestPayload.DueDate,
 		EstimatedDuration: requestPayload.EstimatedDuration,
-		Notes:             app.convertToPostgresArray(requestPayload.Notes),
-		Invoices:          app.convertToPostgresArray(requestPayload.Invoices),
-		Incomes:           app.convertToPostgresArray(requestPayload.Incomes),
-		Expenses:          app.convertToPostgresArray(requestPayload.Expenses),
 	}
 
 	err = updatedSubProject.UpdateSubProject(userId)
@@ -239,6 +236,7 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 		ID:                subProject.ID,
 		Name:              subProject.Name,
 		Status:            subProject.Status,
+		Description:       subProject.Description,
 		Priority:          subProject.Priority,
 		StartDate:         subProject.StartDate,
 		DueDate:           subProject.DueDate,

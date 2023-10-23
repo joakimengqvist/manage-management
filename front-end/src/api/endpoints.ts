@@ -44,14 +44,14 @@ export enum ENDPOINTS {
     GetAllProjectNotesByUserId = "http://localhost:8080/notes/get-all-project-notes-by-user-id",
     DeleteProjectNote = "http://localhost:8080/notes/delete-project-note",
 
-    // PROJECT INCOMES
-    CreateProjectIncome = "http://localhost:8080/economics/create-project-income",
-    GetProjectIncomeById = "http://localhost:8080/economics/get-project-income-by-id",
-    UpdateProjectIncome = "http://localhost:8080/economics/update-project-income",
-    GetAllProjectIncomes = "http://localhost:8080/economics/get-all-project-incomes",
-    GetAllProjectIncomesByProjectId = "http://localhost:8080/economics/get-all-project-incomes-by-project-id",
-    GetAllProjectIncomesByUserId = "http://localhost:8080/economics/get-all-project-incomes-by-user-id",
-    DeleteProjectIncome = "http://localhost:8080/economics/delete-project-income",
+    // INCOMES
+    CreateIncome = "http://localhost:8080/economics/create-income",
+    GetIncomeById = "http://localhost:8080/economics/get-income-by-id",
+    UpdateIncome = "http://localhost:8080/economics/update-income",
+    GetAllIncomes = "http://localhost:8080/economics/get-all-incomes",
+    GetAllIncomesByProjectId = "http://localhost:8080/economics/get-all-incomes-by-project-id",
+    GetAllIncomesByUserId = "http://localhost:8080/economics/get-all-incomes-by-user-id",
+    DeleteIncome = "http://localhost:8080/economics/delete-income",
 
     // INCOME NOTES
     CreateIncomeNote = "http://localhost:8080/notes/create-income-note",
@@ -61,14 +61,14 @@ export enum ENDPOINTS {
     GetAllIncomeNotesByUserId = "http://localhost:8080/notes/get-all-income-notes-by-user-id",
     DeleteIncomeNote = "http://localhost:8080/notes/delete-income-note",
 
-    // PROJECT EXPENSES
-    CreateProjectExpense = "http://localhost:8080/economics/create-project-expense",
-    GetProjectExpenseById = "http://localhost:8080/economics/get-project-expense-by-id",
-    UpdateProjectExpense = "http://localhost:8080/economics/update-project-expense",
-    getAllProectExpenses = "http://localhost:8080/economics/get-all-project-expenses",
-    GetAllProjectExpensesByProjectId = "http://localhost:8080/economics/get-all-project-expenses-by-project-id",
-    GetAllProjectExpensesByUserId = "http://localhost:8080/economics/get-all-project-expenses-by-user-id",
-    DeleteProjectExpense = "http://localhost:8080/economics/delete-project-expense",
+    // EXPENSES
+    CreateExpense = "http://localhost:8080/economics/create-expense",
+    GetExpenseById = "http://localhost:8080/economics/get-expense-by-id",
+    UpdateExpense = "http://localhost:8080/economics/update-expense",
+    getAllExpenses = "http://localhost:8080/economics/get-all-expenses",
+    GetAllExpensesByProjectId = "http://localhost:8080/economics/get-all-expenses-by-project-id",
+    GetAllExpensesByUserId = "http://localhost:8080/economics/get-all-expenses-by-user-id",
+    DeleteExpense = "http://localhost:8080/economics/delete-expense",
 
     // EXPENSE NOTES
     CreateExpenseNote = "http://localhost:8080/notes/create-expense-note",

@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type NewProjectExpense struct {
+type NewExpense struct {
 	ProjectID       string    `json:"project_id"`
 	ExpenseDate     time.Time `json:"expense_date"`
 	ExpenseCategory string    `json:"expense_category"`
@@ -20,10 +20,10 @@ type NewProjectExpense struct {
 	Currency        string    `json:"currency"`
 	PaymentMethod   string    `json:"payment_method"`
 	CreatedBy       string    `json:"created_by"`
-	ModifiedBy      string    `json:"modified_by"`
+	UpdatedBy       string    `json:"updated_by"`
 }
 
-type NewProjectIncome struct {
+type NewIncome struct {
 	ProjectID      string    `json:"project_id"`
 	IncomeDate     time.Time `json:"income_date"`
 	IncomeCategory string    `json:"income_category"`
@@ -35,11 +35,11 @@ type NewProjectIncome struct {
 	Currency       string    `json:"currency"`
 	PaymentMethod  string    `json:"payment_method"`
 	CreatedBy      string    `json:"created_by"`
-	ModifiedBy     string    `json:"modified_by"`
+	UpdatedBy      string    `json:"updated_by"`
 }
 
-type ProjectExpense struct {
-	ExpenseID       string    `json:"expense_id"`
+type Expense struct {
+	ID              string    `json:"id"`
 	ProjectID       string    `json:"project_id"`
 	ExpenseDate     time.Time `json:"expense_date"`
 	ExpenseCategory string    `json:"expense_category"`
@@ -52,12 +52,12 @@ type ProjectExpense struct {
 	PaymentMethod   string    `json:"payment_method"`
 	CreatedBy       string    `json:"created_by"`
 	CreatedAt       time.Time `json:"created_at"`
-	ModifiedBy      string    `json:"modified_by"`
-	ModifiedAt      time.Time `json:"modified_at"`
+	UpdatedBy       string    `json:"updated_by"`
+	UpdatedAt       time.Time `json:"updated_at"`
 }
 
-type ProjectIncome struct {
-	ExpenseID      string    `json:"income_id"`
+type Income struct {
+	ID             string    `json:"id"`
 	ProjectID      string    `json:"project_id"`
 	IncomeDate     time.Time `json:"income_date"`
 	IncomeCategory string    `json:"income_category"`
@@ -70,16 +70,16 @@ type ProjectIncome struct {
 	PaymentMethod  string    `json:"payment_method"`
 	CreatedBy      string    `json:"created_by"`
 	CreatedAt      time.Time `json:"created_at"`
-	ModifiedBy     string    `json:"modified_by"`
-	ModifiedAt     time.Time `json:"modified_at"`
+	UpdatedBy      string    `json:"updated_by"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 // -------------------------------------------
-// ------ START OF CREATE PROJECT EXPENSE  ---
+// ------ START OF CREATE EXPENSE  -----------
 // -------------------------------------------
 
-func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NewProjectExpense
+func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
+	var requestPayload NewExpense
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -90,7 +90,7 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/create-project-expense", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/create-expense", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -109,10 +109,10 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - create project expense"))
+		app.errorJSON(w, errors.New("status unauthorized - create expense"))
 		return
 	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling economic service - create project expense"))
+		app.errorJSON(w, errors.New("error calling economic service - create expense"))
 		return
 	}
 
@@ -133,15 +133,15 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 }
 
 // -------------------------------------------
-// ------ END OF CREATE PROJECT EXPENSE  -----
+// ------ END OF CREATE EXPENSE  -------------
 // -------------------------------------------
 
 // -------------------------------------------
-// ------ START OF CREATE PROJECT INCOME  ----
+// ------ START OF CREATE INCOME  ------------
 // -------------------------------------------
 
-func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
-	var requestPayload NewProjectIncome
+func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
+	var requestPayload NewIncome
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -152,7 +152,7 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/create-project-income", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/create-income", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -171,10 +171,10 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - create project income"))
+		app.errorJSON(w, errors.New("status unauthorized - create income"))
 		return
 	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling economics service - create project income"))
+		app.errorJSON(w, errors.New("error calling economics service - create income"))
 		return
 	}
 
@@ -195,14 +195,14 @@ func (app *Config) CreateProjectIncome(w http.ResponseWriter, r *http.Request) {
 }
 
 // -------------------------------------------
-// ------ END OF CREATE PROJECT INCOME  ------
+// ------ END OF CREATE INCOME  --------------
 // -------------------------------------------
 
 // --------------------------------------------------------
-// ------ START OF GET PROJECT EXPENSES BY PROJECT ID  ----
+// ------ START OF GET EXPENSES BY PROJECT ID  ------------
 // --------------------------------------------------------
 
-func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -215,7 +215,7 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-all-project-expenses-by-project-id", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/get-all-expenses-by-project-id", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -253,14 +253,14 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 }
 
 // --------------------------------------------------------
-// ------ END OF GET PROJECT EXPENSES BY PROJECT ID  ------
+// ------ END OF GET EXPENSES BY PROJECT ID  --------------
 // --------------------------------------------------------
 
 // --------------------------------------------------------
-// ------ START OF GET PROJECT EXPENSES BY PROJECT ID  ----
+// ------ START OF GET EXPENSES BY PROJECT ID  ------------
 // --------------------------------------------------------
 
-func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -273,7 +273,7 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-all-project-incomes-by-project-id", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/get-all-incomes-by-project-id", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -311,18 +311,18 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 }
 
 // --------------------------------------------------------
-// ------ END OF GET PROJECT EXPENSES BY PROJECT ID  ------
+// ------ END OF GET EXPENSES BY PROJECT ID  --------------
 // --------------------------------------------------------
 
 // -------------------------------------------------
-// ------ START OF GET ALL PROJECT EXPENSES  -------
+// ------ START OF GET ALL EXPENSES  ---------------
 // -------------------------------------------------
 
-func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://economics-service/economics/get-all-project-expenses", nil)
+	request, err := http.NewRequest("GET", "http://economics-service/economics/get-all-expenses", nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -334,7 +334,7 @@ func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request)
 
 	response, err := client.Do(request)
 	if err != nil {
-		app.errorJSON(w, errors.New("could not fetch project expenses"))
+		app.errorJSON(w, errors.New("could not fetch expenses"))
 		return
 	}
 
@@ -352,18 +352,18 @@ func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request)
 }
 
 // -------------------------------------------------
-// ------ END OF GET ALL PROJECT EXPENSES  ---------
+// ------ END OF GET ALL EXPENSES  -----------------
 // -------------------------------------------------
 
 // -------------------------------------------------
-// ------ START OF GET ALL PROJECT INCOMES  -------
+// ------ START OF GET ALL INCOMES  ----------------
 // -------------------------------------------------
 
-func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://economics-service/economics/get-all-project-incomes", nil)
+	request, err := http.NewRequest("GET", "http://economics-service/economics/get-all-incomes", nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -375,7 +375,7 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 
 	response, err := client.Do(request)
 	if err != nil {
-		app.errorJSON(w, errors.New("could not fetch project incomes"))
+		app.errorJSON(w, errors.New("could not fetch incomes"))
 		return
 	}
 
@@ -400,8 +400,8 @@ func (app *Config) GetAllProjectIncomes(w http.ResponseWriter, r *http.Request) 
 // ------ START OF UPDATE PROJECT EXPENSE  ---------
 // -------------------------------------------------
 
-func (app *Config) UpdateProjectExpense(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectExpense
+func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
+	var requestPayload Expense
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -412,7 +412,7 @@ func (app *Config) UpdateProjectExpense(w http.ResponseWriter, r *http.Request) 
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://ecomomics-service/economics/update-expense", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/update-expense", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -455,15 +455,15 @@ func (app *Config) UpdateProjectExpense(w http.ResponseWriter, r *http.Request) 
 }
 
 // -------------------------------------------
-// --------- END OF UPDATE PROJECT EXPENSE  --
+// --------- END OF UPDATE EXPENSE  ----------
 // -------------------------------------------
 
-// -------------------------------------------------
-// ------ START OF UPDATE PROJECT INCOME  ----------
-// -------------------------------------------------
+// -------------------------------------------
+// ------ START OF UPDATE INCOME  ------------
+// -------------------------------------------
 
-func (app *Config) UpdateProjectIncome(w http.ResponseWriter, r *http.Request) {
-	var requestPayload ProjectIncome
+func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
+	var requestPayload Income
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -474,7 +474,7 @@ func (app *Config) UpdateProjectIncome(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://ecomomics-service/economics/update-income", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/update-income", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -517,14 +517,14 @@ func (app *Config) UpdateProjectIncome(w http.ResponseWriter, r *http.Request) {
 }
 
 // -------------------------------------------
-// --------- END OF UPDATE PROJECT INCOME  ---
+// --------- END OF UPDATE INCOME  -----------
 // -------------------------------------------
 
 // -------------------------------------------------
-// ------ START OF GET PROJECT EXPENSE (ID)  -------
+// ------ START OF GET EXPENSE (ID)  ---------------
 // -------------------------------------------------
 
-func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -537,7 +537,7 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-project-expense-by-id", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/get-expense-by-id", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -556,10 +556,10 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - get project expense by id"))
+		app.errorJSON(w, errors.New("status unauthorized - get expense by id"))
 		return
 	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling economics service - get project expense by id"))
+		app.errorJSON(w, errors.New("error calling economics service - get expense by id"))
 		return
 	}
 
@@ -580,14 +580,14 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 }
 
 // -------------------------------------------------
-// ------ END OF GET PROJECT EXPENSE (ID)  ---------
+// ------ END OF GET EXPENSE (ID)  -----------------
 // -------------------------------------------------
 
 // -------------------------------------------------
-// ------ START OF GET PROJECT INCOME (ID)  -------
+// ------ START OF GET INCOME (ID)  ----------------
 // -------------------------------------------------
 
-func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	err := app.readJSON(w, r, &requestPayload)
@@ -600,7 +600,7 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-project-income-by-id", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://economics-service/economics/get-income-by-id", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -612,17 +612,17 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 
 	response, err := client.Do(request)
 	if err != nil {
-		app.errorJSON(w, errors.New("could not fetch project income"))
+		app.errorJSON(w, errors.New("could not fetch income"))
 		return
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusUnauthorized {
-		app.errorJSON(w, errors.New("status unauthorized - get project income by id"))
+		app.errorJSON(w, errors.New("status unauthorized - get income by id"))
 		return
 	} else if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("error calling economics service - get project income by id"))
+		app.errorJSON(w, errors.New("error calling economics service - get income by id"))
 		return
 	}
 
@@ -642,6 +642,6 @@ func (app *Config) GetProjectIncomeById(w http.ResponseWriter, r *http.Request) 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------------
-// ------ END OF GET PROJECT INCOME (ID)  ---------
-// -------------------------------------------------
+// ----------------------------------------
+// ------ END OF GET INCOME (ID)  ---------
+// ----------------------------------------

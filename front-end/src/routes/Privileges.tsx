@@ -12,18 +12,12 @@ const PrivilegesDetails: React.FC = () => {
         <div style={{padding: '12px 8px'}}>
             <Row>
                 <Col span={16}>
-                {hasPrivilege(userPrivileges, PRIVILEGES.privilege_read) &&
-                    <div style={{padding: '4px'}}>
-                        <Privileges />
+                    <div style={{paddingRight: '12px'}}>
+                        {hasPrivilege(userPrivileges, PRIVILEGES.privilege_read) && <Privileges />}
                     </div>
-                }
                 </Col>
                 <Col span={8}>
-                {hasPrivilege(userPrivileges, PRIVILEGES.privilege_write) &&
-                    <div style={{padding: '4px'}}>
-                        <CreatePrivilege />
-                    </div>
-                }
+                {hasPrivilege(userPrivileges, PRIVILEGES.privilege_write) && <CreatePrivilege /> }
                 </Col>
             </Row>
         </div>

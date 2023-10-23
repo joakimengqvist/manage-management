@@ -7,9 +7,9 @@ import { State } from '../../../types/state';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
 import { ZoomInOutlined } from '@ant-design/icons';
-import { getAllProjectExpenses } from '../../../api/economics/expenses/getAll';
+import { getAllExpenses } from '../../../api/economics/expenses/getAll';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjectExpensesByProjectId } from '../../../api/economics/expenses/getAllByProjectId';
+import { getAllExpensesByProjectId } from '../../../api/economics/expenses/getAllByProjectId';
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
@@ -48,7 +48,7 @@ const calculateTotalAmountAndTax = (expenses: ExpenseObject[], getVendorName : (
   }
 
 type ExpenseObject = {
-	expense_id: string,
+	id: string,
 	project_id: string,
   expense_date: any,
 	expense_category: string,
@@ -61,8 +61,8 @@ type ExpenseObject = {
 	payment_method: string,
 	created_by: string,
 	created_at: any,
-	modified_by: any,
-	modified_at: any
+	updated_by: any,
+	updated_at: any
 }
 
 const expensesTabList = [
@@ -131,13 +131,13 @@ const Expenses = ({ project } : { project: string }) => {
 
     useEffect(() => {
         if (loggedInUserId && project === 'all') {
-            getAllProjectExpenses(loggedInUserId).then(response => {
+            getAllExpenses(loggedInUserId).then(response => {
                 setExpenses(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
         } else if (loggedInUserId) {
-            getAllProjectExpensesByProjectId(loggedInUserId, project).then(response => {
+            getAllExpensesByProjectId(loggedInUserId, project).then(response => {
                 setExpenses(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
@@ -159,7 +159,7 @@ const Expenses = ({ project } : { project: string }) => {
             payment_method: <Text>{expense.payment_method}</Text>,
             status: <ExpenseAndIncomeStatus status={expense.status}/>,
             expense_date: <Text>{formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}</Text>,
-            operations: <Button type="link" onClick={() => navigate(`/expense/${expense.expense_id}`)}><ZoomInOutlined /></Button>
+            operations: <Button type="link" onClick={() => navigate(`/expense/${expense.id}`)}><ZoomInOutlined /></Button>
           }
         })
         return expensesListItem;

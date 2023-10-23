@@ -74,7 +74,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['sub1']}
         mode="inline"
-        theme={'dark'}
+        theme="dark"
         inlineCollapsed={isCollapsed}
         items={itemsLoggedIn}
         style={{borderRight: '1px solid #d9d9d9', height: '100%'}}

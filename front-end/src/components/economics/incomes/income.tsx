@@ -132,9 +132,9 @@ const Income: React.FC = () => {
                             <Text strong>Created at</Text><br/>
                             {formatDateTimeToYYYYMMDDHHMM(income.created_at)}<br/>
                             <Text strong>Modified by</Text><br/>
-                            <Link href={`/user/${income.modified_by}`}>{getUserName(income.modified_by)}</Link><br/>
+                            <Link href={`/user/${income.updated_by}`}>{getUserName(income.updated_by)}</Link><br/>
                             <Text strong>Modified at</Text><br/>
-                            {formatDateTimeToYYYYMMDDHHMM(income.modified_at)}<br/>
+                            {formatDateTimeToYYYYMMDDHHMM(income.updated_at)}<br/>
                             <Text strong>Income ID</Text><br/>
                             {income.id}<br/>
                     </Col>

@@ -18,6 +18,28 @@ import { deleteSubProject } from '../../api/subProjects/delete';
 import { formatDateTimeToYYYYMMDD } from '../../helpers/stringDateFormatting';
 import ReactApexChart from 'react-apexcharts';
 
+const tabList = [
+    {
+      key: 'projects',
+      tab: 'Projects',
+    },
+    {
+      key: 'overview',
+      tab: 'Overview',
+    },
+  ];
+
+const innerTabsList = [
+    {
+        key: 'sub_projects',
+        tab: 'Sub projects'
+    },
+    {
+        key: 'overview',
+        tab: 'Overview'
+    }
+];
+
 const projectColumns = [
     {
         title: 'Name',
@@ -73,17 +95,10 @@ const Projects: React.FC = () => {
     const projects = useSelector((state : State) => state.application.projects);
     const subProjects = useSelector((state : State) => state.application.subProjects);
 
-    const [expandedChart, setExpandedChart] = useState<Array<string>>([]);
+    const [activeTab, setActiveTab] = useState('projects');
+    const [innerActiveTab, setInnerActiveTab] = useState('sub_projects');
     
     const getProjectName = (id : string) => projects.find((project : Project) => project.id === id)?.name;
-
-    const onExpandChart = (id : string) => {
-        if (expandedChart.includes(id)) {
-            setExpandedChart(expandedChart.filter((item : string) => item !== id));
-        } else {
-            setExpandedChart([...expandedChart, id]);
-        }
-    };
 
     const onClickdeleteProject = async (id : string) => {
         await deleteProject(userId, id)
@@ -172,7 +187,6 @@ const Projects: React.FC = () => {
             if (!subProjects || subProjects.length === 0) return [];
 
             const subProjectForProject = subProjects.filter((subProject : SubProject) => subProject.projects.includes(projectId));
-            
             const subProjectsDataReturned = subProjectForProject.map((subProject : any) => {
                 return {
                     name: <Button type="link" onClick={() => navigate(`/sub-project/${subProject.id}`)}>{subProject.name}</Button>,
@@ -250,54 +264,46 @@ const Projects: React.FC = () => {
                       horizontalAlign: 'left'
                     }
                   };
-            
-                return (
-                <Table 
-                    size="small" 
-                    bordered 
-                    columns={subProjectColumns} 
-                    dataSource={subProjectData(record.name.props.id)} 
-                    summary={() => (
-                        <Table.Summary>
-                            <Table.Summary.Row>
-                                <Table.Summary.Cell index={1} colSpan={5}>
-                                <div style={{display: 'flex', justifyContent: 'space-between', padding: '12px 0px 8px 0px', borderTop: '1px solid #f0f0f0'}}>
-                                    <Button onClick={() => onExpandChart(record.name.props.id)}>Chart</Button>
-                                    <div style={{display: 'flex', justifyContent: 'flex-end', gap:'12px'}}>
-                                        <Button onClick={() => navigate(`/create-expense/sub-project-id/${record.name.props.id}`)}>New expense</Button>
-                                        <Button onClick={() => navigate(`/create-income/sub-project-id/${record.name.props.id}`)}>New income</Button>
-                                        <Button onClick={() => navigate(`/create-sub-project`)}>New sub project</Button>
-                                    </div>
-                                </div>
-                                </Table.Summary.Cell>
-                            </Table.Summary.Row>
-                            {expandedChart.includes(record.name.props.id) && (
-                                <Table.Summary.Row>
-                                    <Table.Summary.Cell index={0} colSpan={5}>
-                                        <ReactApexChart options={options} series={series} type="rangeBar" height={450} />
-                                    </Table.Summary.Cell>
-                                </Table.Summary.Row>
+
+                  const contentList: Record<string, React.ReactNode> = {
+                    sub_projects: (
+                        <Table 
+                            size="small" 
+                            style={{marginTop: '16px'}}
+                            bordered 
+                            columns={subProjectColumns} 
+                            dataSource={subProjectData(record.name.props.id)} 
+                            summary={() => (
+                                <Table.Summary>
+                                    <Table.Summary.Row>
+                                        <Table.Summary.Cell index={1} colSpan={5}>
+                                        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '16px', padding: '12px 0px 8px 0px'}}>
+                                            <Button onClick={() => navigate(`/create-expense/sub-project-id/${record.name.props.id}`)}>New expense</Button>
+                                            <Button onClick={() => navigate(`/create-income/sub-project-id/${record.name.props.id}`)}>New income</Button>
+                                            <Button onClick={() => navigate(`/create-sub-project`)}>New sub project</Button>
+                                        </div>
+                                        </Table.Summary.Cell>
+                                    </Table.Summary.Row>
+                                </Table.Summary>
                             )}
-                        </Table.Summary>
-                    )}
-                />
+                        />
+                    ),
+                    overview: <ReactApexChart options={options} series={series} type="rangeBar" height={450} />
+                }
+            
+                return (<Card
+                    style={{ height: 'fit-content', padding: 0, margin: 0, borderRadius: '0px' }}
+                    bodyStyle={{padding: '0px', margin: 0}}
+                    activeTabKey={innerActiveTab}
+                    tabList={innerTabsList}
+                    onTabChange={(key) => { setInnerActiveTab(key); }}
+                >
+                    {contentList[innerActiveTab]}
+                </Card>
             )},
         };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [subProjects, userId, userPrivileges, expandedChart]);
-
-      const [activeTab, setactiveTab] = useState('projects');
-
-      const tabList = [
-        {
-          key: 'projects',
-          tab: 'Projects',
-        },
-        {
-          key: 'overview',
-          tab: 'Overview',
-        },
-      ];
+      }, [subProjects, userId, userPrivileges, innerActiveTab]);
 
       const data : Array<any> = [];
 
@@ -347,7 +353,7 @@ const Projects: React.FC = () => {
           }
         };
 
-      const notesContentList: Record<string, React.ReactNode> = {
+      const contentList: Record<string, React.ReactNode> = {
         projects: <Table size="small" rowKey="id" bordered columns={projectColumns} dataSource={projectsData} expandable={expandableProps} /> ,
         overview: <div style={{marginRight: '16px'}}><ReactApexChart options={options} series={series} type="rangeBar" height={450} /></div>
       }
@@ -357,10 +363,10 @@ const Projects: React.FC = () => {
         bodyStyle={{padding: '0px'}}
         activeTabKey={activeTab}
         tabList={tabList}
-        onTabChange={(key) => { setactiveTab(key); }}
+        onTabChange={(key) => { setActiveTab(key); }}
         >
              {contextHolder}
-             {notesContentList[activeTab]}
+             {contentList[activeTab]}
         
      </Card>)
 }

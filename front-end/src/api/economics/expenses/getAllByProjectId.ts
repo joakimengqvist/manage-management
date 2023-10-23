@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "../../endpoints";
 
-export const getAllProjectExpensesByProjectId = async (userId : string, projectId : string) => {
+export const getAllExpensesByProjectId = async (userId : string, projectId : string) => {
     const payload = {
         id: projectId,
     };
@@ -15,7 +15,7 @@ export const getAllProjectExpensesByProjectId = async (userId : string, projectI
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch(ENDPOINTS.GetAllProjectIncomesByProjectId, body)
+    const response = await fetch(ENDPOINTS.GetAllIncomesByProjectId, body)
       .then(response => { 
         return response.json()
       })

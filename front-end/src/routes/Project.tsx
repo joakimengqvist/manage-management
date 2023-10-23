@@ -8,11 +8,7 @@ const ProjectDetails: React.FC = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges)
     return (
         <div style={{padding: '12px 8px'}}>
-            {hasPrivilege(userPrivileges, PRIVILEGES.project_read) &&
-                <div style={{padding: '4px'}}>
-                    <Project />
-                </div>
-            }
+            {hasPrivilege(userPrivileges, PRIVILEGES.project_read) && <Project />}
         </div>
     )
 

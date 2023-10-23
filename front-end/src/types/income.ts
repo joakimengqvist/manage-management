@@ -15,6 +15,6 @@ export type IncomeObject = {
 	status: PaymentStatusTypes
 	created_by: string
 	created_at: any
-	modified_by: any
-	modified_at: any
+	updated_by: any
+	updated_at: any
 }

@@ -414,12 +414,9 @@ func (p *PostgresSubProject) UpdateSubProject(updatedByUserId string) error {
 		start_date = $5,
 		due_date = $6,
 		estimated_duration = $7,
-		notes = $8,
-		updated_at = $9,
-		updated_by = $10,
-		invoices = $11,
-		incomes = $12,
-		expenses = $13
+		updated_at = $8,
+		updated_by = $9
+		where id = $10
 	`
 
 	_, err := db.ExecContext(ctx, stmt,
@@ -430,12 +427,9 @@ func (p *PostgresSubProject) UpdateSubProject(updatedByUserId string) error {
 		p.StartDate,
 		p.DueDate,
 		p.EstimatedDuration,
-		p.Notes,
 		time.Now(),
 		updatedByUserId,
-		p.Invoices,
-		p.Incomes,
-		p.Expenses,
+		p.ID,
 	)
 
 	if err != nil {

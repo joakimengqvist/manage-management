@@ -18,11 +18,7 @@ const ProjectDetails: React.FC = () => {
                     </div>
                 </Col>
                 <Col span={24}>
-                {hasPrivilege(userPrivileges, PRIVILEGES.sub_project_read) &&
-                    <div style={{padding: '4px'}}>
-                        <SubProjects />
-                    </div>
-                }   
+                {hasPrivilege(userPrivileges, PRIVILEGES.sub_project_read) && <SubProjects />}   
                 </Col>
             </Row>
         </div>

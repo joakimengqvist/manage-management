@@ -7,11 +7,7 @@ import (
 	"net/http"
 )
 
-// ----------------------------------------------------
-// --------- START OF CREATE PROJECT EXPENSE  ---------
-// ----------------------------------------------------
-
-func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) {
+func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_write")
@@ -25,7 +21,7 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var requestPayload data.NewProjectExpense
+	var requestPayload data.NewExpense
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -48,35 +44,72 @@ func (app *Config) CreateProjectExpense(w http.ResponseWriter, r *http.Request) 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request) {
+func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
-	authenticated, err := app.CheckPrivilege(w, userId, "economics_read")
+	authenticated, err := app.CheckPrivilege(w, userId, "economics_write")
 	if err != nil {
-		fmt.Println("GetAllProjectExpenses - authenticated error", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
-		fmt.Println("GetAllProjectExpenses - not authenticated")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
-	expenses, err := data.GetAllProjectExpenses()
+	var expense data.Expense
+
+	err = app.readJSON(w, r, &expense)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = expense.UpdateExpense(userId)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update expense: "+err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("updated expense with Id: %s", fmt.Sprint(expense.ID)),
+		Data:    expense,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "economics_read")
+	if err != nil {
+		fmt.Println("GetAllExpenses - authenticated error", err)
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		fmt.Println("GetAllExpenses - not authenticated")
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	expenses, err := data.GetAllExpenses()
 	if err != nil {
 		fmt.Println("GetAllProjectExpenses - expenses error", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	var expensesSlice []data.ProjectExpense
+	var expensesSlice []data.Expense
 	for _, expensesPtr := range expenses {
 		expense := *expensesPtr
 
-		returnedSlice := data.ProjectExpense{
-			ExpenseID:       expense.ExpenseID,
+		returnedSlice := data.Expense{
+			ID:              expense.ID,
 			ProjectID:       expense.ProjectID,
 			ExpenseDate:     expense.ExpenseDate,
 			ExpenseCategory: expense.ExpenseCategory,
@@ -89,8 +122,8 @@ func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request)
 			PaymentMethod:   expense.PaymentMethod,
 			CreatedBy:       expense.CreatedBy,
 			CreatedAt:       expense.CreatedAt,
-			ModifiedBy:      expense.ModifiedBy,
-			ModifiedAt:      expense.ModifiedAt,
+			UpdatedBy:       expense.UpdatedBy,
+			UpdatedAt:       expense.UpdatedAt,
 		}
 
 		expensesSlice = append(expensesSlice, returnedSlice)
@@ -106,15 +139,7 @@ func (app *Config) GetAllProjectExpenses(w http.ResponseWriter, r *http.Request)
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// ---- END OF GET ALL PROJECT EXPENSES ---------------
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// -- START OF GET ALL PROJECT EXPENSES (project ID) --
-// ----------------------------------------------------
-
-func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Request) {
 
 	var requestPayload IDpayload
 
@@ -136,18 +161,18 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 		return
 	}
 
-	expenses, err := data.GetAllProjectExpensesByProjectId(requestPayload.ID)
+	expenses, err := data.GetAllExpensesByProjectId(requestPayload.ID)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	var expensesSlice []data.ProjectExpense
+	var expensesSlice []data.Expense
 	for _, expensesPtr := range expenses {
 		expense := *expensesPtr
 
-		returnedSlice := data.ProjectExpense{
-			ExpenseID:       expense.ExpenseID,
+		returnedSlice := data.Expense{
+			ID:              expense.ID,
 			ProjectID:       expense.ProjectID,
 			ExpenseDate:     expense.ExpenseDate,
 			ExpenseCategory: expense.ExpenseCategory,
@@ -160,8 +185,8 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 			PaymentMethod:   expense.PaymentMethod,
 			CreatedBy:       expense.CreatedBy,
 			CreatedAt:       expense.CreatedAt,
-			ModifiedBy:      expense.ModifiedBy,
-			ModifiedAt:      expense.ModifiedAt,
+			UpdatedBy:       expense.UpdatedBy,
+			UpdatedAt:       expense.UpdatedAt,
 		}
 
 		expensesSlice = append(expensesSlice, returnedSlice)
@@ -176,15 +201,7 @@ func (app *Config) GetAllProjectExpensesByProjectId(w http.ResponseWriter, r *ht
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// --- END OF GET ALL PROJECT EXPENSES (project ID) ---
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// -- START OF GET PROJECT EXPENSE (ID) ---------------
-// ----------------------------------------------------
-
-func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request) {
+func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
@@ -211,8 +228,8 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	returnedUser := data.ProjectExpense{
-		ExpenseID:       expense.ExpenseID,
+	returnedUser := data.Expense{
+		ID:              expense.ID,
 		ProjectID:       expense.ProjectID,
 		ExpenseDate:     expense.ExpenseDate,
 		ExpenseCategory: expense.ExpenseCategory,
@@ -225,19 +242,15 @@ func (app *Config) GetProjectExpenseById(w http.ResponseWriter, r *http.Request)
 		PaymentMethod:   expense.PaymentMethod,
 		CreatedBy:       expense.CreatedBy,
 		CreatedAt:       expense.CreatedAt,
-		ModifiedBy:      expense.ModifiedBy,
-		ModifiedAt:      expense.ModifiedAt,
+		UpdatedBy:       expense.UpdatedBy,
+		UpdatedAt:       expense.UpdatedAt,
 	}
 
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Fetched expense by id successfull: %s", expense.ExpenseID),
+		Message: fmt.Sprintf("Fetched expense by id successfull: %s", expense.ID),
 		Data:    returnedUser,
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ----------------------------------------------------
-// -- END OF GET PROJECT EXPENSE (ID) -----------------
-// ----------------------------------------------------

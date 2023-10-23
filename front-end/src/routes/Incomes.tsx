@@ -32,8 +32,7 @@ const PrivilegeDetails: React.FC = () => {
     
     return (
         <div style={{padding: '12px 8px'}}>
-            <div style={{padding: '4px'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '12px'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '12px'}}>
                 <Select
                         defaultValue={projectOptions[0].value}
                         style={{ width: 300 }}
@@ -41,9 +40,8 @@ const PrivilegeDetails: React.FC = () => {
                         onSelect={onSelectProject}
                 />
                 <Button type="primary" onClick={() => navigate("/create-income")}>Create new income</Button>
-                </div>
-                <Incomes project={project} />
             </div>
+            <Incomes project={project} />
         </div>
     )
 

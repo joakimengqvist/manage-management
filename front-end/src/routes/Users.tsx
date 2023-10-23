@@ -12,19 +12,12 @@ const UsersDetails: React.FC = () => {
         <div style={{padding: '12px 8px'}}>
             <Row>
                 <Col span={16}>
-                {hasPrivilege(userPrivileges, PRIVILEGES.user_read) &&
-                    <div style={{padding: '4px'}}>
-                        <Users />
+                    <div style={{paddingRight: '12px'}}>
+                        {hasPrivilege(userPrivileges, PRIVILEGES.user_read) && <Users />}
                     </div>
-                }
                 </Col>
                 <Col span={8}>
-                    {hasPrivilege(userPrivileges, PRIVILEGES.user_write) &&
-                        <div style={{padding: '4px'}}>
-                            <CreateUser />
-                        </div>
-                    }
-
+                    {hasPrivilege(userPrivileges, PRIVILEGES.user_write) && <CreateUser />}
                 </Col>
             </Row>
         </div>

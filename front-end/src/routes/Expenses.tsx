@@ -32,7 +32,6 @@ const ExpensesRoute: React.FC = () => {
     
     return (
         <div style={{padding: '12px 8px'}}>
-            <div style={{padding: '4px'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '12px'}}>
                 <Select
                         defaultValue={projectOptions[0].value}
@@ -43,7 +42,6 @@ const ExpensesRoute: React.FC = () => {
                 <Button type="primary" onClick={() => navigate("/create-expense")}>Create new expense</Button>
                 </div>
                 <Expenses project={project} />
-            </div>
         </div>
     )
 

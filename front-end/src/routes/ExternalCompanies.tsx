@@ -33,18 +33,16 @@ const ExternalCompaniesRoute: React.FC = () => {
     
     return (
         <div style={{padding: '12px 8px'}}>
-            <div style={{padding: '4px'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '12px'}}>
-                <Select
-                        defaultValue={projectOptions[0].value}
-                        style={{ width: 300 }}
-                        options={projectOptions}
-                        onSelect={onSelectProject}
-                />
-                <Button type="primary" onClick={() => navigate("/create-external-company")}>Create new external company</Button>
-                </div>
-                <ExternalCompanies project={project} />
+            <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '12px'}}>
+            <Select
+                    defaultValue={projectOptions[0].value}
+                    style={{ width: 300 }}
+                    options={projectOptions}
+                    onSelect={onSelectProject}
+            />
+            <Button type="primary" onClick={() => navigate("/create-external-company")}>Create new external company</Button>
             </div>
+            <ExternalCompanies project={project} />
         </div>
     )
 

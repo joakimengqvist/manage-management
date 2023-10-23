@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "../../endpoints";
 
-export const updateProjectIncome = async (
+export const updateIncome = async (
     id: string,
     project_id: string,
     income_date: string,
@@ -27,7 +27,7 @@ export const updateProjectIncome = async (
         currency: currency,
         payment_method: payment_method,
         created_by: created_by,
-        modified_by: created_by,
+        updated_by: created_by,
     };
 
     const headers = new Headers();
@@ -40,7 +40,7 @@ export const updateProjectIncome = async (
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch(ENDPOINTS.UpdateProjectIncome, body)
+    const response = await fetch(ENDPOINTS.UpdateIncome, body)
       .then(response => { 
         return response.json()
       })

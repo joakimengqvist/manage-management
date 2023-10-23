@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
-import { createProjectIncome } from '../../../api/economics/incomes/create';
+import { createIncome } from '../../../api/economics/incomes/create';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
 
 const { Title, Text } = Typography;
@@ -63,7 +63,7 @@ const CreateProjectIncome: React.FC = () => {
     const onChangeIncomeStatus = (value : string) => setIncomeStatus(value);
 
     const onSubmit = () => {
-        createProjectIncome(
+        createIncome(
             project,
             incomeDate,
             incomeCategory,

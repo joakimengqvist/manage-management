@@ -1,27 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
-import { Col, DatePicker, Row, Typography } from 'antd';
-import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { createSubProject } from '../../api/subProjects/create';
+import { useEffect, useState } from 'react';
+import { Button, Col, DatePicker, Popconfirm, Row, Typography } from 'antd';
+import { Input, Space, Card, notification, Select } from 'antd';
+import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
-import { appendProject } from '../../redux/applicationDataSlice';
 import { subProjectStatusOptions } from '../economics/options';
+import { updateSubProject } from '../../api/subProjects/update';
+import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
+import { SubProject } from '../../types/subProject';
+import { deleteSubProject } from '../../api/subProjects/delete';
+import { hasPrivilege } from '../../helpers/hasPrivileges';
+import { PRIVILEGES } from '../../enums/privileges';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
-const CreateSubProject = () => {
-    const dispatch = useDispatch();
+const UpdateSubProject = ({ subProject, setEditing } : { subProject : SubProject, setEditing : (edit :boolean) => void}) => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
+    const userPrivileges = useSelector((state : State) => state.user.privileges);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('');
     const [priority, setPriority] = useState(0);
-    const [startDate, setStartDate] = useState('');
-    const [dueDate, setDueDate] = useState('');
+    const [startDate, setStartDate] = useState<any>('');
+    const [dueDate, setDueDate] = useState<any>('');
     const [estimatedDuration, setEstimatedDuration] = useState(0);
+
+    useEffect(() => {
+        setName(subProject.name);
+        setDescription(subProject.description);
+        setStatus(subProject.status);
+        setPriority(subProject.priority);
+        setStartDate(subProject.start_date);
+        setDueDate(subProject.due_date);
+        setEstimatedDuration(subProject.estimated_duration);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
     const onHandleDescriptionChange = (event : any) => setDescription(event.target.value);
@@ -40,8 +56,9 @@ const CreateSubProject = () => {
     }
 
     const onSubmit = () => {
-        createSubProject(
+        updateSubProject(
             userId, 
+            subProject.id,
             name, 
             status, 
             description, 
@@ -49,14 +66,10 @@ const CreateSubProject = () => {
             startDate, 
             dueDate, 
             estimatedDuration, 
-            [],
-            [],
-            [],
-            [],
         ).then(response => {
             if (response?.error) {
                 api.error({
-                    message: `Create subProject failed`,
+                    message: `updating sub project failed`,
                     description: response.message,
                     placement: 'bottom',
                     duration: 1.4
@@ -68,15 +81,10 @@ const CreateSubProject = () => {
                 placement: 'bottom',
                 duration: 1.4
                 });
-            dispatch(appendProject({
-                id: response.data,
-                name: name,
-                status: status,
-            }))
         })
         .catch(error => {
             api.error({
-                message: `Error deleting privilege`,
+                message: `Error updating sub project`,
                 description: error.toString(),
                 placement: 'bottom',
                 duration: 1.4
@@ -84,18 +92,64 @@ const CreateSubProject = () => {
         })
     }
 
+    const onClickdeleteProject = async () => {
+        await deleteSubProject(userId, subProject.id)
+          .then(response => {
+            if (response?.error) {
+              api.error({
+                  message: `Deleted project failed`,
+                  description: response.message,
+                  placement: 'bottom',
+                  duration: 1.4
+                });
+              return
+            }
+            api.info({
+              message: response.message,
+              placement: "bottom",
+              duration: 1.2,
+            });
+          })
+          .catch((error) => {
+            api.error({
+              message: `Error deleting project`,
+              description: error.toString(),
+              placement: "bottom",
+              duration: 1.4,
+            });
+          });
+      };
+
   return (
-        <Card style={{maxWidth: '800px'}}>
+        <>
             {contextHolder}
-            <Row>
-                <Col>
-                <Title level={4}>Create Project</Title>
+            <Row >
+                <Col span={24}>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <Title level={4}>Sub project</Title>
+                    <div style={{display: 'flex', gap: '8px'}}>
+                    {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) && (
+                  <Popconfirm
+                      placement="top"
+                      title="Are you sure?"
+                      description={`Do you want to delete user ${name}`}
+                      onConfirm={onClickdeleteProject}
+                      icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                      okText="Yes"
+                      cancelText="No"
+                  >
+                      <Button danger type="link"><DeleteOutlined /></Button>
+                  </Popconfirm>
+              )}
+                        <Button onClick={() => setEditing(false)}>Close</Button>
+                        <Button type="primary" onClick={onSubmit}>Save</Button>
+                    </div>
+                    </div>
                 </Col>
             </Row>
             <Row>
                 <Col span={12}>
                 <Space direction="vertical" style={{width: '100%', paddingRight: '20px'}}>
-                
                 <Text strong>Project name</Text>
                 <Input 
                     placeholder="Project name" 
@@ -158,18 +212,8 @@ const CreateSubProject = () => {
                 </Space>
                 </Col>
             </Row>
-    
-            <Row>
-                <Col span={24}>
-                <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '20px'}}>
-                    <Button type="primary" onClick={onSubmit}>Create sub project</Button>
-                </div>
-                </Col>
-            </Row>
-             
- 
-        </Card>
+        </>
   );
 };
 
-export default CreateSubProject;
+export default UpdateSubProject;

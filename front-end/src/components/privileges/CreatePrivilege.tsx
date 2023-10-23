@@ -51,7 +51,7 @@ const CreatePrivilege: React.FC = () => {
     };
 
   return (
-        <Card style={{maxWidth: '400px'}}>
+        <Card>
             {contextHolder}
             <Space direction="vertical" style={{width: '100%'}}>
                 <Title level={4}>Create privilege</Title>

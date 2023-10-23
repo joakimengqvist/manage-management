@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
-import { createProjectExpense } from '../../../api/economics/expenses/create';
+import { createExpense } from '../../../api/economics/expenses/create';
 import { paymentMethodOptions, IncomeAndExpenseStatusOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseCategoryOptions } from '../options';
 
 const { Title, Text } = Typography;
@@ -61,7 +61,7 @@ const CreateProjectExpense: React.FC = () => {
     const onChangeExpenseStatus = (value : any) => setExpenseStatus(value);
 
     const onSubmit = () => {
-        createProjectExpense(
+        createExpense(
             project,
             expenseDate,
             expenseCategory,

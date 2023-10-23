@@ -15,7 +15,7 @@ export const getIncomeById = async (userId : string, id : string) => {
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch(ENDPOINTS.GetProjectIncomeById, body)
+    const response = await fetch(ENDPOINTS.GetIncomeById, body)
       .then(response => { 
         return response.json()
       })

@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
-import { getAllProjectIncomes } from '../../../api/economics/incomes/getAll';
+import { getAllIncomes } from '../../../api/economics/incomes/getAll';
 import { ZoomInOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjectIncomesByProjectId } from '../../../api/economics/incomes/getAllByProjectId';
+import { getAllIncomesByProjectId } from '../../../api/economics/incomes/getAllByProjectId';
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
@@ -48,9 +48,9 @@ const calculateTotalAmountAndTax = (incomes: IncomeObject[], getVendorName : (id
   }
 
 type IncomeObject = {
-	income_id: string,
+	id: string,
 	project_id: string,
-    income_date: any,
+  income_date: any,
 	income_category: string,
 	vendor: string,
 	description: string,
@@ -61,8 +61,8 @@ type IncomeObject = {
 	payment_method: string,
 	created_by: string,
 	created_at: any,
-	modified_by: any,
-	modified_at: any
+	updated_by: any,
+	updated_at: any
 }
 
 const incomesTabList = [
@@ -131,13 +131,13 @@ const Income = ({ project } : { project: string }) => {
 
     useEffect(() => {
         if (loggedInUserId && project === 'all') {
-            getAllProjectIncomes(loggedInUserId).then(response => {
+            getAllIncomes(loggedInUserId).then(response => {
                 setIncomes(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
         } else if (loggedInUserId) {
-            getAllProjectIncomesByProjectId(loggedInUserId, project).then(response => {
+            getAllIncomesByProjectId(loggedInUserId, project).then(response => {
                 setIncomes(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
@@ -157,7 +157,7 @@ const Income = ({ project } : { project: string }) => {
             payment_method: <Text>{income.payment_method}</Text>,
             status: <ExpenseAndIncomeStatus status={income.status}/>,
             income_date: <Text>{formatDateTimeToYYYYMMDDHHMM(income.income_date)}</Text>,
-            operations: <Button type="link" onClick={() => navigate(`/income/${income.income_id}`)}><ZoomInOutlined /></Button>
+            operations: <Button type="link" onClick={() => navigate(`/income/${income.id}`)}><ZoomInOutlined /></Button>
           }
         })
         return incomesListItem;

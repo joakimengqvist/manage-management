@@ -8,11 +8,7 @@ const UserDetails: React.FC = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges)
     return (
         <div style={{padding: '12px 8px'}}>
-            {hasPrivilege(userPrivileges, PRIVILEGES.user_read) &&
-            <div style={{padding: '4px'}}>
-                <User />
-            </div>
-            }
+            {hasPrivilege(userPrivileges, PRIVILEGES.user_read) && <User />}
         </div>
     )
 

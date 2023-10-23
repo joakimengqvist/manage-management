@@ -8,7 +8,7 @@ import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
 import { ExpenseObject } from '../../../types/expense';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
-import { updateProjectExpense } from '../../../api/economics/expenses/update';
+import { updateExpense } from '../../../api/economics/expenses/update';
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -78,9 +78,9 @@ const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObjec
     const onChangeExpenseStatus = (value : string) => setExpenseStatus(value);
 
     const onSubmit = () => {
-        updateProjectExpense(
-            project,
+        updateExpense(
             expense.id,
+            project,
             expenseDate,
             expenseCategory,
             vendor,

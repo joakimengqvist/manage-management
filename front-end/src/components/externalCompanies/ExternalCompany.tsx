@@ -30,7 +30,7 @@ const ExternalCompanyDetails: React.FC = () => {
     const { id } =  useParams(); 
     const externalCompanyId = id || '';
 
-    const getUserName = (userId : string) => users.find(user => user.id === userId).first_name;
+    const getUserName = (userId : string) => users.find(user => user.id === userId)?.first_name;
 
     useEffect(() => {
         if (loggedInUser.id) {

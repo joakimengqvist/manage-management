@@ -15,7 +15,7 @@ export const getAllExpensesByProjectId = async (userId : string, projectId : str
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch(ENDPOINTS.GetAllIncomesByProjectId, body)
+    const response = await fetch(ENDPOINTS.GetAllExpensesByProjectId, body)
       .then(response => { 
         return response.json()
       })

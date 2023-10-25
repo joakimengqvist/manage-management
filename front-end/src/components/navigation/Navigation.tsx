@@ -64,8 +64,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
       getItem('Incomes', 'sub3-2', <FundOutlined />, () => navigate("/incomes")),
   ]),
     getItem('External companies', '4', <BankOutlined />, () => navigate("/external-companies")),
-    getItem('Testing', '5', <FunctionOutlined />, () => navigate("/test-endpoints")),
-    getItem('Services', '6', <ClusterOutlined />, () => navigate("/services")),
+    getItem('Services', '5', <ClusterOutlined />, () => navigate("/services")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 

@@ -7,7 +7,6 @@ import './App.css';
 import HeaderMenu from './components/header/HeaderMenu';
 import Navigation from './components/navigation/Navigation';
 import Login from './routes/login';
-import TestingEndpoints from './routes/TestingEndpoints';
 import UsersDetails from './routes/Users';
 import User from './routes/User';
 import Projects from './routes/Projects';
@@ -101,7 +100,6 @@ const App: React.FC = () => {
             <Route index element={<div>Home</div>} />
 
             <Route path="/my-details" element={<MyPage />} />
-            <Route path="/test-endpoints" element={<TestingEndpoints />} />
             <Route path="/login" element={<Login />} />
 
             <Route path="/user/:id" element={<User />} />

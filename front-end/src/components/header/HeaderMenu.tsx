@@ -14,9 +14,6 @@ const headerTitle = (pathName : string) => {
     if (pathName.includes('my-details')) {
         return 'My details'
     }
-    if (pathName.includes('test-endpoints')) {
-        return 'Testing functionality of endpoints'
-    }
     if (pathName.includes('/user/')) {
         return 'User details'
     }

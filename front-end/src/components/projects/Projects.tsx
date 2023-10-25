@@ -240,8 +240,8 @@ const Projects: React.FC = () => {
                 <Link style={{marginRight: '8px'}} href={`/sub-project/${subProjectId}`}>{getSubProjectName(subProjectId)}</Link>)
             ),
             operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
-                <Button style={{padding:'8px'}} type="link" onClick={() => openModal(project.id)}><SettingOutlined /></Button>
-                <Link style={{padding:'8px'}} href={`/project/${project.id}`}><ZoomInOutlined /></Link>
+                <Button style={{ padding: '4px'}} type="link" onClick={() => openModal(project.id)}><SettingOutlined /></Button>
+                <Link style={{padding:'5px'}} href={`/project/${project.id}`}><ZoomInOutlined /></Link>
                 {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&
                 <Popconfirm
                     placement="top"
@@ -252,7 +252,7 @@ const Projects: React.FC = () => {
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button style={{padding:'8px'}} danger type="link"><DeleteOutlined /></Button>
+                    <Button style={{ padding: '4px' }} danger type="link"><DeleteOutlined /></Button>
                 </Popconfirm>
                 }
             </div>),
@@ -300,7 +300,7 @@ const Projects: React.FC = () => {
                     priority: <Priority priority={subProject.priority} />,
                     estimated_duration: <EstimatedDuration duration={subProject.estimated_duration} />,
                     operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
-                        <Link href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
+                        <Link style={{padding: '5px'}} href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
                         {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&
                             <Popconfirm
                                 placement="top"
@@ -311,7 +311,7 @@ const Projects: React.FC = () => {
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button danger type="link"><DeleteOutlined /></Button>
+                                <Button style={{padding: '4px'}} danger type="link"><DeleteOutlined /></Button>
                             </Popconfirm>
                         }
                     </div>),
@@ -344,34 +344,34 @@ const Projects: React.FC = () => {
                     }
                   ];
 
-                  const options =  {
+                const options =  {
                     chart: {
-                      height: 450,
-                      type: 'rangeBar'
+                        height: 450,
+                        type: 'rangeBar'
                     },
                     plotOptions: {
-                      bar: {
-                        horizontal: true,
-                        barHeight: '80%'
-                      }
+                        bar: {
+                            horizontal: true,
+                            barHeight: '80%'
+                        }
                     },
                     xaxis: {
-                      type: 'datetime'
+                        type: 'datetime'
                     },
                     stroke: {
-                      width: 1
+                        width: 1
                     },
                     fill: {
-                      type: 'solid',
-                      opacity: 0.6
+                        type: 'solid',
+                        opacity: 0.6
                     },
                     legend: {
-                      position: 'top',
-                      horizontalAlign: 'left'
+                        position: 'top',
+                        horizontalAlign: 'left'
                     }
-                  };
+                };
 
-                  const contentList: Record<string, React.ReactNode> = {
+                const contentList: Record<string, React.ReactNode> = {
                     sub_projects: (
                         <Table 
                             size="small" 

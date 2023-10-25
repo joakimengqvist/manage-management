@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePrivilege } from '../../api/privileges/delete';
-import { Table, Button, Popconfirm, notification, Tag } from 'antd';
+import { Table, Button, Popconfirm, notification, Tag, Typography } from 'antd';
 import { State } from '../../types/state';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+
+const { Link } = Typography;
 
 const columns = [
     {
@@ -29,13 +30,10 @@ const columns = [
 
 const Privileges: React.FC = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const userPrivileges = useSelector((state : State) => state.user.privileges);
     const privileges = useSelector((state : State) => state.application.privileges);
-
-    const navigateToPrivilege = (id : string) => navigate(`/privilege/${id}`);
 
     const onClickdeletePrivilege = async (id : string) => {
         await deletePrivilege(userId, id)
@@ -71,7 +69,7 @@ const Privileges: React.FC = () => {
             name: <Tag color="blue" style={{cursor: 'pointer'}} onClick={() => navigateToPrivilege(privilege.id)}>{privilege.name}</Tag>,
             description: privilege.description,
             operations: (<div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                <Button type="link" onClick={() => navigateToPrivilege(privilege.id)}><ZoomInOutlined /></Button>
+                <Link style={{padding: '5px'}} href={`/privilege/${privilege.id}`}><ZoomInOutlined /></Link>
                 {hasPrivilege(userPrivileges, PRIVILEGES.privilege_sudo) &&
                     <Popconfirm
                         placement="top"
@@ -82,7 +80,7 @@ const Privileges: React.FC = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button danger type="link"><DeleteOutlined /></Button>
+                        <Button style={{ padding: '4px' }} danger type="link"><DeleteOutlined /></Button>
                     </Popconfirm>
                 }
             </div>)

@@ -204,8 +204,8 @@ const SubProjects: React.FC = () => {
             projects: subProject.projects && subProject.projects.map((id : string) => (<Link style={{paddingLeft: '8px', paddingRight: '8px'}} href={`/project/${id}`}>{getProjectName(id)}</Link>)), 
             operations: (
                 <div  style={{display: 'flex', justifyContent: 'flex-end'}}>
-                    <Button style={{padding:'8px'}} type="link" onClick={() => openModal(subProject.id)}><SettingOutlined /></Button>
-                    <Link style={{padding:'8px'}} href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
+                    <Button style={{ padding: '4px' }}  type="link" onClick={() => openModal(subProject.id)}><SettingOutlined /></Button>
+                    <Link style={{padding:'5px'}} href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
                     {hasPrivilege(userPrivileges, PRIVILEGES.sub_project_sudo) &&
                     <Popconfirm
                         placement="top"
@@ -216,7 +216,7 @@ const SubProjects: React.FC = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button danger style={{padding:'8px'}} type="link"><DeleteOutlined /></Button>
+                        <Button danger style={{ padding: '4px' }}  type="link"><DeleteOutlined /></Button>
                     </Popconfirm>
                     }
                 </div>

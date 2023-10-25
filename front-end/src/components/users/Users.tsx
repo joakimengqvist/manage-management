@@ -91,22 +91,24 @@ const Users: React.FC = () => {
             first_name: <Link href={ `/user/${user.id}`}>{user.first_name}</Link>,
             last_name: user.last_name,
             email: user.email,
-            operations: (<>
-                <Link href={ `/user/${user.id}`}><ZoomInOutlined /></Link>
-                {hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) &&
-                    <Popconfirm
-                        placement="top"
-                        title="Are you sure?"
-                        description={`Do you want to delete user ${user.first_name}`}
-                        onConfirm={() => onClickdeleteUser(user.id)}
-                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button danger type="link"><DeleteOutlined /></Button>
-                    </Popconfirm>
-                }
-            </>)
+            operations: (
+                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                    <Link style={{padding: '5px'}} href={ `/user/${user.id}`}><ZoomInOutlined /></Link>
+                    {hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) &&
+                        <Popconfirm
+                            placement="top"
+                            title="Are you sure?"
+                            description={`Do you want to delete user ${user.first_name}`}
+                            onConfirm={() => onClickdeleteUser(user.id)}
+                            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button style={{ padding: '4px' }} danger type="link"><DeleteOutlined /></Button>
+                        </Popconfirm>
+                    }
+                </div>
+            )
         }
     });
 

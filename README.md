@@ -1,7 +1,6 @@
 # manage-management
 A hobby project for learning - An application for project and employee management.
 
-# manage-management
 Warning for developers who loves to reuse code, this application has a very repetitive structure. Components and functionality is only made modular if there is a clear beneficial purpose for it, and does not cause any parts of the application being less readable. The sole reason behind this is to keep the codebase as simple as possible.
 
 # prerequisites

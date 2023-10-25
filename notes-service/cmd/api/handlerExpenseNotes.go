@@ -30,10 +30,6 @@ type ReturnedExpenseNotes struct {
 	Notes []data.ExpenseNote `json:"notes"`
 }
 
-// -------------------------------------------
-// ------- START OF CREATE EXPENSE NOTE  -----
-// -------------------------------------------
-
 func (app *Config) CreateExpenseNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewExpenseNote
 
@@ -78,14 +74,6 @@ func (app *Config) CreateExpenseNote(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF CREATE EXPENSE NOTE  ------------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET ALL EXPENSE NOTES (userId) ------
-// ------------------------------------------------
 
 func (app *Config) GetAllExpenseNotesByUserId(w http.ResponseWriter, r *http.Request) {
 
@@ -143,14 +131,6 @@ func (app *Config) GetAllExpenseNotesByUserId(w http.ResponseWriter, r *http.Req
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET ALL EXPENSE NOTES (userId) -------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET ALL EXPENSE NOTES (expenseId) --
-// ------------------------------------------------
-
 func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -206,14 +186,6 @@ func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET ALL EXPENSE NOTES (expenseId) ----
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET EXPENSE NOTE BY ID -------------
-// ------------------------------------------------
-
 func (app *Config) GetExpenseNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -262,14 +234,6 @@ func (app *Config) GetExpenseNoteById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET Expense NOTE BY ID ---------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF UPDATE Expense NOTE ----------------
-// ------------------------------------------------
-
 func (app *Config) UpdateExpenseNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateExpenseNotePayload
 
@@ -316,14 +280,6 @@ func (app *Config) UpdateExpenseNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF UPDATE EXPENSE NOTE ------------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF DELETE EXPENSE NOTE ----------------
-// ------------------------------------------------
-
 func (app *Config) DeleteExpenseNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -359,7 +315,3 @@ func (app *Config) DeleteExpenseNote(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF DELETE EXPENSE NOTE ------------------
-// ------------------------------------------------

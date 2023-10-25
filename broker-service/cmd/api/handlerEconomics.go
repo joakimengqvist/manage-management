@@ -74,10 +74,6 @@ type Income struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
-// -------------------------------------------
-// ------ START OF CREATE EXPENSE  -----------
-// -------------------------------------------
-
 func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewExpense
 	err := app.readJSON(w, r, &requestPayload)
@@ -131,14 +127,6 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// ------ END OF CREATE EXPENSE  -------------
-// -------------------------------------------
-
-// -------------------------------------------
-// ------ START OF CREATE INCOME  ------------
-// -------------------------------------------
 
 func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewIncome
@@ -194,14 +182,6 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// ------ END OF CREATE INCOME  --------------
-// -------------------------------------------
-
-// --------------------------------------------------------
-// ------ START OF GET EXPENSES BY PROJECT ID  ------------
-// --------------------------------------------------------
-
 func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -251,14 +231,6 @@ func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// --------------------------------------------------------
-// ------ END OF GET EXPENSES BY PROJECT ID  --------------
-// --------------------------------------------------------
-
-// --------------------------------------------------------
-// ------ START OF GET EXPENSES BY PROJECT ID  ------------
-// --------------------------------------------------------
 
 func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -310,14 +282,6 @@ func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Reque
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// --------------------------------------------------------
-// ------ END OF GET EXPENSES BY PROJECT ID  --------------
-// --------------------------------------------------------
-
-// -------------------------------------------------
-// ------ START OF GET ALL EXPENSES  ---------------
-// -------------------------------------------------
-
 func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -351,14 +315,6 @@ func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------------
-// ------ END OF GET ALL EXPENSES  -----------------
-// -------------------------------------------------
-
-// -------------------------------------------------
-// ------ START OF GET ALL INCOMES  ----------------
-// -------------------------------------------------
-
 func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -391,14 +347,6 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------------
-// ------ END OF GET ALL PROJECT INCOMES  ----------
-// -------------------------------------------------
-
-// -------------------------------------------------
-// ------ START OF UPDATE PROJECT EXPENSE  ---------
-// -------------------------------------------------
 
 func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	var requestPayload Expense
@@ -454,14 +402,6 @@ func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF UPDATE EXPENSE  ----------
-// -------------------------------------------
-
-// -------------------------------------------
-// ------ START OF UPDATE INCOME  ------------
-// -------------------------------------------
-
 func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 	var requestPayload Income
 	err := app.readJSON(w, r, &requestPayload)
@@ -515,14 +455,6 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF UPDATE INCOME  -----------
-// -------------------------------------------
-
-// -------------------------------------------------
-// ------ START OF GET EXPENSE (ID)  ---------------
-// -------------------------------------------------
 
 func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -579,14 +511,6 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------------
-// ------ END OF GET EXPENSE (ID)  -----------------
-// -------------------------------------------------
-
-// -------------------------------------------------
-// ------ START OF GET INCOME (ID)  ----------------
-// -------------------------------------------------
-
 func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -641,7 +565,3 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ----------------------------------------
-// ------ END OF GET INCOME (ID)  ---------
-// ----------------------------------------

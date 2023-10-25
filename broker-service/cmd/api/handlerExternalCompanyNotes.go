@@ -39,10 +39,6 @@ type UpdateExternalCompanyNote struct {
 	Note            string `json:"note"`
 }
 
-// ----------------------------------------------------
-// --------- START OF CREATE EXTERNAL COMPANY NOTE  ---
-// ----------------------------------------------------
-
 func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewExternalCompanyNote
 	err := app.readJSON(w, r, &requestPayload)
@@ -97,14 +93,6 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// ----------------------------------------------------
-// --------- END OF CREATE EXTERNAL COMPANY NOTE  -----
-// ----------------------------------------------------
-
-// -------------------------------------------------
-// --------- START OF UPDATE EXTERNAL NOTE NOTE  ---
-// -------------------------------------------------
-
 func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateExternalCompanyNote
 	err := app.readJSON(w, r, &requestPayload)
@@ -158,14 +146,6 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ----------------------------------------------------
-// --------- END OF UPDATE EXTERNAL COMPANY NOTE  -----
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// --------- START OF GET EXTERNAL COMPANY NOTE (ID) --
-// ----------------------------------------------------
 
 func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -222,14 +202,6 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// --------------------------------------------------------------
-// ---- END OF GET EXTERNAL COMPANY NOTE (ID) -------------------
-// --------------------------------------------------------------
-
-// --------------------------------------------------------------
-// -- START OF GET EXTERNAL COMPANY NOTES (externalCompantId) ---
-// --------------------------------------------------------------
-
 func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -285,14 +257,6 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------------------------
-// --- END OF GET EXTERNAL COMAPNY NOTES (externalCompanyId) ---
-// -------------------------------------------------------------
-
-// -------------------------------------------------------------
-// --- START OF GET EXTERNAL COMAPNY NOTES (userId) ------------
-// -------------------------------------------------------------
-
 func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -343,14 +307,6 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// ----------------------------------------------------
-// --- END OF GET EXTERNAL COMPANY NOTES (userId) -----
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// --- START OF DELETE EXTERNAL COMPANY NOTE (id) -----
-// ----------------------------------------------------
-
 func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -399,7 +355,3 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ----------------------------------------------------
-// --- END OF DELETE EXTERNAL COMPANY NOTE (id) -------
-// ----------------------------------------------------

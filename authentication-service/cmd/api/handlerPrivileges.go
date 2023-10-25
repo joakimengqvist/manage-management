@@ -12,10 +12,6 @@ type NewPrivilege struct {
 	Description string `json:"description"`
 }
 
-type PrivilegeIdPayload struct {
-	ID string `json:"id"`
-}
-
 type UpdatePrivilege struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -99,7 +95,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
-	var requestPayload PrivilegeIdPayload
+	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_read")
@@ -169,7 +165,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
-	var requestPayload PrivilegeIdPayload
+	var requestPayload IDpayload
 
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_sudo")

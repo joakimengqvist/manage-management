@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Button, Col, DatePicker, Popconfirm, Row, Typography } from 'antd';
-import { Input, Space, Card, notification, Select } from 'antd';
+import { Input, Space, notification, Select } from 'antd';
 import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
 import { subProjectStatusOptions } from '../economics/options';

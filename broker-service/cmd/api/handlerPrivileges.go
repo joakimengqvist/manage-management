@@ -26,10 +26,6 @@ type UpdatePrivilege struct {
 	Description string `json:"description"`
 }
 
-// -------------------------------------------
-// --------- START OF GET PRIVILEGES  --------
-// -------------------------------------------
-
 func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[broker-service]"})
@@ -65,14 +61,6 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all privileges success [/auth/get-all-privileges]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF GET PRIVILEGES  ----------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF CREATE PRIVILEGE  ------
-// -------------------------------------------
 
 func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewPrivilege
@@ -132,14 +120,6 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF CREATE USER  -------------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET PRIVILEGE (ID)  ----
-// -------------------------------------------
-
 func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -198,14 +178,6 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF GET PRIVILEGE (ID)  ------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF UPDATE PRIVILEGE  ------
-// -------------------------------------------
-
 func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdatePrivilege
 	err := app.readJSON(w, r, &requestPayload)
@@ -262,14 +234,6 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF UPDATE PRIVILEGE  --------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF DELETE USERS  ----------
-// -------------------------------------------
-
 func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -325,7 +289,3 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF DELETE USER  -------------
-// -------------------------------------------

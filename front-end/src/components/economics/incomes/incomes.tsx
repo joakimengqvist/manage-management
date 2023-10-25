@@ -13,7 +13,7 @@ import { getAllIncomesByProjectId } from '../../../api/economics/incomes/getAllB
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 
 const calculateTotalAmountAndTax = (incomes: IncomeObject[], getVendorName : (id : string) => string) => {
     let totalAmount = 0;
@@ -150,14 +150,14 @@ const Income = ({ project } : { project: string }) => {
       const economicsData: Array<any> = useMemo(() => {
         const incomesListItem = incomes && incomes.map((income : IncomeObject) => {
         return {                    
-            vendor: <Button type="link" onClick={() => navigate(`/external-company/${income.vendor}`)}>{getVendorName(income.vendor)}</Button>,
+            vendor: <Link href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
             description: <Text>{income.description}</Text>,
             cost: <Text>{income.amount} {income.currency}</Text>,
             tax: <Text>{income.tax} {income.currency}</Text>,
             payment_method: <Text>{income.payment_method}</Text>,
             status: <ExpenseAndIncomeStatus status={income.status}/>,
             income_date: <Text>{formatDateTimeToYYYYMMDDHHMM(income.income_date)}</Text>,
-            operations: <Button type="link" onClick={() => navigate(`/income/${income.id}`)}><ZoomInOutlined /></Button>
+            operations: <Link href={`/income/${income.id}`}><ZoomInOutlined /></Link>
           }
         })
         return incomesListItem;

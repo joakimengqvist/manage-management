@@ -2,7 +2,7 @@ import { ENDPOINTS } from "../../endpoints";
 
 export const RemoveSubProjectsProjectConnection = async (userId : string, subProjectIds : Array<string>, projectId : string) => {
     const payload = {
-      project_ids: projectId,
+      project_id: projectId,
       sub_project_ids: subProjectIds,
     };
 

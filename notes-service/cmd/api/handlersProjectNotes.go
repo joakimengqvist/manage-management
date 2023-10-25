@@ -46,15 +46,11 @@ type UpdateUserNotes struct {
 	UserId string `json:"user_id"`
 }
 
-type DeleteNoteIdPayload struct {
+type DeleteProjectNoteIdPayload struct {
 	AuthorId  string `json:"author_id"`
 	NoteId    string `json:"note_id"`
 	ProjectId string `json:"project_id"`
 }
-
-// -------------------------------------------
-// ------- START OF CREATE PROJECT NOTE  -----
-// -------------------------------------------
 
 func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewProjectNote
@@ -137,14 +133,6 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF CREATE PROJECT NOTE  -----------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET ALL PROJECT NOTES (projectId) --
-// ------------------------------------------------
-
 func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -173,7 +161,6 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	notes, err := app.Models.ProjectNote.GetProjectNotesByProjectId(requestPayload.ID)
 	if err != nil {
-		fmt.Print("notes", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -205,14 +192,6 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF GET ALL PROJECT NOTES (projectId) ----
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET ALL PROJECT NOTES (userId) -----
-// ------------------------------------------------
 
 func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Request) {
 
@@ -270,14 +249,6 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET ALL PROJECT NOTES (userId) -------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET PROJECT NOTE BY ID -------------
-// ------------------------------------------------
-
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -327,14 +298,6 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET PROJECT NOTE BY ID ---------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF UPDATE PROJECT NOTE ----------------
-// ------------------------------------------------
-
 func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateProjectNotePayload
 
@@ -382,16 +345,8 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF UPDATE PROJECT NOTE ------------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF DELETE PROJECT NOTE ----------------
-// ------------------------------------------------
-
 func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
-	var requestPayload DeleteNoteIdPayload
+	var requestPayload DeleteProjectNoteIdPayload
 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
@@ -438,14 +393,6 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project note [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF DELETE PROJECT NOTE ------------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF REMOVE PROJECT NOTE FROM PROJECT ---
-// ------------------------------------------------
 
 func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request, noteId string, projectId string) error {
 	deleteProjectNote := UpdateProjectNote{
@@ -496,7 +443,3 @@ func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request,
 
 	return nil
 }
-
-// ------------------------------------------------
-// -- END OF REMOVE PROJECT NOTE FROM PROJECT -----
-// ------------------------------------------------

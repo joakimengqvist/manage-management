@@ -49,6 +49,10 @@ table {
 
 /* Overrides */
 
+body::-webkit-scrollbar{
+    display: none;
+  }
+
 :where(.css-dev-only-do-not-override-nnuwmp).ant-table-wrapper .ant-table.ant-table-small .ant-table-tbody .ant-table-wrapper:only-child .ant-table {
 	margin: 0px !important;
 	padding: 8px !important;

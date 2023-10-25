@@ -30,6 +30,13 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/notes/get-all-notes-by-project-id", app.GetAllProjectNotesByProjectId)
 	mux.Post("/notes/get-all-notes-by-user-id", app.GetAllProjectNotesByUserId)
 
+	mux.Post("/notes/create-sub-project-note", app.CreateSubProjectNote)
+	mux.Get("/notes/get-sub-project-note-by-id", app.GetSubProjectNoteById)
+	mux.Post("/notes/update-sub-project-note", app.UpdateSubProjectNote)
+	mux.Post("/notes/delete-sub-project-note", app.DeleteSubProjectNote)
+	mux.Post("/notes/get-all-sub-project-notes-by-sub-project-id", app.GetAllSubProjectNotesBySubProjectId)
+	mux.Post("/notes/get-all-sub-project-notes-by-user-id", app.GetAllSubProjectNotesByUserId)
+
 	mux.Post("/notes/create-income-note", app.CreateIncomeNote)
 	mux.Get("/notes/get-income-note-by-id", app.GetIncomeNoteById)
 	mux.Post("/notes/update-income-note", app.UpdateIncomeNote)

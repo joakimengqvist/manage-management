@@ -4,6 +4,7 @@ export type Notes = {
 	author_name: string
 	author_email: string
 	project?: string
+	sub_project?: string
     income?: string
     expense?: string
     external_company?: string
@@ -19,6 +20,18 @@ export type ProjectNote = {
 	author_name: string
 	author_email: string
 	project: string
+	title: string
+	note: string
+    created_at: string
+    updated_at: string
+}
+
+export type SubProjectNote = {
+	id: string
+	author_id: string
+	author_name: string
+	author_email: string
+	sub_project: string
 	title: string
 	note: string
     created_at: string

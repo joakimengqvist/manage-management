@@ -28,10 +28,6 @@ type UpdateSubProjectNote struct {
 	SubProjectId string `json:"sub_project_id"`
 }
 
-// -----------------------------------------------
-// --------- START OF CREATE SUB PROJECT  --------
-// -----------------------------------------------
-
 func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -85,14 +81,6 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -----------------------------------------------
-// --------- END OF CREATE SUB PROJECT  ----------
-// -----------------------------------------------
-
-// -----------------------------------------------
-// --------- START OF UPDATE SUB PROJECT  --------
-// -----------------------------------------------
-
 func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -142,14 +130,6 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -----------------------------------------------
-// --------- END OF UPDATE SUB PROJECT  ----------
-// -----------------------------------------------
-
-// -----------------------------------------------
-// --------- START OF DELETE SUB PROJECT  --------
-// -----------------------------------------------
-
 func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -193,14 +173,6 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete subProject [/sub-project/delete-subProject]", Name: "[subProject-service] - Successful deleted subProject"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// -----------------------------------------------
-// --------- END OF DELETE SUB PROJECT  ----------
-// -----------------------------------------------
-
-// -----------------------------------------------
-// --------- START OF GET SUB PROJECT  -----------
-// -----------------------------------------------
 
 func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 
@@ -262,14 +234,6 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -----------------------------------------------
-// --------- END OF GET SUB PROJECT  -------------
-// -----------------------------------------------
-
-// -----------------------------------------------
-// --------- START OF GET ALL SUB PROJECTS  ------
-// -----------------------------------------------
-
 func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -324,14 +288,6 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ----------------------------------------------------
-// --------- END OF GET ALL SUB PROJECTS  -------------
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// --------- START OF GET ALL SUB PROJECTS BY IDS  ----
-// ----------------------------------------------------
 
 func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
@@ -395,14 +351,6 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// --------- END OF GET ALL SUB PROJECTS BY IDS  ------
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// --------- START OF ADD SUB PROJECT NOTES -----------
-// ----------------------------------------------------
-
 func (app *Config) AddSubProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateSubProjectNote
 
@@ -439,14 +387,6 @@ func (app *Config) AddSubProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -----------------------------------------------
-// --------- END OF ADD SUB PROJECT NOTES --------
-// -----------------------------------------------
-
-// -----------------------------------------------
-// --------- START OF REMOVE SUB PROJECT NOTES ---
-// -----------------------------------------------
-
 func (app *Config) RemoveSubProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateSubProjectNote
 
@@ -469,6 +409,7 @@ func (app *Config) RemoveSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	}
 	err = data.DeleteSubProjectNote(requestPayload.SubProjectId, requestPayload.NoteId)
 	if err != nil {
+		fmt.Println("DeleteSubProjectNote", err)
 		app.errorJSON(w, errors.New("failed to delete note from subProject"), http.StatusBadRequest)
 		return
 	}

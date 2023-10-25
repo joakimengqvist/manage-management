@@ -23,6 +23,15 @@ export enum ENDPOINTS {
     GetProjectsByIds = "http://localhost:8080/project/get-projects-by-ids",
     GetAllProjects = "http://localhost:8080/project/get-all-projects",
 
+
+    // PROJECT NOTES
+    CreateProjectNote = "http://localhost:8080/notes/create-project-note",
+    GetProjectNoteById = "http://localhost:8080/notes/get-project-note-by-id",
+    UpdateProjectNote = "http://localhost:8080/notes/update-project-note",
+    GetAllProjectNotesByProjectId = "http://localhost:8080/notes/get-all-project-notes-by-project-id",
+    GetAllProjectNotesByUserId = "http://localhost:8080/notes/get-all-project-notes-by-user-id",
+    DeleteProjectNote = "http://localhost:8080/notes/delete-project-note",
+
     // SUBPROJECTS
     CreateSubProject = "http://localhost:8080/project/create-sub-project",
     UpdateSubProject = "http://localhost:8080/project/update-sub-project",
@@ -37,12 +46,12 @@ export enum ENDPOINTS {
     RemoveSubProjectsProjectConnection = "http://localhost:8080/project/delete-sub-projects-project-connection",
 
     // PROJECT NOTES
-    CreateProjectNote = "http://localhost:8080/notes/create-project-note",
-    GetProjectNoteById = "http://localhost:8080/notes/get-project-note-by-id",
-    UpdateProjectNote = "http://localhost:8080/notes/update-project-note",
-    GetAllProjectNotesByProjectId = "http://localhost:8080/notes/get-all-project-notes-by-project-id",
-    GetAllProjectNotesByUserId = "http://localhost:8080/notes/get-all-project-notes-by-user-id",
-    DeleteProjectNote = "http://localhost:8080/notes/delete-project-note",
+    CreateSubProjectNote = "http://localhost:8080/notes/create-sub-project-note",
+    GetSubProjectNoteById = "http://localhost:8080/notes/get-sub-project-note-by-id",
+    UpdateSubProjectNote = "http://localhost:8080/notes/update-sub-project-note",
+    GetAllSubProjectNotesBySubProjectId = "http://localhost:8080/notes/get-all-sub-project-notes-by-sub-project-id",
+    GetAllSubProjectNotesByUserId = "http://localhost:8080/notes/get-all-sub-project-notes-by-user-id",
+    DeleteSubProjectNote = "http://localhost:8080/notes/delete-sub-project-note",
 
     // INCOMES
     CreateIncome = "http://localhost:8080/economics/create-income",

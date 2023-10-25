@@ -17,10 +17,6 @@ type SubProjectsAndProject struct {
 	SubProjectIds []string `json:"sub_project_ids"`
 }
 
-// ----------------------------------------------------
-// --------- START OF ADD PROJECTS TO SUB PROJECT -----
-// ----------------------------------------------------
-
 func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -60,14 +56,6 @@ func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *htt
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// ----- END OF ADD PROJECTS TO SUB PROJECT -----------
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// ----- START OF REMOVE PROJECTFROM SUB PROJECT -----
-// ----------------------------------------------------
-
 func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ProjectsAndSubProject
 
@@ -105,14 +93,6 @@ func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// ----- START OF REMOVE PROJECTFROM SUB PROJECT -----
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// --------- START OF ADD PROJECTS TO SUB PROJECT -----
-// ----------------------------------------------------
-
 func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *http.Request) {
 	var requestPayload SubProjectsAndProject
 
@@ -149,14 +129,6 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ----------------------------------------------------
-// ----- END OF ADD PROJECTS TO SUB PROJECT -----------
-// ----------------------------------------------------
-
-// ----------------------------------------------------
-// --------- START OF ADD PROJECTS TO SUB PROJECT -----
-// ----------------------------------------------------
-
 func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *http.Request) {
 	var requestPayload SubProjectsAndProject
 
@@ -192,7 +164,3 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ----------------------------------------------------
-// ----- END OF ADD PROJECTS TO SUB PROJECT -----------
-// ----------------------------------------------------

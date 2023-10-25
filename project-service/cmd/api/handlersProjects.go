@@ -18,10 +18,6 @@ type UpdateProjectNote struct {
 	ProjectId string `json:"project_id"`
 }
 
-// -------------------------------------------
-// --------- START OF CREATE PROJECT  --------
-// -------------------------------------------
-
 func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -64,14 +60,6 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[project-service] - Successfully created new project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// -------------------------------------------
-// --------- END OF CREATE PROJECT  ----------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF UPDATE PROJECT  --------
-// -------------------------------------------
 
 func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 
@@ -117,14 +105,6 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -------------------------------------------
-// --------- END OF UPDATE PROJECT  ----------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF DELETE PROJECT  --------
-// -------------------------------------------
-
 func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -168,14 +148,6 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[project-service] - Successful deleted project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// -------------------------------------------
-// --------- END OF DELETE PROJECT  ----------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET PROJECT  -----------
-// -------------------------------------------
 
 func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 
@@ -229,14 +201,6 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -------------------------------------------
-// --------- END OF GET PROJECT  -------------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET ALL PROJECTS  ------
-// -------------------------------------------
-
 func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -285,14 +249,6 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// -------------------------------------------
-// --------- END OF GET ALL PROJECTS  --------
-// -------------------------------------------
-
-// ----------------------------------------------------
-// --------- START OF GET ALL SUB PROJECTS BY IDS  ----
-// ----------------------------------------------------
 
 func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
@@ -350,10 +306,6 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// -------------------------------------------
-// --------- START OF ADD PROJECT NOTES ------
-// -------------------------------------------
-
 func (app *Config) AddProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateProjectNote
 
@@ -390,14 +342,6 @@ func (app *Config) AddProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/create-project-note]", Name: "[project-service] - Successful added project note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// -------------------------------------------
-// --------- END OF ADD PROJECT NOTES --------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF REMOVE PROJECT NOTES ---
-// -------------------------------------------
 
 func (app *Config) RemoveProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateProjectNote

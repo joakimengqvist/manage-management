@@ -35,10 +35,6 @@ type ExternalCompany struct {
 	ContractualAgreements     []string  `json:"contractual_agreements"`
 }
 
-// ----------------------------------------------------
-// ------ START OF CREATE EXTERNAL COMPANY ------------
-// ----------------------------------------------------
-
 func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ExternalCompany
 	err := app.readJSON(w, r, &requestPayload)
@@ -92,10 +88,6 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ----------------------------------------------------
-// ------ END OF CREATE EXTERNAL COMPANY --------------
-// ----------------------------------------------------
 
 func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ExternalCompany
@@ -151,10 +143,6 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// ----------------------------------------------------
-// ------ START OF GET ALL EXTERNAL COMPANIES ---------
-// ----------------------------------------------------
-
 func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Request) {
 
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all external companies [external-company/get-all-external-companies]", Name: "[broker-service]"})
@@ -190,14 +178,6 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all external companies success [external-company/get-all-external-companies]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ----------------------------------------------------
-// ------ END OF GET ALL EXTERNAL COMPANIES -----------
-// ----------------------------------------------------
-
-// -------------------------------------------------
-// ------ START OF GET EXTERNAL COMPANY (ID)  ------
-// -------------------------------------------------
 
 func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -253,7 +233,3 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------------
-// ------ END OF GET EXTERNAL COMPANY (ID)  --------
-// -------------------------------------------------

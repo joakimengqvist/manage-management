@@ -19,6 +19,8 @@ import { updateExternalCompanyNote } from "../../api/notes/externalCompany/updat
 import { replaceUnderscore } from "../../helpers/stringFormatting";
 import { PRIVILEGES } from "../../enums/privileges";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
+import { deleteSubProjectNote } from "../../api/notes/subProject/delete";
+import { updateSubProjectNote } from "../../api/notes/subProject/update";
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -97,6 +99,15 @@ const Note = (props: NoteProps) => {
                 noteFailedNotification(error.toString(), 'Deleted')
               });
         }
+        if (type === NOTE_TYPE.sub_project) {
+          deleteSubProjectNote(userId, note.id, note.author_id, note.sub_project)
+          .then(response => {
+              noteSuccessNotification(response, 'Deleted');
+            })
+            .catch((error) => {
+              noteFailedNotification(error.toString(), 'Deleted')
+            });
+      }
         if (type === NOTE_TYPE.external_company) {
             deleteExternalCompanyNote(userId, note.id)
             .then(response => {
@@ -137,6 +148,16 @@ const Note = (props: NoteProps) => {
     if (type === NOTE_TYPE.project) {
       if (!note.project) return;
         updateProjectNote(note.id, noteAuthor, note.project, noteTitle, noteBody)
+        .then(response => {
+            noteSuccessNotification(response.data, 'Updated');
+          })
+          .catch((error) => {
+            noteFailedNotification(error.toString(), 'Updated')
+          });
+    }
+    if (type === NOTE_TYPE.sub_project) {
+      if (!note.project) return;
+        updateSubProjectNote(note.id, noteAuthor, note.project, noteTitle, noteBody)
         .then(response => {
             noteSuccessNotification(response.data, 'Updated');
           })

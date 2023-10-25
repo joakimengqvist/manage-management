@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table, Button, Popconfirm, notification, Modal, Select, Typography, Col, Row, Card } from 'antd';
 import { State } from '../../types/state';
@@ -58,7 +57,6 @@ const columns = [
 
 const SubProjects: React.FC = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const userPrivileges = useSelector((state : State) => state.user.privileges);
@@ -192,8 +190,14 @@ const SubProjects: React.FC = () => {
       }
     );
 
+
+    const modalSelectedSubProject = subProjects.find(project => project.id === modalSelectedSubProjectId);
+    const projectsRemoveOptions = modalSelectedSubProject ? modalSelectedSubProject.projects.map((projectId : string) => {
+        return { label: getProjectName(projectId), value: projectId }
+    }) : [];
+
     const subProjectsData: Array<any> = subProjects && subProjects.map((subProject : SubProject) => ({                 
-            name: <Button type="link" onClick={() => navigate(`/sub-project/${subProject.id}`)}>{subProject.name}</Button>,
+            name: <Link href={`/sub-project/${subProject.id}`}>{subProject.name}</Link>,
             status: <ProjectStatus status={subProject.status} />,
             priority: <Priority priority={subProject.priority} />,
             estimated_duration: <EstimatedDuration duration={subProject.estimated_duration} />,
@@ -201,7 +205,7 @@ const SubProjects: React.FC = () => {
             operations: (
                 <div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Button style={{padding:'8px'}} type="link" onClick={() => openModal(subProject.id)}><SettingOutlined /></Button>
-                    <Button style={{padding:'8px'}} type="link" onClick={() => navigate(`/sub-project/${subProject.id}`)}><ZoomInOutlined /></Button>
+                    <Link style={{padding:'8px'}} href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
                     {hasPrivilege(userPrivileges, PRIVILEGES.sub_project_sudo) &&
                     <Popconfirm
                         placement="top"
@@ -256,7 +260,7 @@ const SubProjects: React.FC = () => {
                     <Select
                         style={{width: '100%', marginTop: '8px'}}
                         mode="multiple"
-                        options={projectOptions}
+                        options={projectsRemoveOptions}
                         onChange={onHandleModalSelectRemoveProjectIds}
                         value={modalRemoveSelectedProjects}
                     />
@@ -269,7 +273,7 @@ const SubProjects: React.FC = () => {
         <Row>
             <Col span={24}>
                 <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '24px'}}>
-                <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+                    <Button onClick={() => setIsModalOpen(false)}>Close</Button>
                 </div>
             </Col>
         </Row>

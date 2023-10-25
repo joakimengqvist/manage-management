@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Typography, Button, Table, Card } from 'antd';
+import { Typography, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
@@ -13,7 +13,7 @@ import { getAllExpensesByProjectId } from '../../../api/economics/expenses/getAl
 import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 
 const calculateTotalAmountAndTax = (expenses: ExpenseObject[], getVendorName : (id: string) => string) => {
     let totalAmount = 0;
@@ -152,14 +152,14 @@ const Expenses = ({ project } : { project: string }) => {
       const economicsData: Array<any> = useMemo(() => {
         const expensesListItem = expenses && expenses.map((expense : ExpenseObject) => {
         return {                    
-            vendor: <Button type="link" onClick={() => navigate(`/external-company/${expense.vendor}`)}>{getVendorName(expense.vendor)}</Button>,
+            vendor: <Link href={`/external-company/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link>,
             description: <Text>{expense.description}</Text>,
             cost: <Text>{expense.amount} {expense.currency}</Text>,
             tax: <Text>{expense.tax} {expense.currency}</Text>,
             payment_method: <Text>{expense.payment_method}</Text>,
             status: <ExpenseAndIncomeStatus status={expense.status}/>,
             expense_date: <Text>{formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}</Text>,
-            operations: <Button type="link" onClick={() => navigate(`/expense/${expense.id}`)}><ZoomInOutlined /></Button>
+            operations: <Link href={`/expense/${expense.id}`}><ZoomInOutlined /></Link>
           }
         })
         return expensesListItem;

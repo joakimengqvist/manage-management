@@ -33,17 +33,23 @@ import { getAllExpenseNotesByUserId } from "../../api/notes/expense/getAllByUser
 import { getAllIncomeNotesByUserId } from "../../api/notes/income/getAllByUserId";
 import { getAllExternalCompanyNotesByUserId } from "../../api/notes/externalCompany/getAllByUserId";
 import {
+  FundProjectionScreenOutlined,
   ProjectOutlined,
   DollarOutlined,
   FundOutlined,
   BankOutlined
 } from '@ant-design/icons';
+import { getAllSubProjectNotesByUserId } from "../../api/notes/subProject/getAllByUserId";
 
 const { Text, Title } = Typography;
 
 const userNotesTabList = [
   {
     key: 'project',
+    label: <FundProjectionScreenOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
+    key: 'subProject',
     label: <ProjectOutlined style={{paddingLeft: '12px'}} />,
   },
   {
@@ -66,6 +72,7 @@ const User: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
 
   const [projectNotes, setProjectNotes] = useState([]);
+  const [subProjectNotes, setSubProjectNotes] = useState([]);
   const [expenseNotes, setExpenseNotes] = useState([]);
   const [incomeNotes, setIncomeNotes] = useState([]);
   const [externalCompaniesNotes, setExternalCompaniesNotes] = useState([]);
@@ -139,6 +146,16 @@ const User: React.FC = () => {
       }).catch((error : any) => {
         console.log('error fetching project notes', error);
       });
+
+      getAllSubProjectNotesByUserId(loggedInUserId, userId).then(response => {
+        if (response.data?.length) {
+          setSubProjectNotes(response.data);
+        } else {
+          setSubProjectNotes([]);
+        }
+      }).catch((error : any) => {
+        console.log('error fetching project notes', error);
+      });
    
       getAllExpenseNotesByUserId(loggedInUserId, userId).then(response => {
         if (response.data?.length) {
@@ -159,8 +176,6 @@ const User: React.FC = () => {
       }).catch((error : any) => {
         console.log('error fetching income notes', error);
       });
-
-    
       getAllExternalCompanyNotesByUserId(loggedInUserId, userId).then(response => {
         if (response.data?.length) {
           setExternalCompaniesNotes(response.data);
@@ -251,6 +266,7 @@ const User: React.FC = () => {
 
   const notesContentList: Record<string, React.ReactNode> = {
     project: <Notes notes={projectNotes} type={NOTE_TYPE.project} userId={loggedInUserId} generalized /> ,
+    subProject: <Notes notes={subProjectNotes} type={NOTE_TYPE.sub_project} userId={loggedInUserId} generalized /> ,
     expense:  <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUserId} generalized /> ,
     income: <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUserId} generalized /> ,
     companies: <Notes notes={externalCompaniesNotes} type={NOTE_TYPE.external_company} userId={loggedInUserId} generalized />

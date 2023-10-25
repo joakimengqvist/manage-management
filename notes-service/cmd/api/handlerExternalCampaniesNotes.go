@@ -30,10 +30,6 @@ type ReturnedIExternalCompanyNotes struct {
 	Notes []data.ExternalCompanyNote `json:"notes"`
 }
 
-// -----------------------------------------------------
-// ------- START OF CREATE EXTERNAL COMPANY NOTE  ------
-// -----------------------------------------------------
-
 func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewExternalCompanyNote
 
@@ -78,14 +74,6 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ----------------------------------------------------------
-// -- END OF CREATE EXTERNAL COMPANY NOTE  ------------------
-// ----------------------------------------------------------
-
-// ----------------------------------------------------------
-// -- START OF GET ALL EXTERNAL COMPANY NOTES (userId) ------
-// ----------------------------------------------------------
 
 func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *http.Request) {
 
@@ -143,14 +131,6 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// --------------------------------------------------------------------
-// -- END OF GET ALL EXTERNAL COMPANY NOTES (userId) ------------------
-// --------------------------------------------------------------------
-
-// --------------------------------------------------------------------
-// -- START OF GET ALL EXTERNAL COMPANY NOTES (externalCompanyId) -----
-// --------------------------------------------------------------------
-
 func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -206,14 +186,6 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------------------------
-// -- END OF GET ALL EXTERNAL COMPANY NOTES (externalCompanyId) -----
-// ------------------------------------------------------------------
-
-// ------------------------------------------------------------------
-// -- START OF GET EXTERNAL COMPANY NOTE BY ID ----------------------
-// ------------------------------------------------------------------
-
 func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -262,14 +234,6 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET EXTERNAL COMPANY NOTE BY ID ------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF UPDATE EXTERNAL COMPANY NOTE -------
-// ------------------------------------------------
-
 func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateExternalCompanyNotePayload
 
@@ -316,14 +280,6 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF UPDATE EXTERNAL COMPANY NOTE ---------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF DELETE EXTERNAL COMPANY NOTE -------
-// ------------------------------------------------
-
 func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -359,7 +315,3 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF DELETE EXTERNAL COMPANY NOTE ---------
-// ------------------------------------------------

@@ -56,10 +56,6 @@ type RPCPayload struct {
 	Data   string
 }
 
-// -------------------------------------------
-// ------- START OF LOG ITEM (RPC)  ----------
-// -------------------------------------------
-
 func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
 
 	jsonData, _ := json.MarshalIndent(payload, "", "")
@@ -80,7 +76,3 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 		return
 	}
 }
-
-// -------------------------------------------
-// ------- END OF LOG ITEM (RPC)  ------------
-// -------------------------------------------

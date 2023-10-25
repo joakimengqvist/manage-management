@@ -6,6 +6,10 @@ import (
 	"net/rpc"
 )
 
+type IDpayload struct {
+	ID string `json:"id"`
+}
+
 type RPCLogData struct {
 	Action string
 	Name   string

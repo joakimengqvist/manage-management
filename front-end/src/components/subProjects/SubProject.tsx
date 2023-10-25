@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { useParams } from 'react-router-dom'
-import { Button, Card, Space, Typography, notification, Col, Row, Divider } from 'antd';
+import { Button, Card, Space, Typography, notification, Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
@@ -12,6 +12,11 @@ import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting
 import { SubProject } from '../../types/subProject';
 import { getSubProjectById } from '../../api/subProjects/getById';
 import UpdateSubProject from './UpdateSubProject';
+import CreateNote from '../notes/CreateNote';
+import { NOTE_TYPE } from '../../enums/notes';
+import NoteList from '../notes/Notes';
+import { createSubProjectNote } from '../../api/notes/subProject/create';
+import { getAllSubProjectNotesBySubProjectId } from '../../api/notes/subProject/getAllByProjectId';
 
 const { Text, Title, Link } = Typography;
 
@@ -33,11 +38,16 @@ const Project: React.FC = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges);
     const [subProject, setSubProject] = useState<SubProject | null>(null);
     const [editing, setEditing] = useState(false);
+    const [noteTitle, setNoteTitle] = useState('');
+    const [note, setNote] = useState('');
+    const [subProjectNotes, setSubProjectNotes] = useState([]);
     const [activeTab, setActiveTab] = useState<string>('projectInformation');
     const { id } =  useParams();
     const subProjectId = id || '';
 
     const onHandleChangeActiveTab = (key: string) => setActiveTab(key);
+    const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
+    const onHandleNoteChange = (event : any) => setNote(event.target.value);
 
     useEffect(() => {
         if (!subProject) {
@@ -52,6 +62,15 @@ const Project: React.FC = () => {
                 }
                 setSubProject(response.data);
             })
+            if (subProjectNotes && subProjectNotes.length === 0 && loggedInUser?.id) {
+                getAllSubProjectNotesBySubProjectId(loggedInUser.id, subProjectId).then(response => {
+                  if (!response.error && response.data) {
+                    setSubProjectNotes(response.data)
+                  }
+                }).catch(error => {
+                  console.log('error fetching project notes', error)
+                })
+              }
         }
     }, []);
 
@@ -59,6 +78,34 @@ const Project: React.FC = () => {
         const user = users.find(user => user.id === id);
         return `${user?.first_name} ${user?.last_name}`;
     };
+
+    const clearNoteFields = () => {
+        setNoteTitle('');
+        setNote('');
+      }
+
+      const onSubmitProjectNote = () => {
+        const user = {
+          id: loggedInUser.id,
+          name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+          email: loggedInUser.email
+
+        }
+        createSubProjectNote(user, subProjectId, noteTitle, note).then((response) => {
+          api.info({
+            message: response.message,
+            placement: "bottom",
+            duration: 1.2,
+          });
+        }).catch(error => {
+          api.error({
+            message: `Error creating note`,
+            description: error.toString(),
+            placement: "bottom",
+            duration: 1.4,
+          });
+        })
+      }
 
       const contentList: Record<string, React.ReactNode> = {
         projectInformation: (
@@ -118,6 +165,18 @@ const Project: React.FC = () => {
         </Col>
         <Col span={8}>
         <Card style={{ width: '100%', height: 'fit-content'}}>
+          <CreateNote
+            type={NOTE_TYPE.sub_project}
+            title={noteTitle}
+            onTitleChange={onHandleNoteTitleChange}
+            note={note}
+            onNoteChange={onHandleNoteChange}
+            onClearNoteFields={clearNoteFields}
+            onSubmit={onSubmitProjectNote}
+          />
+        {hasPrivilege(userPrivileges, 'note_read') && subProjectNotes && (
+          <NoteList notes={subProjectNotes} type={NOTE_TYPE.sub_project} userId={loggedInUser.id} />
+        )}
         </Card>
         </Col>
       </Row>

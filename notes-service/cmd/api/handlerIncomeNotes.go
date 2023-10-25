@@ -30,10 +30,6 @@ type ReturnedIncomeNotes struct {
 	Notes []data.IncomeNote `json:"notes"`
 }
 
-// -------------------------------------------
-// ------- START OF CREATE INCOME NOTE  ------
-// -------------------------------------------
-
 func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewIncomeNote
 
@@ -78,14 +74,6 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF CREATE INCOME NOTE  ------------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET ALL INCOME NOTES (userId) ------
-// ------------------------------------------------
 
 func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Request) {
 
@@ -143,14 +131,6 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET ALL INCOME NOTES (userId) --------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET ALL INCOME NOTES (incomeId) ----
-// ------------------------------------------------
-
 func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -206,14 +186,6 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET ALL EXPENSE NOTES (incomeId) -----
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF GET INCOME NOTE BY ID --------------
-// ------------------------------------------------
-
 func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -262,14 +234,6 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF GET Income NOTE BY ID ---------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF UPDATE Income NOTE ----------------
-// ------------------------------------------------
-
 func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateIncomeNotePayload
 
@@ -316,14 +280,6 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// ------------------------------------------------
-// -- END OF UPDATE INCOME NOTE ------------------
-// ------------------------------------------------
-
-// ------------------------------------------------
-// -- START OF DELETE INCOME NOTE ----------------
-// ------------------------------------------------
-
 func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -359,7 +315,3 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
-
-// ------------------------------------------------
-// -- END OF DELETE INCOME NOTE ------------------
-// ------------------------------------------------

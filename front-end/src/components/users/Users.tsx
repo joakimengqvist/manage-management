@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser } from '../../api/users/delete';
-import { Table, Button, Popconfirm, notification } from 'antd';
+import { Table, Button, Popconfirm, notification, Typography } from 'antd';
 import { State } from '../../types/state';
 import { fetchUsers, popUser } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
@@ -11,6 +10,7 @@ import { getAllUsers } from '../../api/users/getAll';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 
+const { Link } = Typography;
 interface User {
     id: string;
     email: string;
@@ -45,7 +45,6 @@ const columns = [
 
 const Users: React.FC = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const users = useSelector((state : State) => state.application.users);
     const loggedInUserId = useSelector((state : State) => state.user.id);
@@ -57,8 +56,6 @@ const Users: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedInUserId])
-
-    const navigateToUser = (id : string) => navigate(`/user/${id}`);
 
     const onClickdeleteUser = async (id : string) => {
         await deleteUser(loggedInUserId, id)
@@ -91,11 +88,11 @@ const Users: React.FC = () => {
 
     const usersData: Array<any> = users.map((user : User) => {
         return {                    
-            first_name: <Button type="link" onClick={() => navigateToUser(user.id.toString())}>{user.first_name}</Button>,
+            first_name: <Link href={ `/user/${user.id}`}>{user.first_name}</Link>,
             last_name: user.last_name,
             email: user.email,
             operations: (<>
-                <Button type="link" onClick={() => navigateToUser(user.id.toString())}><ZoomInOutlined /></Button>
+                <Link href={ `/user/${user.id}`}><ZoomInOutlined /></Link>
                 {hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) &&
                     <Popconfirm
                         placement="top"

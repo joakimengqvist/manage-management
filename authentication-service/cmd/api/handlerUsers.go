@@ -30,10 +30,6 @@ type UpdateUser struct {
 	Projects   []string `json:"projects"`
 }
 
-type IDpayload struct {
-	ID string `json:"id"`
-}
-
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload Authenticate
 

@@ -54,7 +54,7 @@ func (app *Config) routes() http.Handler {
 
 	mux.Post("/project/add-projects-sub-project-connection", app.AddProjectsSubProjectConnection)
 	mux.Post("/project/delete-projects-sub-project-connection", app.RemoveProjectsSubProjectConnection)
-	mux.Post("/project/add-sub-projects-project-connection", app.AddProjectsSubProjectConnection)
+	mux.Post("/project/add-sub-projects-project-connection", app.AddSubProjectsSubProjectConnection)
 	mux.Post("/project/delete-sub-projects-project-connection", app.RemoveSubProjectsProjectConnection)
 
 	mux.Post("/notes/create-project-note", app.CreateProjectNote)
@@ -63,6 +63,13 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/notes/get-all-project-notes-by-project-id", app.GetAllProjectNotesByProjectId)
 	mux.Post("/notes/get-all-project-notes-by-user-id", app.GetAllProjectNotesByUserId)
 	mux.Post("/notes/delete-project-note", app.DeleteProjectNote)
+
+	mux.Post("/notes/create-sub-project-note", app.CreateSubProjectNote)
+	mux.Get("/notes/get-sub-project-note-by-id", app.GetSubProjectNoteById)
+	mux.Post("/notes/update-sub-project-note", app.UpdateSubProjectNote)
+	mux.Post("/notes/delete-sub-project-note", app.DeleteSubProjectNote)
+	mux.Post("/notes/get-all-sub-project-notes-by-sub-project-id", app.GetAllSubProjectNotesBySubProjectId)
+	mux.Post("/notes/get-all-sub-project-notes-by-user-id", app.GetAllSubProjectNotesByUserId)
 
 	mux.Post("/notes/create-income-note", app.CreateIncomeNote)
 	mux.Get("/notes/get-income-note-by-id", app.GetIncomeNoteById)

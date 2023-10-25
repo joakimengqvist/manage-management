@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type Note struct {
+type ProjectNote struct {
 	ID          string    `json:"id"`
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
@@ -29,7 +29,7 @@ type NewProjectNote struct {
 	Note        string `json:"note"`
 }
 
-type UpdateNote struct {
+type UpdateProjectNote struct {
 	ID          string `json:"id"`
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
@@ -39,15 +39,11 @@ type UpdateNote struct {
 	Note        string `json:"note"`
 }
 
-type DeleteNotePayload struct {
+type DeleteProjectNotePayload struct {
 	NoteId    string `json:"note_id"`
 	AuthorId  string `json:"author_id"`
 	ProjectId string `json:"project_id"`
 }
-
-// -------------------------------------------
-// --------- START OF CREATE PROJECT NOTE  ---
-// -------------------------------------------
 
 func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewProjectNote
@@ -107,16 +103,8 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF CREATE PROJECT NOTE  -----
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF UPDATE PROJECT NOTE  ---
-// -------------------------------------------
-
 func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
-	var requestPayload UpdateNote
+	var requestPayload UpdateProjectNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -172,14 +160,6 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF UPDATE PROJECT NOTE  -----
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET PROJECT NOTE (ID) --
-// -------------------------------------------
 
 func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -239,18 +219,8 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF GET PROJECT NOTE (ID) ----
-// -------------------------------------------
-
-// -------------------------------------------
-// -- START OF GET PROJECT NOTES (projectId) -
-// -------------------------------------------
-
 func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
-
-	// userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -302,18 +272,8 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --- END OF GET PROJECT NOTES (projectId) --
-// -------------------------------------------
-
-// -------------------------------------------
-// --- START OF GET PROJECT NOTES (userId) -----
-// -------------------------------------------
-
 func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
-
-	// userId := r.Header.Get("X-User-Id")
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
@@ -365,16 +325,8 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --- END OF GET PROJECT NOTES (userId) -----
-// -------------------------------------------
-
-// -------------------------------------------
-// --- START OF DELETE PROJECT NOTE (id) -----
-// -------------------------------------------
-
 func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
-	var requestPayload DeleteNotePayload
+	var requestPayload DeleteProjectNotePayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
 		app.errorJSON(w, err)
@@ -422,7 +374,3 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-project-id]", Name: "[broker-service] - Successfully fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --- END OF DELETE PROJECT NOTE (id) -------
-// -------------------------------------------

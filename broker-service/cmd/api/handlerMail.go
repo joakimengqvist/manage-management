@@ -13,10 +13,6 @@ type MailPayload struct {
 	Message string `json:"message"`
 }
 
-// -------------------------------------------
-// ------- START OF SEND EMAIL  --------------
-// -------------------------------------------
-
 func (app *Config) SendEmail(w http.ResponseWriter, r *http.Request) {
 	var requestPayload RequestPayload
 
@@ -72,7 +68,3 @@ func (app *Config) sendMail(w http.ResponseWriter, rpl RequestPayload) {
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Send email success [/email/send]", Name: "[broker-service] - succesfully sent email"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// ------- END OF SEND EMAIL  ----------------
-// -------------------------------------------

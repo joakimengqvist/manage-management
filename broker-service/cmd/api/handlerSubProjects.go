@@ -64,10 +64,6 @@ type SubProjectsToProject struct {
 	SubProjectIds []string `json:"sub_project_ids"`
 }
 
-// -------------------------------------------
-// --------- START OF CREATE SUB PROJECT  ----
-// -------------------------------------------
-
 func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	var requestPayload NewSubProject
@@ -126,14 +122,6 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF CREATE SUB PROJECT  ------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF UPDATE SUB PROJECT  ----
-// -------------------------------------------
-
 func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateSubProject
 	err := app.readJSON(w, r, &requestPayload)
@@ -191,14 +179,6 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF UPDATE SUB PROJECT  ------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF DELETE SUB PROJECT  ----
-// -------------------------------------------
-
 func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -255,14 +235,6 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete subProject successfully [/project/delete-sub-project]", Name: "[broker-service] - Successfully deleteted subProject"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ----------------------------------------------
-// --------- END OF DELETE SUB PROJECT  ---------
-// ----------------------------------------------
-
-// ----------------------------------------------
-// --------- START OF GET SUB PROJECTS (ID)  ----
-// ----------------------------------------------
 
 func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -322,14 +294,6 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF GET SUB PROJECTS (ID)  ---
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET SUB PROJECTS  ------
-// -------------------------------------------
-
 func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all subProjects [/project/get-all-sub-projects]", Name: "[broker-service]"})
@@ -365,14 +329,6 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects success [/project/get-all-sub-projects]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF GET SUB PROJECTS  --------
-// -------------------------------------------
-
-// -------------------------------------------
-// ----- START OF GET SUB PROJECTS BY IDS  ---
-// -------------------------------------------
 
 func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
@@ -419,14 +375,6 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects by ids success [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// ----- END OF GET SUB PROJECTS BY IDS  -----
-// -------------------------------------------
-
-// ----------------------------------------------------
-// --- START OF ADD PROJECTS SUB PROJECT CONNECTION  --
-// ----------------------------------------------------
 
 func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *http.Request) {
 	var requestPayload SubProjectsToProject
@@ -483,14 +431,6 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// ------------------------------------------------------
-// ---- END OF ADD PROJECTS SUB PROJECT CONNECTION  -----
-// ------------------------------------------------------
-
-// ------------------------------------------------------
-// -- START OF REMOVE PROJECTS SUB PROJECT CONNECTION  --
-// ------------------------------------------------------
-
 func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *http.Request) {
 	var requestPayload SubProjectsToProject
 
@@ -545,7 +485,3 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// ------------------------------------------------------
-// --- END OF REMOVE PROJECTS SUB PROJECT CONNECTION  ---
-// ------------------------------------------------------

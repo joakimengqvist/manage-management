@@ -44,10 +44,6 @@ type UserUpdatePayload struct {
 	LastName   string   `json:"last_name"`
 }
 
-// -------------------------------------------
-// ------- START OF AUTHENTICATE  ------------
-// -------------------------------------------
-
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload AuthPayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -102,14 +98,6 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// ------- END OF AUTHENTICATE  --------------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF CREATE USER  -----------
-// -------------------------------------------
 
 func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewUser
@@ -167,14 +155,6 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF CREATE USER  -------------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF UPDATE USER  -----------
-// -------------------------------------------
-
 func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UserUpdatePayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -231,14 +211,6 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF UPDATE USER  -------------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF DELETE USERS  ----------
-// -------------------------------------------
-
 func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -294,14 +266,6 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF DELETE USER  -------------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET USER (ID)  ---------
-// -------------------------------------------
 
 func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
@@ -360,14 +324,6 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
-// -------------------------------------------
-// --------- END OF GET USER (ID)  -----------
-// -------------------------------------------
-
-// -------------------------------------------
-// --------- START OF GET USERS  -------------
-// -------------------------------------------
-
 func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[broker-service]"})
@@ -403,7 +359,3 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
-
-// -------------------------------------------
-// --------- END OF GET USERS  ---------------
-// -------------------------------------------

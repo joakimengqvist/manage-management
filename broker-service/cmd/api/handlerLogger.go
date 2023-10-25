@@ -6,10 +6,6 @@ import (
 	"net/rpc"
 )
 
-// -------------------------------------------
-// --------- START OF RPC   ------------------
-// -------------------------------------------
-
 type RPCPayload struct {
 	Action string
 	Name   string

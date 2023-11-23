@@ -107,6 +107,13 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = data.InsertUserSettings(newUser.ID)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not create user: "+err.Error()), http.StatusBadRequest)
+		newUser.DeleteUser()
+		return
+	}
+
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Logged in user %s", requestPayload.FirstName),
@@ -160,6 +167,44 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		Error:   false,
 		Message: fmt.Sprintf("updated user with Id: %s", fmt.Sprint(updatedUser.ID)),
 		Data:    returnedData,
+	}
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
+	var requestPayload data.UserSettings
+
+	userId := r.Header.Get("X-User-Id")
+	err := app.CheckUserPrivilege(w, userId, "user_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	updatedUserSettings := data.UpdateUserSettingsPayload{
+		UserId:    userId,
+		DarkTheme: requestPayload.DarkTheme,
+		CompactUi: requestPayload.CompactUi,
+	}
+
+	err = data.UpdateUserSettings(updatedUserSettings, userId)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update user settings: "+err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "updated user settings",
+		Data:    nil,
 	}
 
 	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
@@ -250,6 +295,40 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Request) {
+	var requestPayload IDpayload
+
+	userId := r.Header.Get("X-User-Id")
+	err := app.CheckUserPrivilege(w, userId, "user_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("USER ID ", requestPayload.ID)
+	userSettings, err := data.GetUserSettingsByUserId(requestPayload.ID)
+	if err != nil {
+		fmt.Println(err)
+		app.errorJSON(w, errors.New("failed to get user settings by user id"), http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("Fetched user settings for user: %s", userSettings.UserId),
+		Data:    userSettings,
+	}
+
+	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get user settings by user id [/auth/get-user-settings-by-user-id]", Name: "[authentication-service] - Successfuly fetched user settings"})
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
 func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
@@ -286,8 +365,6 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		userSlice = append(userSlice, returnedUser)
 	}
 
-	fmt.Println(userSlice)
-
 	payload := jsonResponse{
 		Error:   false,
 		Message: "Fetched all users",
@@ -295,16 +372,6 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
-}
-
-type UpdateUserNotesRequest struct {
-	NoteId string `json:"noteId"`
-	UserId string `json:"userId"`
-}
-
-type DeleteUserNotesRequest struct {
-	NoteId   string `json:"noteId"`
-	AuthorId string `json:"authorId"`
 }
 
 func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId string, action string) error {

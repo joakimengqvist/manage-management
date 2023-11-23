@@ -31,7 +31,7 @@ const CreateProjectExpense: React.FC = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
 
     const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
+        return { label: project.name, value: project.id }
       }
     );
 

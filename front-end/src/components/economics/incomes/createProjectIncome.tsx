@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
-import { Col, Row, Typography } from 'antd';
+import { Checkbox, Col, Row, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
 import { State } from '../../../types/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { createIncome } from '../../../api/economics/incomes/create';
-import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
+import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions } from '../options';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -22,13 +22,13 @@ const CreateProjectIncome: React.FC = () => {
     const [project, setProject] = useState('');
     const [incomeDate, setIncomeDate] = useState('');
     const [incomeCategory, setIncomeCategory] = useState('');
+    const [isStatisticsIncome, setIsStatisticsIncome] = useState(false);
     const [vendor, setVendor] = useState('');
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [tax, setTax] = useState('');
     const [incomeStatus, setIncomeStatus] = useState('');
     const [currency, setCurrency] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('');
 
 
     
@@ -56,7 +56,6 @@ const CreateProjectIncome: React.FC = () => {
     }
 
     const onChangeCurrency = (value : string) => setCurrency(value);
-    const onChangePaymentMethod = (value : string) => setPaymentMethod(value);
     const onChangeIncomeCategory = (value : string) => setIncomeCategory(value); 
     const onChangeVendor = (value : string) => setVendor(value); 
     const onChangeProject = (value: string) => setProject(value);
@@ -67,13 +66,13 @@ const CreateProjectIncome: React.FC = () => {
             project,
             incomeDate,
             incomeCategory,
+            isStatisticsIncome,
             vendor,
             description,
             amount,
             tax,
             incomeStatus,
             currency,
-            paymentMethod,
             userId,
         ).then(response => {
             if (response?.error || !response?.data) {
@@ -137,6 +136,11 @@ const CreateProjectIncome: React.FC = () => {
                             onChange={onChangeIncomeCategory}
                             value={incomeCategory}
                         />
+                        <Text strong>Is this a statistical income?</Text>
+                        <Checkbox
+                            checked={isStatisticsIncome}
+                            onChange={(event : any) => setIsStatisticsIncome(event.target.checked)}
+                        />
                         <Text strong>Vendor</Text>
                         <Select 
                             style={{width: '100%'}}
@@ -186,14 +190,6 @@ const CreateProjectIncome: React.FC = () => {
                             options={IncomeAndExpenseStatusOptions}
                             onChange={onChangeIncomeStatus}
                             value={incomeStatus}
-                        />
-                        <Text strong>Payment method</Text>
-                        <Select
-                            placeholder="Select payment method"
-                            style={{width: '100%'}}
-                            options={paymentMethodOptions}
-                            onChange={onChangePaymentMethod}
-                            value={paymentMethod}
                         />
                     </Space>
                 </Col>

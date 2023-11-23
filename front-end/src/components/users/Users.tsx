@@ -9,16 +9,9 @@ import { useEffect } from 'react';
 import { getAllUsers } from '../../api/users/getAll';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { User } from '../../types/user';
 
 const { Link } = Typography;
-interface User {
-    id: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    created_at: string;
-    updated_at: string
-}
 
 const columns = [
     {
@@ -100,7 +93,7 @@ const Users: React.FC = () => {
                             title="Are you sure?"
                             description={`Do you want to delete user ${user.first_name}`}
                             onConfirm={() => onClickdeleteUser(user.id)}
-                            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                            icon={<QuestionCircleOutlined twoToneColor="red" />}
                             okText="Yes"
                             cancelText="No"
                         >

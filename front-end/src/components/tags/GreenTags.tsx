@@ -3,7 +3,7 @@ import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 
 const { Text } = Typography;
 
-export const Green = (props: CustomTagProps) => {
+export const GreenTags = (props: CustomTagProps) => {
   const { label, closable, onClose } = props;
   const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -17,7 +17,7 @@ export const Green = (props: CustomTagProps) => {
       onClose={onClose}
       style={{ marginRight: 3, marginTop: 1, marginBottom: 1 }}
     >
-      <Text style={{color: '#389e0d'}}>{label}</Text>
+      <Text>{label}</Text>
     </Tag>
   );
 };

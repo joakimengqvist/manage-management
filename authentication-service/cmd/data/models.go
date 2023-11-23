@@ -15,14 +15,16 @@ func New(dbPool *sql.DB) Models {
 	db = dbPool
 
 	return Models{
-		User:      User{},
-		Privilege: Privilege{},
+		User:         User{},
+		UserSettings: UserSettings{},
+		Privilege:    Privilege{},
 	}
 }
 
 type Models struct {
-	User      User
-	Privilege Privilege
+	User         User
+	UserSettings UserSettings
+	Privilege    Privilege
 }
 
 type User struct {
@@ -49,6 +51,23 @@ type ReturnedUser struct {
 	Active     int       `json:"active"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
+}
+
+type UserSettings struct {
+	ID        string    `json:"id"`
+	UserId    string    `json:"user_id"`
+	DarkTheme bool      `json:"dark_theme"`
+	CompactUi bool      `json:"compact_ui"`
+	CreatedAt time.Time `json:"created_at"`
+	CreatedBy string    `json:"created_by"`
+	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedBy string    `json:"updated_by"`
+}
+
+type UpdateUserSettingsPayload struct {
+	UserId    string `json:"user_id"`
+	DarkTheme bool   `json:"dark_theme"`
+	CompactUi bool   `json:"compact_ui"`
 }
 
 type Privilege struct {

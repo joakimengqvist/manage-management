@@ -24,8 +24,6 @@ import { updateUser, popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
-import { BlueTags } from "../tags/BlueTags";
-import { PurpleTags } from "../tags/DefaultTags";
 import { SelectOptions } from '../../types/generics';
 import { NOTE_TYPE } from "../../enums/notes";
 import Notes from "../notes/Notes";
@@ -40,6 +38,8 @@ import {
   BankOutlined
 } from '@ant-design/icons';
 import { getAllSubProjectNotesByUserId } from "../../api/notes/subProject/getAllByUserId";
+import { PurpleTags } from "../tags/PurpleTags";
+import { BlueTags } from "../tags/blueTags";
 
 const { Text, Title } = Typography;
 
@@ -346,7 +346,7 @@ const User: React.FC = () => {
                 title="Are you sure?"
                 description={`Do you want to delete user ${firstName}`}
                 onConfirm={() => onClickdeleteUser(userId)}
-                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                icon={<QuestionCircleOutlined twoToneColor="red" />}
                 okText="Yes"
                 cancelText="No"
               >

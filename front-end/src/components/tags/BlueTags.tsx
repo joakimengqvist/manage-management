@@ -17,7 +17,7 @@ export const BlueTags = (props: CustomTagProps) => {
       onClose={onClose}
       style={{ marginRight: 3, marginTop: 1, marginBottom: 1 }}
     >
-      <Text style={{color: '#0958d9'}}>{label}</Text>
+      <Text>{label}</Text>
     </Tag>
   );
 };

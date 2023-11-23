@@ -19,23 +19,20 @@ type NewExpense struct {
 	Status          string    `json:"status"`
 	Currency        string    `json:"currency"`
 	PaymentMethod   string    `json:"payment_method"`
-	CreatedBy       string    `json:"created_by"`
-	UpdatedBy       string    `json:"updated_by"`
 }
 
 type NewIncome struct {
-	ProjectID      string    `json:"project_id"`
-	IncomeDate     time.Time `json:"income_date"`
-	IncomeCategory string    `json:"income_category"`
-	Vendor         string    `json:"vendor"`
-	Description    string    `json:"description"`
-	Amount         float64   `json:"amount"`
-	Tax            float64   `json:"tax"`
-	Status         string    `json:"status"`
-	Currency       string    `json:"currency"`
-	PaymentMethod  string    `json:"payment_method"`
-	CreatedBy      string    `json:"created_by"`
-	UpdatedBy      string    `json:"updated_by"`
+	ProjectID        string    `json:"project_id"`
+	InvoiceID        string    `json:"invoice_id,omitempty"`
+	IncomeDate       time.Time `json:"income_date"`
+	IncomeCategory   string    `json:"income_category"`
+	StatisticsIncome bool      `json:"statistics_income"`
+	Vendor           string    `json:"vendor"`
+	Description      string    `json:"description"`
+	Amount           float64   `json:"amount"`
+	Tax              float64   `json:"tax"`
+	Status           string    `json:"status"`
+	Currency         string    `json:"currency"`
 }
 
 type Expense struct {
@@ -57,21 +54,22 @@ type Expense struct {
 }
 
 type Income struct {
-	ID             string    `json:"id"`
-	ProjectID      string    `json:"project_id"`
-	IncomeDate     time.Time `json:"income_date"`
-	IncomeCategory string    `json:"income_category"`
-	Vendor         string    `json:"vendor"`
-	Description    string    `json:"description"`
-	Amount         float64   `json:"amount"`
-	Tax            float64   `json:"tax"`
-	Status         string    `json:"status"`
-	Currency       string    `json:"currency"`
-	PaymentMethod  string    `json:"payment_method"`
-	CreatedBy      string    `json:"created_by"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedBy      string    `json:"updated_by"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	ID               string    `json:"id"`
+	InvoiceID        string    `json:"invoice_id,omitempty"`
+	ProjectID        string    `json:"project_id"`
+	IncomeDate       time.Time `json:"income_date"`
+	IncomeCategory   string    `json:"income_category"`
+	StatisticsIncome bool      `json:"statistics_income"`
+	Vendor           string    `json:"vendor"`
+	Description      string    `json:"description"`
+	Amount           float64   `json:"amount"`
+	Tax              float64   `json:"tax"`
+	Status           string    `json:"status"`
+	Currency         string    `json:"currency"`
+	CreatedBy        string    `json:"created_by"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedBy        string    `json:"updated_by"`
+	UpdatedAt        time.Time `json:"updated_at"`
 }
 
 func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {

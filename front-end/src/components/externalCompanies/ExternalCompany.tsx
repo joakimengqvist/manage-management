@@ -15,6 +15,7 @@ import { createExternalCompanyNote } from '../../api/notes/externalCompany/creat
 import { getAllExternalCompanyNotesByExternalCompanyId } from '../../api/notes/externalCompany/getAllByExternalCompanyId';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import UpdateProjectExpense from './UpdateExternalCompany';
+import { ExternalCompanyStatus } from '../status/ExternalCompanyStatus';
 
 const { Text, Title, Link } = Typography;
 
@@ -88,7 +89,10 @@ const ExternalCompanyDetails: React.FC = () => {
                             <Row>
                                 <Col span={24}>
                                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                        <Title style={{margin: '0px'}} level={4}>{externalCompany.company_name}</Title>
+                                        <div>
+                                            <Title style={{marginBottom: '8px'}} level={4}>{externalCompany.company_name}</Title>
+                                            <ExternalCompanyStatus status={externalCompany.status} />
+                                        </div>
                                         <Button primary onClick={() => setEditing(true)}>Edit company info</Button>
                                     </div>
                                 </Col>
@@ -121,9 +125,6 @@ const ExternalCompanyDetails: React.FC = () => {
                                     </div>
                                     <div style={{display: 'flex', marginBottom: '2px'}}>
                                         <Text strong style={{minWidth: '200px'}}>Bank account info:</Text><Text>{externalCompany.bank_account_info}</Text>
-                                    </div>
-                                    <div style={{display: 'flex', marginBottom: '2px'}}>
-                                        <Text strong style={{minWidth: '200px'}}>ID:</Text><Text>{externalCompany.id}</Text>
                                     </div>
                                     <Title style={{marginTop: '12px', marginBottom: '4px'}} level={5}>Other info</Title>
                                     <div style={{display: 'flex', marginBottom: '2px'}}>

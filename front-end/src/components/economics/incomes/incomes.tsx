@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Typography, Button, Table, Card } from 'antd';
+import { Typography, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../../types/state';
@@ -8,10 +8,10 @@ import { State } from '../../../types/state';
 import { Column, Pie } from '@ant-design/plots';
 import { getAllIncomes } from '../../../api/economics/incomes/getAll';
 import { ZoomInOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import { getAllIncomesByProjectId } from '../../../api/economics/incomes/getAllByProjectId';
-import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
+import IncomeStatus from '../../status/IncomeStatus';
+import { IncomeObject } from '../../../types/income';
 
 const { Text, Title, Link } = Typography;
 
@@ -47,24 +47,6 @@ const calculateTotalAmountAndTax = (incomes: IncomeObject[], getVendorName : (id
     return { pieGraphTaxData, pieGraphData, columnGraphData, totalIncomes, totalAmount, totalTax };
   }
 
-type IncomeObject = {
-	id: string,
-	project_id: string,
-  income_date: any,
-	income_category: string,
-	vendor: string,
-	description: string,
-	amount: number,
-	tax: number,
-  status: PaymentStatusTypes,
-	currency: string,
-	payment_method: string,
-	created_by: string,
-	created_at: any,
-	updated_by: any,
-	updated_at: any
-}
-
 const incomesTabList = [
     {
       key: 'incomes',
@@ -98,12 +80,6 @@ const economicsColumns = [
       key: 'tax'
     },
     {
-        title: 'Payment method',
-        dataIndex: 'payment_method',
-        key: 'payment_method'
-
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status'
@@ -121,13 +97,12 @@ const economicsColumns = [
   ];
 
 const Income = ({ project } : { project: string }) => {
-    const navigate = useNavigate();
     const loggedInUserId = useSelector((state : State) => state.user.id);
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const [activeTab, setActiveTab] = useState<string>('incomes')
     const [incomes, setIncomes] = useState<Array<any>>([]);
 
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
+    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name || 'Unknown';
 
     useEffect(() => {
         if (loggedInUserId && project === 'all') {
@@ -154,8 +129,7 @@ const Income = ({ project } : { project: string }) => {
             description: <Text>{income.description}</Text>,
             cost: <Text>{income.amount} {income.currency}</Text>,
             tax: <Text>{income.tax} {income.currency}</Text>,
-            payment_method: <Text>{income.payment_method}</Text>,
-            status: <ExpenseAndIncomeStatus status={income.status}/>,
+            status: <IncomeStatus status={income.status}/>,
             income_date: <Text>{formatDateTimeToYYYYMMDDHHMM(income.income_date)}</Text>,
             operations: <Link href={`/income/${income.id}`}><ZoomInOutlined /></Link>
           }

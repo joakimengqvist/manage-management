@@ -8,6 +8,10 @@ export enum ENDPOINTS {
     GetUserById = "http://localhost:8080/auth/get-user-by-id",
     GetAllUsers = "http://localhost:8080/auth/get-all-users",
 
+    // USER SETTINGS
+    GetUserSettingsByUserId = "http://localhost:8080/auth/get-user-settings-by-user-id",
+    UpdateUserSettings = "http://localhost:8080/auth/update-user-settings",
+
     // PRIVILEGES
     CreatePrivilege = "http://localhost:8080/auth/create-privilege",
     UpdatePrivilege = "http://localhost:8080/auth/update-privilege",
@@ -101,6 +105,30 @@ export enum ENDPOINTS {
     GetAllExternalCompanyNotesByExternalCompanyId = "http://localhost:8080/notes/get-all-external-company-notes-by-external-company-id",
     GetAllExternalCompanyNotesByUserId = "http://localhost:8080/notes/get-all-external-company-notes-by-user-id",
     DeleteExternalCompanyNote = "http://localhost:8080/notes/delete-external-company-note",
+
+    // PRODUCTS
+    CreateProduct = "http://localhost:8080/product/create-product",
+    GetProductById = "http://localhost:8080/product/get-product-by-id",
+    GetAllProducts = "http://localhost:8080/product/get-all-products",
+    UpdateProduct = "http://localhost:8080/product/update-product",
+    getProductsByIds = "http://localhost:8080/product/get-products-by-ids",
+
+    // INVOICES
+    CreateInvoice = "http://localhost:8080/invoice/create-invoice",
+    GetInvoiceById = "http://localhost:8080/invoice/get-invoice-by-id",
+    GetAllInvoices = "http://localhost:8080/invoice/get-all-invoices",
+    GetAllInvoicesByProjectId = "http://localhost:8080/invoice/get-all-invoices-by-project-id",
+    GetAllInvoicesBySubProjectId = "http://localhost:8080/invoice/get-all-invoices-by-sub-project-id",
+    UpdateInvoice = "http://localhost:8080/invoice/update-invoice",
+    DeleteInvoice = "http://localhost:8080/invoice/delete-invoice",
+
+    // INVOICE ITEMS
+    CreateInvoiceItem = "http://localhost:8080/invoice/create-invoice-item",
+    GetInvoiceItemById = "http://localhost:8080/invoice/get-invoice-item-by-id",
+    GetAllInvoiceItems = "http://localhost:8080/invoice/get-all-invoice-items",
+    UpdateInvoiceItem = "http://localhost:8080/invoice/update-invoice-item",
+    DeleteInvoiceItem = "http://localhost:8080/invoice/delete-invoice-item",
+
 
     // EMAIL
     sendEmail = "http://localhost:8080/email/send-email",

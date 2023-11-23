@@ -15,14 +15,17 @@ const LoginForm: React.FC = () => {
 
   const Login = () => {
     loginAuthenticate(userName, /* password */ ).then(response => {
+      console.log('response', response)
       if (response.error) {
         setLoginErrorFeedback(response.message)
         return
       }
       setLoginErrorFeedback('');
+      console.log('data', response)
       dispatch(authenticate(response.data))
 
     }).catch(error => {
+
       setLoginErrorFeedback(error)
     })
   }

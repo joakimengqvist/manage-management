@@ -200,7 +200,7 @@ const Note = (props: NoteProps) => {
                 title="Are you sure?"
                 description={`Do you want to delete note ${note.title}`}
                 onConfirm={onClickDeleteNote}
-                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                icon={<QuestionCircleOutlined twoToneColor="red" />}
                 okText="Yes"
                 cancelText="No"
             >

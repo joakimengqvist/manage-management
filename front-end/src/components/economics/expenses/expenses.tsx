@@ -8,14 +8,14 @@ import { State } from '../../../types/state';
 import { Column, Pie } from '@ant-design/plots';
 import { ZoomInOutlined } from '@ant-design/icons';
 import { getAllExpenses } from '../../../api/economics/expenses/getAll';
-import { useNavigate } from 'react-router-dom';
 import { getAllExpensesByProjectId } from '../../../api/economics/expenses/getAllByProjectId';
-import { ExpenseAndIncomeStatus, PaymentStatusTypes } from '../../tags/ExpenseAndIncomeStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
+import ExpenseStatus from '../../status/ExpenseStatus';
+import { ExpenseObject } from '../../../types/expense';
 
 const { Text, Title, Link } = Typography;
 
-const calculateTotalAmountAndTax = (expenses: ExpenseObject[], getVendorName : (id: string) => string) => {
+const calculateTotalAmountAndTax = (expenses: ExpenseObject[], getVendorName : (id: string) => string | undefined) => {
     let totalAmount = 0;
     let totalTax = 0;
     let totalExpenses = 0;
@@ -46,24 +46,6 @@ const calculateTotalAmountAndTax = (expenses: ExpenseObject[], getVendorName : (
   
     return { pieGraphTaxData, pieGraphData, columnGraphData, totalExpenses, totalAmount, totalTax };
   }
-
-type ExpenseObject = {
-	id: string,
-	project_id: string,
-  expense_date: any,
-	expense_category: string,
-	vendor: string,
-	description: string,
-	amount: number,
-	tax: number,
-  status: PaymentStatusTypes,
-	currency: string,
-	payment_method: string,
-	created_by: string,
-	created_at: any,
-	updated_by: any,
-	updated_at: any
-}
 
 const expensesTabList = [
     {
@@ -98,12 +80,6 @@ const economicsColumns = [
       key: 'tax'
     },
     {
-        title: 'Payment method',
-        dataIndex: 'payment_method',
-        key: 'payment_method'
-
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status'
@@ -121,7 +97,6 @@ const economicsColumns = [
   ];
 
 const Expenses = ({ project } : { project: string }) => {
-    const navigate = useNavigate();
     const loggedInUserId = useSelector((state : State) => state.user.id);
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const [activeTab, setActiveTab] = useState<string>('expenses')
@@ -157,7 +132,7 @@ const Expenses = ({ project } : { project: string }) => {
             cost: <Text>{expense.amount} {expense.currency}</Text>,
             tax: <Text>{expense.tax} {expense.currency}</Text>,
             payment_method: <Text>{expense.payment_method}</Text>,
-            status: <ExpenseAndIncomeStatus status={expense.status}/>,
+            status: <ExpenseStatus status={expense.status}/>,
             expense_date: <Text>{formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}</Text>,
             operations: <Link href={`/expense/${expense.id}`}><ZoomInOutlined /></Link>
           }

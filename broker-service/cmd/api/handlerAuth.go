@@ -44,6 +44,12 @@ type UserUpdatePayload struct {
 	LastName   string   `json:"last_name"`
 }
 
+type UpdateUserSettingsPayload struct {
+	UserId    string `json:"user_id"`
+	DarkTheme bool   `json:"dark_theme"`
+	CompactUi bool   `json:"compact_ui"`
+}
+
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload AuthPayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -211,6 +217,62 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
+func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
+	var requestPayload UpdateUserSettingsPayload
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update user settings [/auth/update-user-settings]", Name: "[broker-service] - Update user settings request recieved"})
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://authentication-service/auth/update-user-settings", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - update user settings"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling authentication service - update user settings"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
 func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
@@ -276,8 +338,6 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get user by id [/auth/get-user-by-id]", Name: "[broker-service]"})
-
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
@@ -305,6 +365,61 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if response.StatusCode != http.StatusAccepted {
 		app.errorJSON(w, errors.New("error calling authentication service - get user by id"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
+func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Request) {
+	var requestPayload IDpayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://authentication-service/auth/get-user-settings-by-user-id", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch user settings"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - get user settings by user id"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling authentication service - get user settings by user id"))
 		return
 	}
 

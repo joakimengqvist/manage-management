@@ -11,7 +11,7 @@ func GetAllIncomes() ([]*Income, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, project_id, income_date, income_category, vendor, description, amount, tax, status, currency, payment_method, created_by, created_at, updated_by, updated_at
+	query := `select id, invoice_id, project_id, income_date, income_category, statistics_income, vendor, description, amount, tax, status, currency, created_by, created_at, updated_by, updated_at
 	from incomes order by income_date desc`
 
 	rows, err := db.QueryContext(ctx, query)
@@ -26,16 +26,17 @@ func GetAllIncomes() ([]*Income, error) {
 		var income Income
 		err := rows.Scan(
 			&income.ID,
+			&income.InvoiceID,
 			&income.ProjectID,
 			&income.IncomeDate,
 			&income.IncomeCategory,
+			&income.StatisticsIncome,
 			&income.Vendor,
 			&income.Description,
 			&income.Amount,
 			&income.Tax,
 			&income.Status,
 			&income.Currency,
-			&income.PaymentMethod,
 			&income.CreatedBy,
 			&income.CreatedAt,
 			&income.UpdatedBy,
@@ -56,7 +57,7 @@ func GetAllProjectIncomesByProjectId(projectId string) ([]*Income, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, project_id, income_date, income_category, vendor, description, amount, tax, status, currency, payment_method, created_by, created_at, updated_by, updated_at
+	query := `select id, invoice_id, project_id, income_date, income_category, statistics_income, vendor, description, amount, tax, status, currency, created_by, created_at, updated_by, updated_at
 	from incomes where project_id = $1 order by income_date desc`
 
 	rows, err := db.QueryContext(ctx, query, projectId)
@@ -71,16 +72,17 @@ func GetAllProjectIncomesByProjectId(projectId string) ([]*Income, error) {
 		var income Income
 		err := rows.Scan(
 			&income.ID,
+			&income.InvoiceID,
 			&income.ProjectID,
 			&income.IncomeDate,
 			&income.IncomeCategory,
+			&income.StatisticsIncome,
 			&income.Vendor,
 			&income.Description,
 			&income.Amount,
 			&income.Tax,
 			&income.Status,
 			&income.Currency,
-			&income.PaymentMethod,
 			&income.CreatedBy,
 			&income.CreatedAt,
 			&income.UpdatedBy,
@@ -97,7 +99,7 @@ func GetAllProjectIncomesByProjectId(projectId string) ([]*Income, error) {
 	return incomes, nil
 }
 
-func InsertIncome(income NewIncome) (string, error) {
+func InsertIncome(income NewIncome, userId string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -105,36 +107,38 @@ func InsertIncome(income NewIncome) (string, error) {
 	stmt := `
 		insert into incomes (
             project_id,
+			invoice_id,
             income_date,
             income_category,
+			statistics_income,
             vendor,
             description,
             amount,
 			tax,
 			status,
             currency,
-            payment_method,
             created_by,
             created_at,
             updated_by,
             updated_at
         )
-        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`
+        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`
 
 	err := db.QueryRowContext(ctx, stmt,
 		income.ProjectID,
+		income.InvoiceID,
 		income.IncomeDate,
 		income.IncomeCategory,
+		income.StatisticsIncome,
 		income.Vendor,
 		income.Description,
 		income.Amount,
 		income.Tax,
 		income.Status,
 		income.Currency,
-		income.PaymentMethod,
-		income.CreatedBy,
+		userId,
 		time.Now(),
-		income.UpdatedBy,
+		userId,
 		time.Now(),
 	).Scan(&newID)
 
@@ -145,40 +149,42 @@ func InsertIncome(income NewIncome) (string, error) {
 	return newID, nil
 }
 
-func (u *Income) UpdateIncome(updatedByUserId string) error {
+func (income *Income) UpdateIncome(updatedByUserId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	stmt := `update incomes set
 		project_id = $1,
-		income_date = $2,
-		income_category = $3,
-		vendor = $4,
-		description = $5,
-		amount = $6,
-		tax = $7,
-		status = $8,
-		currency = $9,
-		payment_method = $10,
-		updated_by = $11,
-		updated_at = $12
-		where id = $13
+		invoice_id = $2
+		income_date = $3,
+		income_category = $4,
+		statistics_income = $5,
+		vendor = $6,
+		description = $7,
+		amount = $8,
+		tax = $9,
+		status = $10,
+		currency = $11,
+		updated_by = $12,
+		updated_at = $13
+		where id = $14
 	`
 
 	_, err := db.ExecContext(ctx, stmt,
-		u.ProjectID,
-		u.IncomeDate,
-		u.IncomeCategory,
-		u.Vendor,
-		u.Description,
-		u.Amount,
-		u.Tax,
-		u.Status,
-		u.Currency,
-		u.PaymentMethod,
-		u.UpdatedBy,
+		income.ProjectID,
+		income.InvoiceID,
+		income.IncomeDate,
+		income.IncomeCategory,
+		income.StatisticsIncome,
+		income.Vendor,
+		income.Description,
+		income.Amount,
+		income.Tax,
+		income.Status,
+		income.Currency,
+		income.UpdatedBy,
 		time.Now(),
-		u.ID,
+		income.ID,
 	)
 
 	if err != nil {
@@ -193,7 +199,7 @@ func GetIncomeById(IncomeId string) (*Income, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, project_id, income_date, income_category, vendor, description, amount, tax, status, currency, payment_method, created_by, created_at, updated_by, updated_at
+	query := `select id, invoice_id, project_id, income_date, income_category, statistics_income, vendor, description, amount, tax, status, currency, created_by, created_at, updated_by, updated_at
 	from incomes where id = $1`
 
 	row := db.QueryRowContext(ctx, query, IncomeId)
@@ -201,16 +207,17 @@ func GetIncomeById(IncomeId string) (*Income, error) {
 	var income Income
 	err := row.Scan(
 		&income.ID,
+		&income.InvoiceID,
 		&income.ProjectID,
 		&income.IncomeDate,
 		&income.IncomeCategory,
+		&income.StatisticsIncome,
 		&income.Vendor,
 		&income.Description,
 		&income.Amount,
 		&income.Tax,
 		&income.Status,
 		&income.Currency,
-		&income.PaymentMethod,
 		&income.CreatedBy,
 		&income.CreatedAt,
 		&income.UpdatedBy,

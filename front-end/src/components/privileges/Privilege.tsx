@@ -133,7 +133,7 @@ const Privilege: React.FC = () => {
                             title="Are you sure?"
                             description={`Do you want to delete privilege ${name}`}
                             onConfirm={onClickdeletePrivilege}
-                            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                            icon={<QuestionCircleOutlined twoToneColor="red" />}
                             okText="Yes"
                             cancelText="No"
                         >

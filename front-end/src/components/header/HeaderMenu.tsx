@@ -44,6 +44,15 @@ const headerTitle = (pathName : string) => {
     if (pathName.includes('expenses')) {
         return 'Expenses'
     }
+    if (pathName.includes('/invoice/')) {
+        return 'Invoice details'
+    }
+    if (pathName.includes('create-invoice')) {
+        return 'Create new invoice'
+    }
+    if (pathName.includes('invoices')) {
+        return 'Invoices'
+    }
     if (pathName.includes('/income/')) {
         return 'Income details'
     }
@@ -52,6 +61,9 @@ const headerTitle = (pathName : string) => {
     }
     if (pathName.includes('incomes')) {
         return 'Incomes'
+    }
+    if (pathName.includes('products')) {
+        return 'Products'
     }
     if (pathName.includes('/external-company/')) {
         return 'External company details'
@@ -70,7 +82,8 @@ const headerTitle = (pathName : string) => {
 }
 
 const HeaderMenu: React.FC = () => {
-    const user = useSelector((state: State) => state.user)
+    const user = useSelector((state: State) => state.user);
+    const darkTheme = useSelector((state : State) => state.user.settings.dark_theme);
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -83,8 +96,11 @@ const HeaderMenu: React.FC = () => {
         }
     }
 
+    const backgroundColor = darkTheme ? '#141414' : '#ffffff';
+    const borderBottom = darkTheme ? '1px solid #303030' : '1px solid rgba(5, 5, 5, 0.06)';
+
     return (
-        <div style={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '28px', paddingLeft: '12px', borderBottom: '1px solid #e9e9e9', background: '#fafafa' }}>
+        <div style={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '8px', paddingLeft: '12px', background: backgroundColor, borderBottom: borderBottom}}>
             <div style={{ height: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 <Title style={{paddingTop: '10px'}} level={5}>{headerTitle(window.location.pathname)}</Title>
             </div>

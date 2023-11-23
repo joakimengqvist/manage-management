@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
-  FunctionOutlined,
+  BarcodeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   IdcardOutlined,
@@ -9,8 +9,9 @@ import {
   UnlockOutlined,
   ProjectOutlined,
   FundProjectionScreenOutlined,
-  ReconciliationOutlined,
+  ExceptionOutlined,
   DollarOutlined,
+  TranslationOutlined,
   FundOutlined,
   ClusterOutlined,
   BuildOutlined,
@@ -59,24 +60,28 @@ const Navigation: React.FC<NavigationProps> = (props) => {
       getItem('Projects', 'sub2-1', <FundProjectionScreenOutlined />, () => navigate("/projects")),
       getItem('Sub Projects', 'sub2-2', <BuildOutlined />, () => navigate("/sub-projects")),
     ]),
-    getItem('Economics', '3', <DollarOutlined />, () => {}, [
-      getItem('Expenses', 'sub3-1', <ReconciliationOutlined />, () => navigate("/expenses")),
-      getItem('Incomes', 'sub3-2', <FundOutlined />, () => navigate("/incomes")),
+    getItem('Products', '3', <BarcodeOutlined />, () => navigate("/products")),
+    getItem('Economics', '4', <DollarOutlined />, () => {}, [
+      getItem('Invoice items', 'sub4-1', <TranslationOutlined />, () => navigate("/invoice-items")),
+      getItem('Invoices', 'sub4-2', <ExceptionOutlined />, () => navigate("/invoices")),
+      getItem('Incomes', 'sub4-3', <FundOutlined />, () => navigate("/incomes")),
+      /* getItem('Expenses', 'sub3-2', <ReconciliationOutlined />, () => navigate("/expenses")), */
   ]),
-    getItem('External companies', '4', <BankOutlined />, () => navigate("/external-companies")),
-    getItem('Services', '5', <ClusterOutlined />, () => navigate("/services")),
+    getItem('External companies', '5', <BankOutlined />, () => navigate("/external-companies")),
+    getItem('Services', '6', <ClusterOutlined />, () => navigate("/services")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
+
+
 
   return (
       <Menu
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['sub1']}
         mode="inline"
-        theme="dark"
         inlineCollapsed={isCollapsed}
         items={itemsLoggedIn}
-        style={{borderRight: '1px solid #d9d9d9', height: '100%'}}
+        style={{height: '100%'}}
         inlineIndent={10}
       />
   );

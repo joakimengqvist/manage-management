@@ -29,8 +29,11 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := data.InsertIncome(requestPayload)
+	fmt.Println("requestPayload", requestPayload)
+
+	response, err := data.InsertIncome(requestPayload, userId)
 	if err != nil {
+		fmt.Println("could not create income: ", err.Error())
 		app.errorJSON(w, errors.New("could not create income: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -109,21 +112,22 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 		income := *incomePtr
 
 		returnedSlice := data.Income{
-			ID:             income.ID,
-			ProjectID:      income.ProjectID,
-			IncomeDate:     income.IncomeDate,
-			IncomeCategory: income.IncomeCategory,
-			Vendor:         income.Vendor,
-			Description:    income.Description,
-			Amount:         income.Amount,
-			Tax:            income.Tax,
-			Status:         income.Status,
-			Currency:       income.Currency,
-			PaymentMethod:  income.PaymentMethod,
-			CreatedBy:      income.CreatedBy,
-			CreatedAt:      income.CreatedAt,
-			UpdatedBy:      income.UpdatedBy,
-			UpdatedAt:      income.UpdatedAt,
+			ID:               income.ID,
+			ProjectID:        income.ProjectID,
+			InvoiceID:        income.InvoiceID,
+			IncomeDate:       income.IncomeDate,
+			IncomeCategory:   income.IncomeCategory,
+			StatisticsIncome: income.StatisticsIncome,
+			Vendor:           income.Vendor,
+			Description:      income.Description,
+			Amount:           income.Amount,
+			Tax:              income.Tax,
+			Status:           income.Status,
+			Currency:         income.Currency,
+			CreatedBy:        income.CreatedBy,
+			CreatedAt:        income.CreatedAt,
+			UpdatedBy:        income.UpdatedBy,
+			UpdatedAt:        income.UpdatedAt,
 		}
 
 		incomesSlice = append(incomesSlice, returnedSlice)
@@ -170,21 +174,22 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 		income := *incomesPtr
 
 		returnedSlice := data.Income{
-			ID:             income.ID,
-			ProjectID:      income.ProjectID,
-			IncomeDate:     income.IncomeDate,
-			IncomeCategory: income.IncomeCategory,
-			Vendor:         income.Vendor,
-			Description:    income.Description,
-			Amount:         income.Amount,
-			Tax:            income.Tax,
-			Status:         income.Status,
-			Currency:       income.Currency,
-			PaymentMethod:  income.PaymentMethod,
-			CreatedBy:      income.CreatedBy,
-			CreatedAt:      income.CreatedAt,
-			UpdatedBy:      income.UpdatedBy,
-			UpdatedAt:      income.UpdatedAt,
+			ID:               income.ID,
+			ProjectID:        income.ProjectID,
+			InvoiceID:        income.InvoiceID,
+			IncomeDate:       income.IncomeDate,
+			IncomeCategory:   income.IncomeCategory,
+			StatisticsIncome: income.StatisticsIncome,
+			Vendor:           income.Vendor,
+			Description:      income.Description,
+			Amount:           income.Amount,
+			Tax:              income.Tax,
+			Status:           income.Status,
+			Currency:         income.Currency,
+			CreatedBy:        income.CreatedBy,
+			CreatedAt:        income.CreatedAt,
+			UpdatedBy:        income.UpdatedBy,
+			UpdatedAt:        income.UpdatedAt,
 		}
 
 		incomesSlice = append(incomesSlice, returnedSlice)
@@ -228,21 +233,22 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnedUser := data.Income{
-		ID:             income.ID,
-		ProjectID:      income.ProjectID,
-		IncomeDate:     income.IncomeDate,
-		IncomeCategory: income.IncomeCategory,
-		Vendor:         income.Vendor,
-		Description:    income.Description,
-		Amount:         income.Amount,
-		Tax:            income.Tax,
-		Status:         income.Status,
-		Currency:       income.Currency,
-		PaymentMethod:  income.PaymentMethod,
-		CreatedBy:      income.CreatedBy,
-		CreatedAt:      income.CreatedAt,
-		UpdatedBy:      income.UpdatedBy,
-		UpdatedAt:      income.UpdatedAt,
+		ID:               income.ID,
+		ProjectID:        income.ProjectID,
+		InvoiceID:        income.InvoiceID,
+		IncomeDate:       income.IncomeDate,
+		IncomeCategory:   income.IncomeCategory,
+		StatisticsIncome: income.StatisticsIncome,
+		Vendor:           income.Vendor,
+		Description:      income.Description,
+		Amount:           income.Amount,
+		Tax:              income.Tax,
+		Status:           income.Status,
+		Currency:         income.Currency,
+		CreatedBy:        income.CreatedBy,
+		CreatedAt:        income.CreatedAt,
+		UpdatedBy:        income.UpdatedBy,
+		UpdatedAt:        income.UpdatedAt,
 	}
 
 	payload := jsonResponse{

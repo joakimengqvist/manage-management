@@ -87,6 +87,36 @@ services:
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=companies sslmode=disable timezone=UTC connect_timeout=5"
 
+  product-service:
+    build:
+      context: ./../product-service
+      dockerfile: ./../product-service/product-service.dockerfile
+    restart: always
+    ports:
+      - "8086:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=products sslmode=disable timezone=UTC connect_timeout=5"
+
+  invoice-service:
+    build:
+      context: ./../invoice-service
+      dockerfile: ./../invoice-service/invoice-service.dockerfile
+    restart: always
+    ports:
+      - "8087:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=invoice sslmode=disable timezone=UTC connect_timeout=5"
+
   logger-service:
     build:
       context: ./../logger-service

@@ -14,8 +14,9 @@ import Notes from '../../notes/Notes';
 import { NOTE_TYPE } from '../../../enums/notes';
 import { getAllIncomeNotesByIncomeId } from '../../../api/notes/income/getAllByIncomeId';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
-import { ExpenseAndIncomeStatus } from '../../tags/ExpenseAndIncomeStatus';
-import UpdateProjectIncome from './updateProjectIncom';
+import UpdateProjectIncome from './updateProjectIncome';
+import IncomeStatus from '../../status/IncomeStatus';
+import { GoldTag } from '../../tags/GoldTag';
 
 const { Text, Title, Link } = Typography;
 
@@ -85,86 +86,83 @@ const Income: React.FC = () => {
                 });
             })
         }
-    return (
-        <Card style={{ borderRadius: 0}}>
-            {income && (
+    return (<>
+        {income && (
             <Row>
-            {contextHolder}
-            <Col span={15}>
-                {!editing && (
-                    <Row>
-                        <Col span={24} style={{marginBottom: '0px'}}>
-                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                <span>
-                                    <Link style={{fontSize: '16px'}}href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link><br />
-                                    {income.description}<br />
-                                    {formatDateTimeToYYYYMMDDHHMM(income.income_date)}<br />
-                                </span>
-                                <Button onClick={() => setEditing(true)}>Edit income info</Button>
-                            </div>
-                        </Col>
-                        <Divider style={{marginTop: '16px', marginBottom: '16px'}}/>
-                    </Row>
-                )}
-                {editing ? (
-                    <UpdateProjectIncome income={income} setEditing={setEditing} />
-                ) : (
-                <Row>
-                    <Col span={8}  style={{padding: '0px 12px 12px 0px'}}>
-                        <Text strong>Category</Text><br/>
-                        {income.income_category}<br/>
-                        <Text strong>Amount</Text><br/>
-                        {`${income.amount} ${income.currency.toUpperCase()}`}<br/>
-                        <Text strong>Tax</Text><br/>
-                        {`${income.tax} ${income.currency.toUpperCase()}`}<br/>
-                        <Text strong>Payment method</Text><br/>
-                        {income.payment_method}<br/>
-                        <Text strong>Income status</Text><br/>
-                        <div style={{marginTop: '4px'}}>
-                            <ExpenseAndIncomeStatus status={income.status}/>
-                        </div>
-                    </Col>
-                    <Col span={16} style={{padding: '0px 12px 12px 0px'}}>
-                            <Text strong>Project</Text><br/>
-                            <Link href={`/project/${income.project_id}`}>{getProjectName(income.project_id)}</Link><br/>
-                            <Text strong>Created by</Text><br/>
-                            <Link href={`/user/${income.created_by}`}>{getUserName(income.created_by)}</Link><br/>
-                            <Text strong>Created at</Text><br/>
-                            {formatDateTimeToYYYYMMDDHHMM(income.created_at)}<br/>
-                            <Text strong>Modified by</Text><br/>
-                            <Link href={`/user/${income.updated_by}`}>{getUserName(income.updated_by)}</Link><br/>
-                            <Text strong>Modified at</Text><br/>
-                            {formatDateTimeToYYYYMMDDHHMM(income.updated_at)}<br/>
-                            <Text strong>Income ID</Text><br/>
-                            {income.id}<br/>
-                    </Col>
-                    <Divider style={{marginTop: '12px'}}/>
-                </Row>
-                )}
-            </Col>
-            <Col span={1}></Col>
-            <Col span={8}>
-                <Card>
-                    <CreateNote
-                        type={NOTE_TYPE.income}
-                        title={noteTitle}
-                        onTitleChange={onHandleNoteTitleChange}
-                        note={note}
-                        onNoteChange={onHandleNoteChange}
-                        onClearNoteFields={clearNoteFields}
-                        onSubmit={onSubmitIncomeNote}
-                    />
-                      <Title level={4}>Notes</Title>
-                        {incomeNotes && incomeNotes.length > 0 && 
-                            <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUser?.id} />
-                        }
+                {contextHolder}
+                <Col span={16} style={{paddingRight: '24px'}}>
+                        <Card style={{marginBottom: '16px'}}>
+                        {editing ? (
+                            <UpdateProjectIncome income={income} setEditing={setEditing} />
+                        ) : (
+                        <>
+                            <Row>
+                                <Col span={24} style={{marginBottom: '0px'}}>
+                                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                        <div>
+                                            <Link style={{fontSize: '16px'}}href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link><br />
+                                            {income.description}<br />
+                                            {formatDateTimeToYYYYMMDDHHMM(income.income_date)}<br />
+                                        </div>
+                                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', paddingRight: '20px', gap: '4px'}}>
+                                            <Button onClick={() => setEditing(true)}>Edit income info</Button>
+                                            {income.statistics_income && <GoldTag label="Statistics income" />}
+                                            <Link style={{paddingRight: '4px'}} href={`/invoice/${income.invoice_id}`}>Go to invoice</Link><br/>
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Divider style={{marginBottom: '16px'}}/>
+                            </Row>
+                            <Row>
+                                <Col span={8}  style={{padding: '0px 12px 12px 0px'}}>
+                                    <Text strong>Category</Text><br/>
+                                    {income.income_category}<br/>
+                                    <Text strong>Amount</Text><br/>
+                                    {`${income.amount} ${income.currency.toUpperCase()}`}<br/>
+                                    <Text strong>Tax</Text><br/>
+                                    {`${income.tax} ${income.currency.toUpperCase()}`}<br/>
+                                    <Text strong>Income status</Text><br/>
+                                    <div style={{marginTop: '4px'}}>
+                                        <IncomeStatus status={income.status}/>
+                                    </div>
+                                </Col>
+                                <Col span={16} style={{padding: '0px 12px 12px 0px'}}>
+                                        <Text strong>Project</Text><br/>
+                                        <Link href={`/project/${income.project_id}`}>{getProjectName(income.project_id)}</Link><br/>
+                                        <Text strong>Created by</Text><br/>
+                                        <Link href={`/user/${income.created_by}`}>{getUserName(income.created_by)}</Link><br/>
+                                        <Text strong>Created at</Text><br/>
+                                        {formatDateTimeToYYYYMMDDHHMM(income.created_at)}<br/>
+                                        <Text strong>Modified by</Text><br/>
+                                        <Link href={`/user/${income.updated_by}`}>{getUserName(income.updated_by)}</Link><br/>
+                                        <Text strong>Modified at</Text><br/>
+                                        {formatDateTimeToYYYYMMDDHHMM(income.updated_at)}<br/>
+                                </Col>
+                                <Divider style={{marginTop: '12px'}}/>
+                            </Row>
+                        </>)}
                         </Card>
-            </Col>
-        </Row>
+                </Col>
+                <Col span={8}>
+                    <Card>
+                        <CreateNote
+                            type={NOTE_TYPE.income}
+                            title={noteTitle}
+                            onTitleChange={onHandleNoteTitleChange}
+                            note={note}
+                            onNoteChange={onHandleNoteChange}
+                            onClearNoteFields={clearNoteFields}
+                            onSubmit={onSubmitIncomeNote}
+                        />
+                        <Title level={4}>Notes</Title>
+                            {incomeNotes && incomeNotes.length > 0 && 
+                                <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUser?.id} />
+                            }
+                    </Card>
+                </Col>
+            </Row>
         )}
-    </Card>
-    )
-
+    </>)
 }
 
 export default Income;

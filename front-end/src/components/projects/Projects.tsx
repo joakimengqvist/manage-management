@@ -9,7 +9,6 @@ import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined, SettingOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { ProjectStatus } from './../tags/ProjectStatus';
 import { SubProject } from '../../types/subProject';
 import { useEffect, useMemo, useState } from 'react';
 import Priority from '../renderHelpers/Priority';
@@ -19,6 +18,7 @@ import { formatDateTimeToYYYYMMDD } from '../../helpers/stringDateFormatting';
 import ReactApexChart from 'react-apexcharts';
 import { AddSubProjectsProjectConnection } from '../../api/subProjects/specialActions/addSubProjectsProjectConnection';
 import { RemoveSubProjectsProjectConnection } from '../../api/subProjects/specialActions/removeSubProjectsProjectsConnection';
+import ProjectStatus from '../status/ProjectStatus';
 
 const { Link, Text } = Typography;
 
@@ -110,7 +110,7 @@ const Projects: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalLoading, setIsModalLoading] = useState(false);
     const [modalSelectedProjectId, setModalSelectedProjectId] = useState('');
-    const [modalSelectedAddSubProjects, setModalAddSelectedSubProjects] = useState([]);
+    const [modalSelectedAddSubProjects, setModalAddSelectedSubProjects] = useState<Array<any>>([]);
     const [modalRemoveSelectedSubProjects, setModalRemoveSelectedSubProjects] = useState([]);
 
     const onHandleModalSelectAddSubProjectIds = (value : any) => setModalAddSelectedSubProjects(value);
@@ -122,7 +122,7 @@ const Projects: React.FC = () => {
     }
 
     const getProjectName = (id : string) => projects.find((project : Project) => project.id === id)?.name;
-    const getSubProjectName = (id : string) => subProjects.find((project : Project) => project.id === id)?.name;
+    const getSubProjectName = (id : string) => subProjects.find((project : SubProject) => project.id === id)?.name;
 
 
     useEffect(() => {
@@ -248,7 +248,7 @@ const Projects: React.FC = () => {
                     title="Are you sure?"
                     description={`Do you want to delete project ${project.name}`}
                     onConfirm={() => onClickdeleteProject(project.id)}
-                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                    icon={<QuestionCircleOutlined twoToneColor="red" />}
                     okText="Yes"
                     cancelText="No"
                 >
@@ -307,7 +307,7 @@ const Projects: React.FC = () => {
                                 title="Are you sure?"
                                 description={`Do you want to delete sub project ${subProject.name}`}
                                 onConfirm={() => onClickdeleteSubProject(subProject.id)}
-                                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                                icon={<QuestionCircleOutlined twoToneColor="red" />}
                                 okText="Yes"
                                 cancelText="No"
                             >

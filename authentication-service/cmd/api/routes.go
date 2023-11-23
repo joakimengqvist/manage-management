@@ -31,6 +31,9 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/auth/update-user", app.UpdateUser)
 	mux.Post("/auth/delete-user", app.DeleteUser)
 
+	mux.Post("/auth/update-user-settings", app.UpdateUserSettings)
+	mux.Post("/auth/get-user-settings-by-user-id", app.GetUserSettingsByUserId)
+
 	mux.Get("/auth/get-all-privileges", app.GetAllPrivileges)
 	mux.Post("/auth/get-privilege-by-id", app.GetPrivilegeById)
 	mux.Post("/auth/create-privilege", app.CreatePrivilege)

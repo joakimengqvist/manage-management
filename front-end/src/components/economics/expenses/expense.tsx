@@ -14,8 +14,8 @@ import CreateNote from '../../notes/CreateNote';
 import Notes from '../../notes/Notes'
 import { NOTE_TYPE } from '../../../enums/notes';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
-import { ExpenseAndIncomeStatus } from '../../tags/ExpenseAndIncomeStatus';
 import UpdateProjectExpense from './updateProjectExpense';
+import ExpenseStatus from '../../status/ExpenseStatus';
 
 const { Text, Title, Link } = Typography;
 
@@ -123,7 +123,7 @@ const Expense: React.FC = () => {
                         {expense.payment_method}<br/>
                         <Text strong>Expense status</Text><br/>
                         <div style={{marginTop: '4px'}}>
-                            <ExpenseAndIncomeStatus status={expense.status}/>
+                            <ExpenseStatus status={expense.status}/>
                         </div>
                     </Col>
                     <Col span={16} style={{padding: '0px 12px 12px 0px'}}>
@@ -137,8 +137,6 @@ const Expense: React.FC = () => {
                             <Link href={`/user/${expense.updated_by}`}>{getUserName(expense.updated_by)}</Link><br/>
                             <Text strong>Modified at</Text><br/>
                             {formatDateTimeToYYYYMMDDHHMM(expense.updated_at)}<br/>
-                            <Text strong>Expense ID</Text><br/>
-                            {expense.id}<br/>
                             
                     </Col>
                     <Divider style={{marginTop: '8px'}}/>
@@ -157,11 +155,11 @@ const Expense: React.FC = () => {
                         onClearNoteFields={clearNoteFields}
                         onSubmit={onSubmitExpenseNote}
                     />
-                      <Title level={4}>Notes</Title>
-                        {expenseNotes && expenseNotes.length > 0 && 
-                            <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUser.id} />
-                        }
-                        </Card>
+                    <Title level={4}>Notes</Title>
+                    {expenseNotes && expenseNotes.length > 0 && 
+                        <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUser.id} />
+                    }
+                </Card>
             </Col>
         </Row>
         )}

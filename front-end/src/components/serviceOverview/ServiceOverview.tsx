@@ -120,6 +120,28 @@ const Services: React.FC = () => {
                 },
             },
             {
+                id: '1008',
+                value: {
+                title: 'Product-service',
+                items: [
+                    {
+                        text: 'Products',
+                    },
+                ],
+                },
+            },
+            {
+                id: '1009',
+                value: {
+                title: 'Invoice-service',
+                items: [
+                    {
+                        text: 'Invoices',
+                    },
+                ],
+                },
+            },
+            {
                 id: '10000',
                 value: {
                 title: 'Front-end',
@@ -161,6 +183,14 @@ const Services: React.FC = () => {
                 target: '1007',
             },
             {
+                source: '10',
+                target: '1008',
+            },
+            {
+                source: '10',
+                target: '1009',
+            },
+            {
                 source: '1001',
                 target: '1002',
             },
@@ -186,6 +216,14 @@ const Services: React.FC = () => {
                 target: '1007',
             },
             {
+                source: '1001',
+                target: '1008',
+            },
+            {
+                source: '1001',
+                target: '1009',
+            },
+            {
                 source: '1002',
                 target: '100',
             },
@@ -207,6 +245,14 @@ const Services: React.FC = () => {
             },
             {
                 source: '1007',
+                target: '100',
+            },
+            {
+                source: '1008',
+                target: '100',
+            },
+            {
+                source: '1009',
                 target: '100',
             },
             {
@@ -241,11 +287,7 @@ const Services: React.FC = () => {
         behaviors: ['drag-node'],
       };
 
-    return  (
-        <div style={{maxWidth: '85%', marginTop: '48px'}}>
-            <FlowAnalysisGraph {...config} />
-        </div>
-    );
+    return <FlowAnalysisGraph {...config}/>;
 
 }
 

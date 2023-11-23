@@ -9,8 +9,8 @@ export const createExpense = async (
 	amount: string,
 	tax: string,
     status: string,
+    payment_method: string,
 	currency: string,
-	payment_method: string,
 	created_by: string,
 ) => {
     const payload = {

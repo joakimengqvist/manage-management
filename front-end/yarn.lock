@@ -4461,6 +4461,11 @@ shallowequal@^1.1.0:
   resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
   integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
 
+shapeshift-data-formatter@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/shapeshift-data-formatter/-/shapeshift-data-formatter-1.0.0.tgz#344aeba4e90055d293a6f755d524e9dc63c5c647"
+  integrity sha512-clpb+IYqVivkr45pXhujMD6Dmltxk3lJXGLhfkXrAJjN1GbVhAcnd5arvNZRx1OxubR9pB2pHhsohGeiI92YZA==
+
 shebang-command@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/shebang-command/-/shebang-command-2.0.0.tgz"
@@ -4722,6 +4727,11 @@ svg.select.js@^3.0.1:
   integrity sha512-h5IS/hKkuVCbKSieR9uQCj9w+zLHoPh+ce19bBYyqF53g6mnPB8sAtIbe1s9dh2S2fCmYX2xel1Ln3PJBbK4kw==
   dependencies:
     svg.js "^2.6.5"
+
+swedish-bank-account-validator@2023.1.2:
+  version "2023.1.2"
+  resolved "https://registry.yarnpkg.com/swedish-bank-account-validator/-/swedish-bank-account-validator-2023.1.2.tgz#450cf454c236cd59c58f1e14ea27cac032fb17ef"
+  integrity sha512-roglIskddwN/21aXRD2dWzsdF/tPM6WyT5Jpd5yFkuGVf+CNP8Qt2WeJKJOJ1oz5aiAYaCV/Xv3oJ9qP4EcLWw==
 
 tape@^4.5.1:
   version "4.17.0"

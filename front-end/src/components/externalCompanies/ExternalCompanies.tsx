@@ -4,7 +4,7 @@ import { Typography, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
-import { ExternalCompanyStatus } from '../tags/ExternalCompanyStatus';
+import { ExternalCompanyStatus } from '../status/ExternalCompanyStatus';
 import { getAllExternalCompanies } from '../../api/externalCompanies/getAll';
 import { ExternalCompany } from '../../types/externalCompany';
 import { ZoomInOutlined } from '@ant-design/icons';

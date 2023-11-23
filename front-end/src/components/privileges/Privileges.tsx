@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePrivilege } from '../../api/privileges/delete';
-import { Table, Button, Popconfirm, notification, Tag, Typography } from 'antd';
+import { Table, Button, Popconfirm, notification, Typography } from 'antd';
 import { State } from '../../types/state';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { BlueTag } from '../tags/BlueTag';
 
 const { Link } = Typography;
 
@@ -66,7 +67,7 @@ const Privileges: React.FC = () => {
 
     const privilegesData: Array<any> = privileges.map((privilege : any) => {
         return {                    
-            name: <Tag color="blue" style={{cursor: 'pointer'}} onClick={() => navigateToPrivilege(privilege.id)}>{privilege.name}</Tag>,
+            name: <Link style={{cursor: 'pointer'}} href={`/privilege/${privilege.id}`}><BlueTag label={privilege.name} /></Link>,
             description: privilege.description,
             operations: (<div style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Link style={{padding: '5px'}} href={`/privilege/${privilege.id}`}><ZoomInOutlined /></Link>
@@ -76,7 +77,7 @@ const Privileges: React.FC = () => {
                         title="Are you sure?"
                         description={`Do you want to delete privilege ${privilege.name}`}
                         onConfirm={() => onClickdeletePrivilege(privilege.id)}
-                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                        icon={<QuestionCircleOutlined twoToneColor="red" />}
                         okText="Yes"
                         cancelText="No"
                     >

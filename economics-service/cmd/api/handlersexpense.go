@@ -29,7 +29,7 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := data.InsertExpense(requestPayload)
+	response, err := data.InsertExpense(requestPayload, userId)
 	if err != nil {
 		app.errorJSON(w, errors.New("could not create expense: "+err.Error()), http.StatusBadRequest)
 		return

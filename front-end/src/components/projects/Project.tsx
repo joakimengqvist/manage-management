@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Card, Space, Input, Typography, notification, Popconfirm, Divider, Select, Col, Row, Table } from 'antd';
+import { Button, Card, Input, Typography, notification, Popconfirm, Divider, Select, Col, Row, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProject } from '../../api/projects/update';
@@ -11,7 +11,6 @@ import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from "@ant-design/icons";
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { ProjectStatus, ProjectStatusTypes } from '../tags/ProjectStatus';
 import { createProjectNote } from '../../api/notes/project/create';
 import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectId';
 import { getAllExpensesByProjectId } from '../../api/economics/expenses/getAllByProjectId';
@@ -23,6 +22,7 @@ import CreateNote from '../notes/CreateNote';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import { NOTE_TYPE } from '../../enums/notes';
 import NoteList from '../notes/Notes';
+import ProjectStatus from '../status/ProjectStatus';
 
 const { Text, Link } = Typography;
 
@@ -91,7 +91,7 @@ const Project: React.FC = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges);
     const projects = useSelector((state : State) => state.application.projects);
     const [name, setName] = useState('');
-    const [projectStatus, setProjectStatus] = useState<ProjectStatusTypes | ''>('');
+    const [projectStatus, setProjectStatus] = useState('');
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
     const [editing, setEditing] = useState(false);
@@ -281,14 +281,16 @@ const Project: React.FC = () => {
         projectInformation: (
           <div style={{padding: '24px'}}>
           <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
-          <Space direction="vertical" style={{minWidth: '320px'}}>
-              <Text strong>Project name</Text>
-              {editing ? (
-                  <Input value={name} onChange={onHandleNameChange}/>
-              ) : (
-                  <Text>{name}</Text>
-              )}
-              <Text strong>Status</Text>
+          <div style={{minWidth: '320px'}}>
+              <div style={{paddingBottom: '4px'}}>
+                <Text strong>Project name</Text><br />
+                {editing ? (
+                    <Input value={name} onChange={onHandleNameChange}/>
+                ) : (
+                    <Text>{name}</Text>
+                )}
+              </div>
+              <Text strong>Status</Text><br />
               {editing ? (
                 <Select
                   style={{width: '100%'}}
@@ -301,19 +303,17 @@ const Project: React.FC = () => {
                   value={projectStatus}
                 />
               ) : (
-                  <ProjectStatus status={projectStatus ? projectStatus : 'default'} />
+                  <ProjectStatus status={projectStatus ? projectStatus : 'no status'} />
               )}
-          </Space>
+          </div>
           <div style={{paddingRight: '24px'}}>
-          <Text strong>Project ID</Text><br />
-          <Text>{projectId}</Text><br />
-          {hasPrivilege(userPrivileges, 'user_read') && (<>
+          {hasPrivilege(userPrivileges, 'user_read') && project && (<>
             <Text strong>Created by</Text><br />
-            <Link href={`/user/${project?.created_by}`}>{getUserName(project?.created_by)}</Link><br />
+            <Link href={`/user/${project.created_by}`}>{getUserName(project.created_by)}</Link><br />
             <Text strong>Created at</Text><br />
-            <Text>{formatDateTimeToYYYYMMDDHHMM(project?.created_at)}</Text><br />
+            <Text>{formatDateTimeToYYYYMMDDHHMM(project.created_at)}</Text><br />
             <Text strong>Updated by</Text><br />
-            <Link href={`/user/${project?.updated_by}`}>{getUserName(project?.updated_by)}</Link><br />
+            <Link href={`/user/${project.updated_by}`}>{getUserName(project.updated_by)}</Link><br />
             <Text strong>Updated at</Text><br />
             <Text>{formatDateTimeToYYYYMMDDHHMM(project?.updated_at)}</Text><br />
           </>)}
@@ -327,7 +327,7 @@ const Project: React.FC = () => {
                       title="Are you sure?"
                       description={`Do you want to delete user ${name}`}
                       onConfirm={onClickdeleteProject}
-                      icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                      icon={<QuestionCircleOutlined twoToneColor="red" />}
                       okText="Yes"
                       cancelText="No"
                   >

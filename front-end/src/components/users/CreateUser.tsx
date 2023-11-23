@@ -8,18 +8,12 @@ import type { SelectProps } from 'antd';
 import { createUser } from '../../api/users/create'
 import { State } from '../../types/state';
 import { appendUser } from '../../redux/applicationDataSlice';
-import { BlueTags } from '../tags/BlueTags';
-import { PurpleTags } from '../tags/DefaultTags';
+import { Privilege } from '../../types/privilege';
+import { Project } from '../../types/project';
+import { BlueTags } from '../tags/blueTags';
+import { PurpleTags } from '../tags/PurpleTags';
 
 const { Title, Text } = Typography;
-
-interface Privilege {
-    id: string;
-    name: string;
-    description: string;
-    created_at: string;
-    updated_at: string
-}
 
 const CreateUser: React.FC = () => {
     const dispatch = useDispatch();
@@ -48,7 +42,7 @@ const CreateUser: React.FC = () => {
         setPrivilegesOptions(optionsPrivileges);
 
         const optionsProjects: SelectProps['options'] = [];
-        projects.forEach((project : Privilege) => {
+        projects.forEach((project : Project) => {
             optionsProjects.push({
                 label: project.name,
                 value: project.id,

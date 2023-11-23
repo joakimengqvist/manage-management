@@ -134,7 +134,7 @@ const UpdateSubProject = ({ subProject, setEditing } : { subProject : SubProject
                       title="Are you sure?"
                       description={`Do you want to delete user ${name}`}
                       onConfirm={onClickdeleteProject}
-                      icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                      icon={<QuestionCircleOutlined twoToneColor="red" />}
                       okText="Yes"
                       cancelText="No"
                   >

@@ -11,7 +11,6 @@ import {
 } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { ProjectStatus } from './../tags/ProjectStatus';
 import { SubProject } from '../../types/subProject';
 import { deleteSubProject } from '../../api/subProjects/delete';
 import Priority from '../renderHelpers/Priority';
@@ -19,6 +18,7 @@ import EstimatedDuration from '../renderHelpers/EstimatedDuration';
 import { useEffect, useState } from 'react';
 import { AddProjectsSubProjectConnection } from '../../api/subProjects/specialActions/addProjectsSubProjectConnection';
 import { RemoveProjectsSubProjectConnection } from '../../api/subProjects/specialActions/RemoveProjectsSubProjectConnection';
+import SubProjectStatus from '../status/SubProjectStatus';
 
 const { Text, Link } = Typography;
 
@@ -66,7 +66,7 @@ const SubProjects: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalLoading, setIsModalLoading] = useState(false);
     const [modalSelectedSubProjectId, setModalSubSelectedProjectId] = useState('');
-    const [modalSelectedAddProjects, setModalAddSelectedProjects] = useState([]);
+    const [modalSelectedAddProjects, setModalAddSelectedProjects] = useState<any>([]);
     const [modalRemoveSelectedProjects, setModalRemoveSelectedProjects] = useState([]);
 
     useEffect(() => {
@@ -198,7 +198,7 @@ const SubProjects: React.FC = () => {
 
     const subProjectsData: Array<any> = subProjects && subProjects.map((subProject : SubProject) => ({                 
             name: <Link href={`/sub-project/${subProject.id}`}>{subProject.name}</Link>,
-            status: <ProjectStatus status={subProject.status} />,
+            status: <SubProjectStatus status={subProject.status} />,
             priority: <Priority priority={subProject.priority} />,
             estimated_duration: <EstimatedDuration duration={subProject.estimated_duration} />,
             projects: subProject.projects && subProject.projects.map((id : string) => (<Link style={{paddingLeft: '8px', paddingRight: '8px'}} href={`/project/${id}`}>{getProjectName(id)}</Link>)), 
@@ -212,7 +212,7 @@ const SubProjects: React.FC = () => {
                         title="Are you sure?"
                         description={`Do you want to delete project ${subProject.name}`}
                         onConfirm={() => onClickdeleteProject(subProject.id)}
-                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                        icon={<QuestionCircleOutlined twoToneColor="red" />}
                         okText="Yes"
                         cancelText="No"
                     >

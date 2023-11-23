@@ -2,12 +2,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { useParams } from 'react-router-dom'
-import { Button, Card, Space, Typography, notification, Col, Row } from 'antd';
+import { Button, Card, Typography, notification, Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../types/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
-import { ProjectStatus } from '../tags/ProjectStatus';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import { SubProject } from '../../types/subProject';
 import { getSubProjectById } from '../../api/subProjects/getById';
@@ -17,6 +16,7 @@ import { NOTE_TYPE } from '../../enums/notes';
 import NoteList from '../notes/Notes';
 import { createSubProjectNote } from '../../api/notes/subProject/create';
 import { getAllSubProjectNotesBySubProjectId } from '../../api/notes/subProject/getAllByProjectId';
+import SubProjectStatus from '../status/SubProjectStatus';
 
 const { Text, Title, Link } = Typography;
 
@@ -121,15 +121,13 @@ const Project: React.FC = () => {
                 <UpdateSubProject subProject={subProject} setEditing={setEditing} />
             ) : (
           <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
-          <Space direction="vertical" style={{minWidth: '320px'}}>
-              <Text strong>Project name</Text>
-                  <Text>{subProject.name}</Text>
-              <Text strong>Status</Text>
-                  <ProjectStatus status={subProject.status} />
-          </Space>
+          <div style={{minWidth: '320px'}}>
+              <Text strong>Project name</Text><br />
+              <Text>{subProject.name}</Text><br/>
+              <Text strong>Status</Text><br/>
+              <SubProjectStatus status={subProject.status} />
+          </div>
           <div style={{paddingRight: '24px'}}>
-          <Text strong>Project ID</Text><br />
-          <Text>{subProjectId}</Text><br />
           {hasPrivilege(userPrivileges, 'user_read') && (<>
             <Text strong>Created by</Text><br />
             <Link href={`/user/${subProject.created_by}`}>{getUserName(subProject.created_by)}</Link><br />

@@ -5,6 +5,11 @@ import { Provider } from 'react-redux'
 import App from './App'
 import store from './redux/store'
 
+/*
+theme.defaultAlgorithm
+theme.darkAlgorithm
+theme.compactAlgorithm
+*/
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

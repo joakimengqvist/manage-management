@@ -56,7 +56,7 @@ func GetAllExpensesByProjectId(projectId string) ([]*Expense, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, project_id, expense_date, expense_category, vendor, description, amount, tax, status, currency, payment_method, created_by, created_at, updated_by, updated_at
+	query := `select id, project_id, expense_date, expense_category, vendor, description, amount, tax, status, currency, payment_method,created_by, created_at, updated_by, updated_at
 	from expenses where project_id = $1 order by expense_date desc`
 
 	rows, err := db.QueryContext(ctx, query, projectId)
@@ -97,7 +97,7 @@ func GetAllExpensesByProjectId(projectId string) ([]*Expense, error) {
 	return expenses, nil
 }
 
-func InsertExpense(expense NewExpense) (string, error) {
+func InsertExpense(expense NewExpense, userId string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -119,7 +119,7 @@ func InsertExpense(expense NewExpense) (string, error) {
             updated_by,
             updated_at
         )
-        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14 ) returning id`
+        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`
 
 	err := db.QueryRowContext(ctx, stmt,
 		expense.ProjectID,
@@ -132,9 +132,9 @@ func InsertExpense(expense NewExpense) (string, error) {
 		expense.Status,
 		expense.Currency,
 		expense.PaymentMethod,
-		expense.CreatedBy,
+		userId,
 		time.Now(),
-		expense.UpdatedBy,
+		userId,
 		time.Now(),
 	).Scan(&newID)
 
@@ -210,7 +210,7 @@ func GetExpenseById(ExpenseId string) (*Expense, error) {
 		&expense.Tax,
 		&expense.Status,
 		&expense.Currency,
-		&expense.PaymentMethod,
+		expense.PaymentMethod,
 		&expense.CreatedBy,
 		&expense.CreatedAt,
 		&expense.UpdatedBy,

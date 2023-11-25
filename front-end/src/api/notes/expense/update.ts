@@ -1,8 +1,19 @@
 import { ENDPOINTS } from "../../endpoints";
+import { NoteAuthor } from "../../../types/notes";
+import { ExpenseNote } from "../../../types";
 
-import { NoteAuthor } from "../../../types/state";
-
-export const updateExpenseNote = async (noteId : string, user : NoteAuthor, expense : string, title : string, note : string) => {
+/**
+ * @param noteId note id
+ * @param user userId, name and email
+ * @param expense expense id
+ * @param title note title
+ * @param note note text
+ */
+export const updateExpenseNote = async (noteId : string, user : NoteAuthor, expense : string, title : string, note : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: ExpenseNote
+}> => {
     const payload = {
         id: noteId,
         author_id: user.id,

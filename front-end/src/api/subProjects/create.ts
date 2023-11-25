@@ -1,7 +1,10 @@
 import { ENDPOINTS } from "../endpoints";
 
+/**
+ * @returns Resolved promise returns the created sub project ID
+ */
 export const createSubProject = async (
-  userId : string,
+  loggedInUserId : string,
   name : string,
   status : string,
   description : string,
@@ -13,7 +16,11 @@ export const createSubProject = async (
   invoices : string[],
   incomes : string[],
   expenses : string[],
-  ) => {
+  ) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+  }>=> {
     const payload = {
       name: name,
       description: description,
@@ -30,7 +37,7 @@ export const createSubProject = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

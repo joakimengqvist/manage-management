@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 import HeaderMenu from './components/header/HeaderMenu';
 import Navigation from './components/navigation/Navigation';
-import Login from './routes/login';
+import Login from './routes/Login';
 import UsersDetails from './routes/user/Users';
 import User from './routes/user/User';
 import Projects from './routes/project/Projects';
@@ -26,7 +26,7 @@ import MyPage from './routes/myPage';
 import ExpenseCreate from './routes/expense/ExpenseCreate';
 import Expense from './routes/expense/Expense';
 import Expenses from './routes/expense/Expenses';
-import ServiceOverview from './routes/ServiceOverview';
+import ServiceOverviewPage from './routes/ServiceOverview';
 import Incomes from './routes/income/Incomes';
 // import IncomeCreate from './routes/income/IncomeCreate';
 import Income from './routes/income/Income';
@@ -180,7 +180,7 @@ const ThemePicker = () => {
 
 
 
-              <Route path="/services" element={<ServiceOverview />} />
+              <Route path="/services" element={<ServiceOverviewPage />} />
 
             </Routes>
           </Content>

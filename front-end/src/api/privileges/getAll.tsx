@@ -1,9 +1,15 @@
+import { Privilege } from "../../types";
 import { ENDPOINTS } from "../endpoints";
-export const getAllPrivileges = async (userId : string) => {
+
+export const getAllPrivileges = async (loggedInUserId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<Privilege>
+}> => {
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'GET',

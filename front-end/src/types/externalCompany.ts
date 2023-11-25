@@ -1,4 +1,4 @@
-export type ExternalCompany = {
+export interface ExternalCompany {
 	id: string,
     company_name: string
 	company_registration_number: string

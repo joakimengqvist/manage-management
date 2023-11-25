@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import CreateExternalCompany from '../../components/externalCompanies/CreateExternalCompany';
+import CreateExternalCompany from '../../components/externalCompanies/createExternalCompany';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { State } from '../../types/state';

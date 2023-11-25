@@ -1,6 +1,9 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const createProject = async (userId : string, name : string, status : string) => {
+/**
+ * @returns Resolved promise returns the created project ID
+ */
+export const createProject = async (loggedInUserId : string, name : string, status : string) => {
     const payload = {
       name: name,
       status: status,
@@ -8,7 +11,7 @@ export const createProject = async (userId : string, name : string, status : str
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

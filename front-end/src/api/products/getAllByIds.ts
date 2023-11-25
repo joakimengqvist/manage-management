@@ -1,13 +1,21 @@
+import { Product } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
-export const getProductsByIds = async (userId : string, ids : Array<string>) => {
+/**
+ * @param productIds array of product ids
+ */
+export const getProductsByIds = async (loggedInUserId : string, productIds : Array<string>) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<Product>
+}> => {
     const payload = {
-      ids: ids,
+      ids: productIds,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

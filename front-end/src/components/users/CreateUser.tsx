@@ -10,7 +10,7 @@ import { State } from '../../types/state';
 import { appendUser } from '../../redux/applicationDataSlice';
 import { Privilege } from '../../types/privilege';
 import { Project } from '../../types/project';
-import { BlueTags } from '../tags/blueTags';
+import { BlueTags } from '../tags/BlueTags';
 import { PurpleTags } from '../tags/PurpleTags';
 
 const { Title, Text } = Typography;

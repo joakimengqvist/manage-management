@@ -1,7 +1,8 @@
+import { ExternalCompany } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
 export const updateExternalCompany = async (
-    userId : string,
+    loggedInUserId : string,
     id: string,
     company_name: string,
 	company_registration_number: string,
@@ -21,9 +22,12 @@ export const updateExternalCompany = async (
 	assigned_projects: Array<string>,
 	invoice_pending: Array<string>,
 	invoice_history: Array<string>,
-	contractual_agreements: Array<string>,
-) => {
-    
+	contractual_agreements: Array<string>
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: ExternalCompany
+}> => {
     const payload = {
         id,
         company_name,
@@ -49,7 +53,7 @@ export const updateExternalCompany = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

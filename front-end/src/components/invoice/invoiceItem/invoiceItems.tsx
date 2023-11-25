@@ -44,7 +44,7 @@ const invoiceItemsColumns = [
     },
   ];
 
-const Invoices = () => {
+const InvoiceItems = () => {
     const loggedInUserId = useSelector((state : State) => state.user.id);
     const products = useSelector((state : State) => state.application.products);
     const [invoiceItems, setInvoiceItems] = useState<Array<InvoiceItem>>([]);
@@ -82,4 +82,4 @@ const Invoices = () => {
 
 }
 
-export default Invoices;
+export default InvoiceItems;

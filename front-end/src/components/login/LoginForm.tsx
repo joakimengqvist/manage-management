@@ -15,7 +15,6 @@ const LoginForm: React.FC = () => {
 
   const Login = () => {
     loginAuthenticate(userName, /* password */ ).then(response => {
-      console.log('response', response)
       if (response.error) {
         setLoginErrorFeedback(response.message)
         return

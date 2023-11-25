@@ -6,7 +6,7 @@ import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { useNavigate } from 'react-router-dom';
 
-const ProjectDetails: React.FC = () => {
+const ProjectDetails  = () => {
     const navigate = useNavigate();
     const userPrivileges = useSelector((state : State) => state.user.privileges)
     return (

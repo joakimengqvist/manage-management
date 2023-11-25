@@ -1,7 +1,10 @@
 import { ENDPOINTS } from "../endpoints";
 
+/**
+ * @returns Resolved promise returns the created external company ID
+ */
 export const createExternalCompany = async (
-    userId : string,
+    loggedInUserId : string,
     company_name: string,
 	company_registration_number: string,
 	contact_person: string,
@@ -20,9 +23,12 @@ export const createExternalCompany = async (
 	assigned_projects: Array<string>,
 	invoice_pending: Array<string>,
 	invoice_history: Array<string>,
-	contractual_agreements: Array<string>,
-) => {
-    
+	contractual_agreements: Array<string>
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+}> => { 
     const payload = {
         company_name,
         company_registration_number,
@@ -47,7 +53,7 @@ export const createExternalCompany = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

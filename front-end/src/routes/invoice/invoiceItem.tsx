@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import InvoiceItem from '../../components/invoice/invoiceItem/invoiceItem';
+import InvoiceItem from '../../components/invoice/invoiceItem/InvoiceItem';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { State } from '../../types/state';

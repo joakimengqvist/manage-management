@@ -1,14 +1,19 @@
+import { User } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
-export const updateUserCall = async (
-  userId : string, 
+export const updateUser = async (
+  loggedInUserId : string, 
   id : string, 
   firstName : string, 
   lastName : string, 
   email : string, 
   privileges : Array<string>,
   projects : Array<string>
-  ) => {
+  ) : Promise<{
+    error: boolean,
+    message: string,
+    data: User
+  }> => {
     const payload = {
         id: id,
         first_name: firstName,
@@ -20,7 +25,7 @@ export const updateUserCall = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

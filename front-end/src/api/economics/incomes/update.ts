@@ -1,3 +1,4 @@
+import { IncomeObject } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
 export const updateIncome = async (
@@ -12,8 +13,12 @@ export const updateIncome = async (
 	tax: string,
     status: string,
 	currency: string,
-	created_by: string,
-) => {
+	created_by: string
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: IncomeObject
+}> => {
     const payload = {
         project_id: project_id,
         id: id,

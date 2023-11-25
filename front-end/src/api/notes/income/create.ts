@@ -1,7 +1,18 @@
 import { ENDPOINTS } from "../../endpoints";
-import { NoteAuthor } from "../../../types/state";
+import { NoteAuthor } from "../../../types/notes";
 
-export const createIncomeNote = async (user : NoteAuthor, income : string, title : string, note : string) => {
+/**
+ * @param user userId, name and email
+ * @param income income id
+ * @param title note title
+ * @param note note text
+ * @returns Resolved promise returns the created income note ID
+ */
+export const createIncomeNote = async (user : NoteAuthor, income : string, title : string, note : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+}> => {
     const payload = {
         author_id: user.id,
         author_name: user.name,

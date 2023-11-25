@@ -28,7 +28,7 @@ const MyPage = () => {
     }
 
     const saveCosmeticSettings = () => {
-        updateUserSettings(user.id, isDarkTheme, isCompactUI).then(() => {
+        updateUserSettings(user.id, user.id, isDarkTheme, isCompactUI).then(() => {
             api.success({
                 message: 'Cosmetic settings updated',
                 placement: 'bottom',
@@ -76,7 +76,7 @@ const MyPage = () => {
                     </Space>
                 </div>
                 <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
-                        <Button primary onClick={saveCosmeticSettings}>Save</Button>
+                        <Button type="primary" onClick={saveCosmeticSettings}>Save</Button>
                 </div>
             </Card>
             </div>

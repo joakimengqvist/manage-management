@@ -1,8 +1,16 @@
+import { ExpenseNote } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getAllExpenseNotesByUserId = async (loggedInUserId : string, userId : string) => {
+/**
+ * @param authorId author id
+ */
+export const getAllExpenseNotesByUserId = async (loggedInUserId : string, authorId : string) : Promise<{
+  error: boolean,
+  message: string,
+  data: Array<ExpenseNote>
+}> => {
     const payload = {
-      id: userId,
+      id: authorId,
     };
 
     const headers = new Headers();

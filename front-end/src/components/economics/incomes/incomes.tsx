@@ -156,7 +156,6 @@ const Income = ({ project } : { project: string }) => {
       data: pieGraphData,
       angleField: 'amount',
       colorField: 'income_category',
-      label: false
     };
 
     const pieShartTaxConfig = {
@@ -164,7 +163,6 @@ const Income = ({ project } : { project: string }) => {
       data: pieGraphTaxData,
       angleField: 'tax',
       colorField: 'income_category',
-      label: false
     };
 
 

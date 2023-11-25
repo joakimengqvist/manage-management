@@ -15,8 +15,9 @@ import CreateNote from '../notes/CreateNote';
 import { NOTE_TYPE } from '../../enums/notes';
 import NoteList from '../notes/Notes';
 import { createSubProjectNote } from '../../api/notes/subProject/create';
-import { getAllSubProjectNotesBySubProjectId } from '../../api/notes/subProject/getAllByProjectId';
+import { getAllSubProjectNotesBySubProjectId } from '../../api/notes/subProject/getAllBySubProjectId';
 import SubProjectStatus from '../status/SubProjectStatus';
+import { SubProjectNote } from '../../types';
 
 const { Text, Title, Link } = Typography;
 
@@ -40,7 +41,7 @@ const Project: React.FC = () => {
     const [editing, setEditing] = useState(false);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
-    const [subProjectNotes, setSubProjectNotes] = useState([]);
+    const [subProjectNotes, setSubProjectNotes] = useState<Array<SubProjectNote>>([]);
     const [activeTab, setActiveTab] = useState<string>('projectInformation');
     const { id } =  useParams();
     const subProjectId = id || '';

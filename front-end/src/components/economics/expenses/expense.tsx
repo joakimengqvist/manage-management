@@ -8,7 +8,7 @@ import { State } from '../../../types/state';
 import { ExpenseNote } from '../../../types/notes';
 import { ExpenseObject } from '../../../types/expense'
 import { getExpenseById } from '../../../api/economics/expenses/getById';
-import { getAllExpenseNotesByExpenseId } from '../../../api/notes/expense/getAllByIncomeId';
+import { getAllExpenseNotesByExpenseId } from '../../../api/notes/expense/getAllByExpenseId';
 import { createExpenseNote } from '../../../api/notes/expense/create'
 import CreateNote from '../../notes/CreateNote';
 import Notes from '../../notes/Notes'
@@ -102,7 +102,7 @@ const Expense: React.FC = () => {
                                 {expense.description}<br />
                                 {formatDateTimeToYYYYMMDDHHMM(expense.expense_date)}<br />
                             </span>
-                            <Button primary onClick={() => setEditing(true)}>Edit expense info</Button>
+                            <Button type="primary" onClick={() => setEditing(true)}>Edit expense info</Button>
                         </div>
                     </Col>
                     <Divider style={{marginTop: '16px', marginBottom: '16px'}}/>

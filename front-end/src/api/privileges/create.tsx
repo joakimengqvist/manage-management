@@ -1,6 +1,13 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const createPrivilege = async (userId : string, name : string, description : string) => {
+/**
+ * @returns Resolved promise returns the created privilege ID
+ */
+export const createPrivilege = async (loggedInUserId : string, name : string, description : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+}> => {
     const payload = {
             name: name,
             description: description
@@ -8,7 +15,7 @@ export const createPrivilege = async (userId : string, name : string, descriptio
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

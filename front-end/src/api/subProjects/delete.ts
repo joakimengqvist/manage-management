@@ -1,13 +1,17 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const deleteSubProject = async (userId : string, id : string) => {
+export const deleteSubProject = async (loggedInUserId : string, subProjectId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: null
+}> => {
     const payload = {
-            id: id,
+            id: subProjectId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

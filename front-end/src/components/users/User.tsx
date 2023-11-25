@@ -17,10 +17,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProjectNotesByUserId } from '../../api/notes/project/getAllByUserId';
 import { useEffect, useState } from "react";
-import { updateUserCall } from "../../api/users/update";
+import { updateUser } from "../../api/users/update";
 import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import { State } from "../../types/state";
-import { updateUser, popUser } from "../../redux/applicationDataSlice";
+import { updateUserState, popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
@@ -39,7 +39,8 @@ import {
 } from '@ant-design/icons';
 import { getAllSubProjectNotesByUserId } from "../../api/notes/subProject/getAllByUserId";
 import { PurpleTags } from "../tags/PurpleTags";
-import { BlueTags } from "../tags/blueTags";
+import { BlueTags } from "../tags/BlueTags";
+import { ExpenseNote, ExternalCompanyNote, IncomeNote, ProjectNote, SubProjectNote } from "../../types";
 
 const { Text, Title } = Typography;
 
@@ -71,11 +72,11 @@ const User: React.FC = () => {
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
 
-  const [projectNotes, setProjectNotes] = useState([]);
-  const [subProjectNotes, setSubProjectNotes] = useState([]);
-  const [expenseNotes, setExpenseNotes] = useState([]);
-  const [incomeNotes, setIncomeNotes] = useState([]);
-  const [externalCompaniesNotes, setExternalCompaniesNotes] = useState([]);
+  const [projectNotes, setProjectNotes] = useState<Array<ProjectNote>>([]);
+  const [subProjectNotes, setSubProjectNotes] = useState<Array<SubProjectNote>>([]);
+  const [expenseNotes, setExpenseNotes] = useState<Array<ExpenseNote>>([]);
+  const [incomeNotes, setIncomeNotes] = useState<Array<IncomeNote>>([]);
+  const [externalCompaniesNotes, setExternalCompaniesNotes] = useState<Array<ExternalCompanyNote>>([]);
   const [activeNotesTab, setActiveNotesTab] = useState<string>('project');
   
   const { id } = useParams();
@@ -196,7 +197,7 @@ const User: React.FC = () => {
   const onHandleChangeActiveNotesTab = (tab: string) => setActiveNotesTab(tab);
 
   const onSaveEdittedUser = async () => {
-    await updateUserCall(
+    await updateUser(
       loggedInUserId,
       userId,
       firstName,
@@ -220,7 +221,7 @@ const User: React.FC = () => {
           placement: "bottom",
           duration: 1.2,
         });
-        dispatch(updateUser(response.data));
+        dispatch(updateUserState(response.data));
       })
       .catch((error) => {
         api.error({

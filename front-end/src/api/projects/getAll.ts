@@ -1,10 +1,9 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const getAllProjects = async (userId : string) => {
-
+export const getAllProjects = async (loggedInUserId : string) => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'GET',

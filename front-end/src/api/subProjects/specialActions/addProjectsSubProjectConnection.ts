@@ -1,6 +1,17 @@
 import { ENDPOINTS } from "../../endpoints";
 
-export const AddProjectsSubProjectConnection = async (userId : string, subProjectId : string, projectIds : Array<string>) => {
+/**
+ * @param projectIds project ids in an array
+ */
+export const addProjectsSubProjectConnection = async (
+    loggedInUserId : string,
+    subProjectId : string,
+    projectIds : Array<string>
+    ) : Promise<{
+    error: boolean,
+    message: string,
+    data: null
+}> => {
     const payload = {
       project_ids: projectIds,
       sub_project_id: subProjectId,
@@ -8,7 +19,7 @@ export const AddProjectsSubProjectConnection = async (userId : string, subProjec
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

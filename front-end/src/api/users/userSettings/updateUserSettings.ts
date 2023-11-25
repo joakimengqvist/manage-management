@@ -1,6 +1,7 @@
 import { ENDPOINTS } from "../../endpoints";
 
 export const updateUserSettings = async (
+    loggedInUserId: string,
     userId : string, 
     dark_theme : boolean,
     compact_ui : boolean,
@@ -13,7 +14,7 @@ export const updateUserSettings = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

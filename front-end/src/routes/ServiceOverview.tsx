@@ -1,5 +1,5 @@
-import Services from '../components/serviceOverview/ServiceOverview'
+import ServiceOverview from '../components/serviceOverview/ServiceOverview'
 
-const ServiceOverview: React.FC = () => <Services />
+const ServiceOverviewPage = () => <ServiceOverview />
 
-export default ServiceOverview;
+export default ServiceOverviewPage;

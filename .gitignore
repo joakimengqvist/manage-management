@@ -98,3 +98,8 @@ mail-service/mailerApp
 project-service/projectApp
 notes-service/notesApp
 economics-service/economicsApp
+product-service/productApp
+invoice-service/invoiceApp
+external-company-service/externalCompanyApp
+
+todo.txt

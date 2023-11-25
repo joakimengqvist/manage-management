@@ -1,13 +1,18 @@
+import { User } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
-export const getUserById = async (userId : string, id : string) => {
+export const getUserById = async (loggedInUserId : string, userId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: User
+}> => {
     const payload = {
-            id: id,
+            id: userId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

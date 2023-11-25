@@ -1,8 +1,9 @@
+import { SubProject } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
 export const updateSubProject = async (
-  userId : string,
-  id : string,
+  loggedInUserId : string,
+  subProjectId : string,
   name : string,
   status : string,
   description : string,
@@ -10,9 +11,13 @@ export const updateSubProject = async (
   startDate : string,
   dueDate : string,
   estimatedDuration : number,
-) => {
+) : Promise<{
+  error: boolean,
+  message: string,
+  data: SubProject
+}> => {
     const payload = {
-      id: id,
+      id: subProjectId,
       name: name,
       status: status,
       description: description,
@@ -24,7 +29,7 @@ export const updateSubProject = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

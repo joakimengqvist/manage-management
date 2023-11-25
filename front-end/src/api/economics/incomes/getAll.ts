@@ -1,10 +1,15 @@
+import { IncomeObject } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getAllIncomes = async (userId : string) => {
+export const getAllIncomes = async (loggedInUserId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<IncomeObject>
+}> => {
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'GET',

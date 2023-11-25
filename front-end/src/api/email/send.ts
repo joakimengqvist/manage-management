@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const sendEmail = async (userId : string, to : string, from : string, subject : string, message : string) => {
+export const sendEmail = async (loggedInUserId : string, to : string, from : string, subject : string, message : string) => {
     const payload = {
       action: "mail",
       mail: {
@@ -13,7 +13,7 @@ export const sendEmail = async (userId : string, to : string, from : string, sub
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

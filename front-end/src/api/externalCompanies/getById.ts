@@ -1,13 +1,18 @@
+import { ExternalCompany } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
-export const getExternalCompanyById = async (userId : string, id : string) => {
+export const getExternalCompanyById = async (loggedInUserId : string, externalCompanyId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: ExternalCompany
+}> => {
     const payload = {
-      id: id,
+      id: externalCompanyId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

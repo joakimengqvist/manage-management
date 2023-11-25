@@ -16,8 +16,8 @@ import EstimatedDuration from '../renderHelpers/EstimatedDuration';
 import { deleteSubProject } from '../../api/subProjects/delete';
 import { formatDateTimeToYYYYMMDD } from '../../helpers/stringDateFormatting';
 import ReactApexChart from 'react-apexcharts';
-import { AddSubProjectsProjectConnection } from '../../api/subProjects/specialActions/addSubProjectsProjectConnection';
-import { RemoveSubProjectsProjectConnection } from '../../api/subProjects/specialActions/removeSubProjectsProjectsConnection';
+import { addSubProjectsProjectConnection } from '../../api/subProjects/specialActions/addSubProjectsProjectConnection';
+import { removeSubProjectsProjectConnection } from '../../api/subProjects/specialActions/removeSubProjectsProjectsConnection';
 import ProjectStatus from '../status/ProjectStatus';
 
 const { Link, Text } = Typography;
@@ -144,7 +144,7 @@ const Projects: React.FC = () => {
     
     const onModalAddSubProjects = () => {
         setIsModalLoading(true);
-        AddSubProjectsProjectConnection(userId, modalSelectedAddSubProjects, modalSelectedProjectId).then(response => {
+        addSubProjectsProjectConnection(userId, modalSelectedAddSubProjects, modalSelectedProjectId).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error adding sub projects to project`,
@@ -174,7 +174,7 @@ const Projects: React.FC = () => {
 
     const onModalRemoveSubProjects = () => {
         setIsModalLoading(true);
-        RemoveSubProjectsProjectConnection(userId, modalRemoveSelectedSubProjects, modalSelectedProjectId).then(response => {
+        removeSubProjectsProjectConnection(userId, modalRemoveSelectedSubProjects, modalSelectedProjectId).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error removing project from sub project`,
@@ -347,7 +347,6 @@ const Projects: React.FC = () => {
                 const options =  {
                     chart: {
                         height: 450,
-                        type: 'rangeBar'
                     },
                     plotOptions: {
                         bar: {
@@ -355,7 +354,7 @@ const Projects: React.FC = () => {
                             barHeight: '80%'
                         }
                     },
-                    xaxis: {
+                    xAxis: {
                         type: 'datetime'
                     },
                     stroke: {
@@ -365,10 +364,6 @@ const Projects: React.FC = () => {
                         type: 'solid',
                         opacity: 0.6
                     },
-                    legend: {
-                        position: 'top',
-                        horizontalAlign: 'left'
-                    }
                 };
 
                 const contentList: Record<string, React.ReactNode> = {
@@ -437,7 +432,6 @@ const Projects: React.FC = () => {
     const options =  {
         chart: {
             height: 450,
-            type: 'rangeBar'
         },
         plotOptions: {
             bar: {
@@ -445,20 +439,16 @@ const Projects: React.FC = () => {
                 barHeight: '80%'
             }
         },
-        xaxis: {
-            type: 'datetime'
-        },
         stroke: {
             width: 1
+        },
+        xAxis: {
+            type: 'datetime'
         },
         fill: {
             type: 'solid',
             opacity: 0.6
         },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'left'
-        }
     };
 
     const contentList: Record<string, React.ReactNode> = {

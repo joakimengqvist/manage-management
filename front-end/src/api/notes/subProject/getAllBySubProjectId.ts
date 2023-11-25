@@ -1,13 +1,18 @@
+import { SubProjectNote } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getAllExpenseNotesByExpenseId = async (userId : string, expenseId : string) => {
+export const getAllSubProjectNotesBySubProjectId = async (loggedInUserId : string, subProjectId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<SubProjectNote>
+}> => {
     const payload = {
-        id: expenseId,
+        id: subProjectId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',
@@ -15,7 +20,7 @@ export const getAllExpenseNotesByExpenseId = async (userId : string, expenseId :
         body: JSON.stringify(payload)
     };
 
-    const response = await fetch(ENDPOINTS.GetAllExpenseNotesByExpenseId, body)
+    const response = await fetch(ENDPOINTS.GetAllSubProjectNotesBySubProjectId, body)
       .then(response => { 
         return response.json()
       })

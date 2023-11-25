@@ -1,13 +1,18 @@
+import { IncomeObject } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getIncomeById = async (userId : string, id : string) => {
+export const getIncomeById = async (loggedInUserId : string, incomeId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: IncomeObject
+}> => {
     const payload = {
-      id: id,
+      id: incomeId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

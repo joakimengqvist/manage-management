@@ -16,8 +16,8 @@ import { deleteSubProject } from '../../api/subProjects/delete';
 import Priority from '../renderHelpers/Priority';
 import EstimatedDuration from '../renderHelpers/EstimatedDuration';
 import { useEffect, useState } from 'react';
-import { AddProjectsSubProjectConnection } from '../../api/subProjects/specialActions/addProjectsSubProjectConnection';
-import { RemoveProjectsSubProjectConnection } from '../../api/subProjects/specialActions/RemoveProjectsSubProjectConnection';
+import { addProjectsSubProjectConnection } from '../../api/subProjects/specialActions/addProjectsSubProjectConnection';
+import { removeProjectsSubProjectConnection } from '../../api/subProjects/specialActions/removeProjectsSubProjectConnection';
 import SubProjectStatus from '../status/SubProjectStatus';
 
 const { Text, Link } = Typography;
@@ -98,7 +98,7 @@ const SubProjects: React.FC = () => {
 
     const onModalAddProjects = () => {
         setIsModalLoading(true);
-        AddProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalSelectedAddProjects).then(response => {
+        addProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalSelectedAddProjects).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error adding project to sub project`,
@@ -128,7 +128,7 @@ const SubProjects: React.FC = () => {
 
     const onModalRemoveProjects = () => {
         setIsModalLoading(true);
-        RemoveProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalRemoveSelectedProjects).then(response => {
+        removeProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalRemoveSelectedProjects).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error removing project from sub project`,

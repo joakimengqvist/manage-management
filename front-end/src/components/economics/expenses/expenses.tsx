@@ -159,7 +159,6 @@ const Expenses = ({ project } : { project: string }) => {
       data: pieGraphData,
       angleField: 'amount',
       colorField: 'expense_category',
-      label: false
     };
 
     const pieShartTaxConfig = {
@@ -167,7 +166,6 @@ const Expenses = ({ project } : { project: string }) => {
       data: pieGraphTaxData,
       angleField: 'tax',
       colorField: 'expense_category',
-      label: false
     };
 
 

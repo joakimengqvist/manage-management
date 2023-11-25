@@ -1,5 +1,8 @@
 import { ENDPOINTS } from "../../endpoints";
 
+/**
+ * @returns Resolved promise returns the created invoice ID
+ */
 export const createInvoice = async (
     company_id: string,
     project_id: string,
@@ -19,8 +22,12 @@ export const createInvoice = async (
     paid: boolean,
     status: string,
     paymentDate: string,
-    userId: string,
-) => {
+    loggedInUserId: string
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+}> => {
     const payload = {
         company_id: company_id,
         project_id: project_id,
@@ -40,12 +47,12 @@ export const createInvoice = async (
         paid: paid,
         status: status,
         paymentDate: paymentDate,
-        userId: userId,
+        userId: loggedInUserId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

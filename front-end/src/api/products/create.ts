@@ -1,13 +1,20 @@
 import { ENDPOINTS } from "../endpoints";
 
+/**
+ * @returns Resolved promise returns the created product item ID
+ */
 export const createProduct = async (
-  userId : string, 
+  loggedInUserId : string, 
   name : string, 
   description : string,
   category : string,
   price : number,
   tax_percentage : number,
-  ) => {
+  ) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+  }> => {
     const payload = {
       name: name,
       description: description,
@@ -18,7 +25,7 @@ export const createProduct = async (
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

@@ -1,8 +1,16 @@
 import { ENDPOINTS } from "../../endpoints";
 
-export const deleteProjectNote = async (loggedInUser : string, noteId : string, authorId : string, projectId : string | undefined) => {
+export const deleteProjectNote = async (loggedInUser : string, noteId : string, authorId : string, projectId : string | undefined) : Promise<{
+    error: boolean,
+    message: string,
+    data: null
+}> => {
   
-  if (!projectId) return;
+  if (!projectId) return {
+    error: true,
+    message: 'Project id is missing',
+    data: null
+  };
 
     const payload = {
       note_id: noteId,

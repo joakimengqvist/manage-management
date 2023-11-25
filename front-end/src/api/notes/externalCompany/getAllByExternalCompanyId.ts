@@ -1,13 +1,18 @@
+import { ExternalCompanyNote } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getAllExternalCompanyNotesByExternalCompanyId = async (userId : string, externalCompanyId : string) => {
+export const getAllExternalCompanyNotesByExternalCompanyId = async (loggedInUserId : string, externalCompanyId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<ExternalCompanyNote>
+}> => {
     const payload = {
         id: externalCompanyId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

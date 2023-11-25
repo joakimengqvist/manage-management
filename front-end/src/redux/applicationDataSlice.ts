@@ -34,7 +34,7 @@ export const staticDataSlice = createSlice({
     // -- PRIVILEGES -------    |
     // -------------------      V
 
-    fetchPrivileges: (state : any, payload : any) => {
+    fetchPrivileges: (state : any, payload) => {
       const privileges = payload.payload || [];
       state.privileges = privileges;
       localStorage.setItem(applicationStateName, JSON.stringify({ ...state, privileges: privileges }));
@@ -56,13 +56,13 @@ export const staticDataSlice = createSlice({
     // -- USERS ------------    |
     // -------------------      V
 
-    fetchUsers: (state : any, payload : any) => {
+    fetchUsers: (state : any, payload) => {
       const users = payload.payload || [];
       state.users = users;
       localStorage.setItem(applicationStateName, JSON.stringify({ ...state, users: users }));
       return state;
     },
-    updateUser: (state : any, payload) => {
+    updateUserState: (state : any, payload) => {
       const index = state.users.findIndex((u : any) => u.id === payload.payload.id);
       state.users[index] = payload.payload;
       return state;
@@ -80,7 +80,7 @@ export const staticDataSlice = createSlice({
     // -- PROJECTS ---------    |
     // -------------------      V
 
-    fetchProjects: (state : any, payload : any) => {
+    fetchProjects: (state : any, payload) => {
       const projects = payload.payload || [];
       state.projects = projects;
       localStorage.setItem(applicationStateName, JSON.stringify({ ...state, projects: projects }));
@@ -106,7 +106,7 @@ export const staticDataSlice = createSlice({
     // -- SUB PROJECTS -------    |
     // -------------------        V
 
-    fetchSubProjects: (state : any, payload : any) => {
+    fetchSubProjects: (state : any, payload) => {
       const payloadSubProjects = payload.payload || [];
       state.subProjects = payloadSubProjects;
       localStorage.setItem(applicationStateName, JSON.stringify({ ...state, subProjects: payloadSubProjects }));
@@ -199,7 +199,7 @@ export const {
   popPrivilege,
 
   fetchUsers,
-  updateUser,
+  updateUserState,
   appendUser,
   popUser,
 

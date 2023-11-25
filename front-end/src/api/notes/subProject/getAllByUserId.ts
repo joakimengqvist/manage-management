@@ -1,8 +1,13 @@
+import { SubProjectNote } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getAllSubProjectNotesByUserId = async (loggedInUserId : string, userId : string) => {
+export const getAllSubProjectNotesByUserId = async (loggedInUserId : string, authorId : string) : Promise<{
+  error: boolean,
+  message: string,
+  data: Array<SubProjectNote>
+}> => {
     const payload = {
-      id: userId,
+      id: authorId,
     };
 
     const headers = new Headers();

@@ -23,6 +23,7 @@ import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting
 import { NOTE_TYPE } from '../../enums/notes';
 import NoteList from '../notes/Notes';
 import ProjectStatus from '../status/ProjectStatus';
+import { ProjectNote } from '../../types';
 
 const { Text, Link } = Typography;
 
@@ -95,9 +96,9 @@ const Project: React.FC = () => {
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
     const [editing, setEditing] = useState(false);
-    const [projectNotes, setProjectNotes] = useState([]);
-    const [projectExpenses, setProjectExpenses] = useState([]);
-    const [projectIncomes, setProjectIncomes] = useState([]);
+    const [projectNotes, setProjectNotes] = useState<Array<ProjectNote>>([]);
+    const [projectExpenses, setProjectExpenses] = useState<Array<ExpenseObject>>([]);
+    const [projectIncomes, setProjectIncomes] = useState<Array<IncomeObject>>([]);
     const [activeTab, setActiveTab] = useState<string>('projectInformation');
     const [activeEconomicTab, setActiveEconomicTab] = useState<string>('expenses');
     const { id } =  useParams();

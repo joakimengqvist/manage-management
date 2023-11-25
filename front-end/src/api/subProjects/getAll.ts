@@ -1,10 +1,15 @@
+import { SubProject } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
-export const getAllSubProjects = async (userId : string) => {
+export const getAllSubProjects = async (loggedInUserId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<SubProject>
+}> => {
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'GET',

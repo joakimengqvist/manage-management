@@ -1,5 +1,8 @@
 import { ENDPOINTS } from "../../endpoints";
 
+/**
+ * @returns Resolved promise returns the created expense ID
+ */
 export const createExpense = async (
     project_id: string,
     expense_date: string,
@@ -12,7 +15,11 @@ export const createExpense = async (
     payment_method: string,
 	currency: string,
 	created_by: string,
-) => {
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: string
+}> => {
     const payload = {
         project_id: project_id,
         expense_date: expense_date,

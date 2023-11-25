@@ -1,5 +1,13 @@
 import { ENDPOINTS } from "../../endpoints";
-export const deleteIncomeNote = async (loggedInUser : string, noteId : string) => {
+
+/**
+ * @param loggedInUserId logged in user id
+ */
+export const deleteIncomeNote = async (loggedInUser : string, noteId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: null
+}> => {
     const payload = {
       id: noteId
     };

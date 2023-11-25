@@ -1,4 +1,5 @@
 import { ENDPOINTS } from "../../endpoints";
+import { ExpenseObject } from "../../../types";
 
 export const updateExpense = async (
     id: string,
@@ -12,8 +13,12 @@ export const updateExpense = async (
     status: string,
 	currency: string,
 	payment_method: string,
-	created_by: string,
-) => {
+	created_by: string
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: ExpenseObject
+}> => {
     const payload = {
         project_id: project_id,
         id: id,

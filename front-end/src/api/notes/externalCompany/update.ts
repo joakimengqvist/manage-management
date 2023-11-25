@@ -1,8 +1,19 @@
 import { ENDPOINTS } from "../../endpoints";
+import { NoteAuthor } from "../../../types/notes";
+import { ExternalCompanyNote } from "../../../types";
 
-import { NoteAuthor } from "../../../types/state";
-
-export const updateExternalCompanyNote = async (noteId : string, user : NoteAuthor, external_company : string, title : string, note : string) => {
+/**
+ * @param noteId note id
+ * @param user userId, name and email
+ * @param external_company external company id
+ * @param title note title
+ * @param note note text
+ */
+export const updateExternalCompanyNote = async (noteId : string, user : NoteAuthor, external_company : string, title : string, note : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: ExternalCompanyNote
+}> => {
     const payload = {
         id: noteId,
         author_id: user.id,

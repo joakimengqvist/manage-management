@@ -1,15 +1,15 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const updateProject = async (userId : string, id : string, name : string, status : string) => {
+export const updateProject = async (loggedInUserId : string, projectId : string, name : string, status : string) => {
     const payload = {
-      id: id,
+      id: projectId,
       name: name,
       status: status
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

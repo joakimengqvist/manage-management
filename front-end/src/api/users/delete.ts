@@ -1,13 +1,16 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const deleteUser = async (userId : string, id : string) => {
+export const deleteUser = async (loggedInUserId : string, userId : string) : Promise<{
+    error: boolean,
+    message: string
+}> => {
     const payload = {
-            id: id,
+      id: userId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

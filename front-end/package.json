@@ -20,7 +20,8 @@
     "react-redux": "^8.1.2",
     "react-router-dom": "^6.15.0",
     "shapeshift-data-formatter": "^1.0.0",
-    "swedish-bank-account-validator": "2023.1.2"
+    "swedish-bank-account-validator": "2023.1.2",
+    "typedoc": "^0.25.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

@@ -1,4 +1,4 @@
-export type Invoice = {
+export interface Invoice {
     id: string
     company_id: string
     project_id: string
@@ -25,7 +25,7 @@ export type Invoice = {
     updated_at: string
 }
 
-export type InvoiceItem = {
+export interface InvoiceItem {
     id: string
     product_id: string
     quantity: number

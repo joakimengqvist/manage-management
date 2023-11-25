@@ -1,6 +1,16 @@
 import { ENDPOINTS } from "../../endpoints";
 
-export const RemoveProjectsSubProjectConnection = async (userId : string, subProjectId : string, projectIds : Array<string>) => {
+/**
+ * @param projectIds project ids in an array
+ */
+export const removeProjectsSubProjectConnection = async (
+  loggedInUserId : string, 
+  subProjectId : string, 
+  projectIds : Array<string>
+  ) : Promise<{
+  error: boolean,
+  message: string,
+}> => {
     const payload = {
       project_ids: projectIds,
       sub_project_id: subProjectId,
@@ -8,7 +18,7 @@ export const RemoveProjectsSubProjectConnection = async (userId : string, subPro
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

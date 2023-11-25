@@ -1,3 +1,4 @@
+import { Invoice } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
 export const updateInvoice = async (
@@ -17,8 +18,12 @@ export const updateInvoice = async (
     total_price: number,
     units_combined_price: number,
     total_tax: number,
-    userId: string,
-) => {
+    loggedInUserId: string,
+) : Promise<{
+    error: boolean,
+    message: string,
+    data: Invoice
+}> => {
     const payload = {
         id: id,
         company_id: company_id,
@@ -36,12 +41,12 @@ export const updateInvoice = async (
         total_price: total_price,
         units_combined_price: units_combined_price,
         total_tax: total_tax,
-        userId: userId,
+        userId: loggedInUserId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

@@ -1,10 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // https://charts.ant.design/en/manual/case
-import { FlowAnalysisGraph } from '@ant-design/graphs';
+// import { FlowAnalysisGraph } from '@ant-design/graphs';
 
 
-const Services: React.FC = () => {
+const ServiceOverview = () => {
 
     const data = {
         nodes: [
@@ -287,8 +285,16 @@ const Services: React.FC = () => {
         behaviors: ['drag-node'],
       };
 
-    return <FlowAnalysisGraph {...config}/>;
+      console.log('ServiceOverviewPage config', config)
+
+    // return <FlowAnalysisGraph {...config}/>;
+
+    return (
+        <div>
+            <h1>Service Overview</h1>
+        </div>
+    )
 
 }
 
-export default Services;
+export default ServiceOverview;

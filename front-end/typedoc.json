@@ -1,0 +1,4 @@
+{
+    "entryPoints": ["src/api/index.ts", "src/types/index.ts", "src/enums/index.ts"],
+    "out": "docs"
+}

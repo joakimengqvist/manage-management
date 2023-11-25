@@ -28,7 +28,7 @@ export const userSlice = createSlice({
         return state;
       }
     },
-    authenticate: (state : any, payload : any) => {
+    authenticate: (state : any, payload) => {
         const data = payload.payload;
         const updatedData = {
           ...state,
@@ -43,7 +43,7 @@ export const userSlice = createSlice({
         localStorage.setItem("userReduxData", JSON.stringify(updatedData))
         return updatedData
     },
-    fetchUserSettings: (state : any, payload : any) => {
+    fetchUserSettings: (state : any, payload) => {
       const settings = {
         compact_ui: payload.payload.compact_ui,
         dark_theme: payload.payload.dark_theme,

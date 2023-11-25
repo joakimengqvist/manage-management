@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type IncomeObject = {
+export interface IncomeObject {
 	id: string
 	project_id: string
     income_date: any

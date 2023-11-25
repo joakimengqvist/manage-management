@@ -1,10 +1,15 @@
+import { Product } from "../../types";
 import { ENDPOINTS } from "../endpoints";
 
-export const getAllProducts = async (userId : string) => {
+export const getAllProducts = async (loggedInUserId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Array<Product>
+}> => {
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'GET',

@@ -1,12 +1,18 @@
+import { ProjectNote } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
-export const getProjectNoteById = async (userId : string, id : string) => {
+
+export const getProjectNoteById = async (loggedInUserId : string, noteId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: ProjectNote
+}> => {
     const payload = {
-      id: id,
+      id: noteId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId);
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

@@ -1,4 +1,9 @@
-export type Notes = {
+export type NoteAuthor = {
+    id: string
+    name: string
+    email: string
+}
+export interface Notes {
 	id: string
 	author_id: string
 	author_name: string
@@ -14,7 +19,7 @@ export type Notes = {
     updated_at: string
 }
 
-export type ProjectNote = {
+export interface ProjectNote {
 	id: string
 	author_id: string
 	author_name: string
@@ -26,7 +31,7 @@ export type ProjectNote = {
     updated_at: string
 }
 
-export type SubProjectNote = {
+export interface SubProjectNote {
 	id: string
 	author_id: string
 	author_name: string
@@ -38,7 +43,7 @@ export type SubProjectNote = {
     updated_at: string
 }
 
-export type ExpenseNote = {
+export interface ExpenseNote {
 	id: string
 	author_id: string
 	author_name: string
@@ -50,7 +55,7 @@ export type ExpenseNote = {
     updated_at: string
 }
 
-export type IncomeNote = {
+export interface IncomeNote {
 	id: string
 	author_id: string
 	author_name: string
@@ -62,7 +67,7 @@ export type IncomeNote = {
     updated_at: string
 }
 
-export type ExternalCompanyNote = {
+export interface ExternalCompanyNote {
 	id: string
 	author_id: string
 	author_name: string

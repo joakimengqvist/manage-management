@@ -1,6 +1,13 @@
 import { ENDPOINTS } from "../endpoints";
 
-export const loginAuthenticate = async (email : string /* password : string */ ) => {
+/**
+ * @param email email of user
+ */
+export const loginAuthenticate = async (email : string /* password : string */ ) : Promise<{
+    error: boolean,
+    message: string,
+    data: null
+}> => {
 
     const payload = {
           email: email,

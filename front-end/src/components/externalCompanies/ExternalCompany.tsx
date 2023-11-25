@@ -93,7 +93,7 @@ const ExternalCompanyDetails: React.FC = () => {
                                             <Title style={{marginBottom: '8px'}} level={4}>{externalCompany.company_name}</Title>
                                             <ExternalCompanyStatus status={externalCompany.status} />
                                         </div>
-                                        <Button primary onClick={() => setEditing(true)}>Edit company info</Button>
+                                        <Button type="primary" onClick={() => setEditing(true)}>Edit company info</Button>
                                     </div>
                                 </Col>
                             </Row>

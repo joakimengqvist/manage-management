@@ -1,14 +1,20 @@
+import { Privilege } from "../../types";
 import { ENDPOINTS } from "../endpoints";
-export const updatePrivilege = async (userId : string, id : string, name : string, description : string) => {
+
+export const updatePrivilege = async (loggedInUserId : string, privilegeId : string, name : string, description : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Privilege
+}> => {
     const payload = {
-      id: id,
+      id: privilegeId,
       name: name,
       description: description,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

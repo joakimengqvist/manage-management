@@ -1,12 +1,18 @@
+import { Privilege } from "../../types";
 import { ENDPOINTS } from "../endpoints";
-export const getPrivilegeById = async (userId : string, id : string) => {
+
+export const getPrivilegeById = async (loggedInUserId : string, privilegeId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Privilege
+}> => {
     const payload = {
-      id: id,
+      id: privilegeId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

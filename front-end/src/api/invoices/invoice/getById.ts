@@ -1,13 +1,18 @@
+import { Invoice } from "../../../types";
 import { ENDPOINTS } from "../../endpoints";
 
-export const getInvoiceById = async (userId : string, id : string) => {
+export const getInvoiceById = async (loggedInUserId : string, invoiceId : string) : Promise<{
+    error: boolean,
+    message: string,
+    data: Invoice
+}> => {
     const payload = {
-      id: id,
+      id: invoiceId,
     };
 
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("X-user-id", userId.toString());
+    headers.append("X-user-id", loggedInUserId);
 
     const body = {
         method: 'POST',

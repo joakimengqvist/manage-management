@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Typography } from "antd";
-import { Notes } from '../../types/notes';
+import { Notes } from '../../interfaces/notes';
 import { replaceUnderscoreAndCapitalize } from '../../helpers/stringFormatting';
 import Note from "./Note";
 

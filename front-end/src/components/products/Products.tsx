@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSelector } from 'react-redux';
 import { Table, Button, Popconfirm, Typography } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { Product } from '../../types/product';
+import { Product } from '../../interfaces/product';
 
 const { Link } = Typography;
 
@@ -42,7 +42,7 @@ const columns = [
     },
 ]
 
-const Products: React.FC = () => {
+const Products = () => {
     const products = useSelector((state : State) => state.application.products);
     const userPrivileges = useSelector((state : State) => state.user.privileges);
 

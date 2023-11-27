@@ -40,13 +40,11 @@ function getItem(
   } as MenuItem;
 }
 
-type NavigationProps = {
-    isCollapsed: boolean,
-    setCollapsed: (isCollapsed : boolean) => void,
-    authenticated: boolean,
-}
-
-const Navigation: React.FC<NavigationProps> = (props) => {
+const Navigation = (props : {
+  isCollapsed: boolean,
+  setCollapsed: (isCollapsed : boolean) => void,
+  authenticated: boolean,
+}) => {
     const { isCollapsed, setCollapsed } = props;
     const navigate = useNavigate();
 

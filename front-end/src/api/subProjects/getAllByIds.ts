@@ -1,4 +1,4 @@
-import { SubProject } from "../../types";
+import { SubProject } from "../../interfaces";
 import { ENDPOINTS } from "../endpoints";
 
 export const getSubProjectsByIds = async (loggedInUserId : string, subProjectIds : Array<string>) : Promise<{

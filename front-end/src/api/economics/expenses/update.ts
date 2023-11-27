@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "../../endpoints";
-import { ExpenseObject } from "../../../types";
+import { ExpenseObject } from "../../../interfaces";
 
 export const updateExpense = async (
     id: string,

@@ -19,12 +19,12 @@ import { getAllProjectNotesByUserId } from '../../api/notes/project/getAllByUser
 import { useEffect, useState } from "react";
 import { updateUser } from "../../api/users/update";
 import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
-import { State } from "../../types/state";
+import { State } from "../../interfaces/state";
 import { updateUserState, popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
-import { SelectOptions } from '../../types/generics';
+import { SelectOptions } from '../../interfaces/generics';
 import { NOTE_TYPE } from "../../enums/notes";
 import Notes from "../notes/Notes";
 import { getAllExpenseNotesByUserId } from "../../api/notes/expense/getAllByUserId";
@@ -40,7 +40,7 @@ import {
 import { getAllSubProjectNotesByUserId } from "../../api/notes/subProject/getAllByUserId";
 import { PurpleTags } from "../tags/PurpleTags";
 import { BlueTags } from "../tags/BlueTags";
-import { ExpenseNote, ExternalCompanyNote, IncomeNote, ProjectNote, SubProjectNote } from "../../types";
+import { ExpenseNote, ExternalCompanyNote, IncomeNote, ProjectNote, SubProjectNote } from "../../interfaces";
 
 const { Text, Title } = Typography;
 
@@ -67,7 +67,7 @@ const userNotesTabList = [
   },
 ];
 
-const User: React.FC = () => {
+const User = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();

@@ -1,4 +1,4 @@
-import { ProjectNote } from "../../../types";
+import { ProjectNote } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getAllProjectNotesByProjectId = async (loggedInUserId : string, projectId : string) : Promise<{

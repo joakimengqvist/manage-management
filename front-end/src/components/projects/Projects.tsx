@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProject } from '../../api/projects/delete';
 import { Table, Button, Popconfirm, notification, Card, Select, Modal, Typography, Row, Col } from 'antd';
-import { State } from '../../types/state';
-import { Project } from '../../types/project';
+import { State } from '../../interfaces/state';
+import { Project } from '../../interfaces/project';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined, SettingOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { SubProject } from '../../types/subProject';
+import { SubProject } from '../../interfaces/subProject';
 import { useEffect, useMemo, useState } from 'react';
 import Priority from '../renderHelpers/Priority';
 import EstimatedDuration from '../renderHelpers/EstimatedDuration';
@@ -95,7 +95,7 @@ const subProjectColumns = [
     }
 ];
 
-const Projects: React.FC = () => {
+const Projects = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();

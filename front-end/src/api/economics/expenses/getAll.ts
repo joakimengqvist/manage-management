@@ -1,4 +1,4 @@
-import { ExpenseObject } from "../../../types";
+import { ExpenseObject } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getAllExpenses = async (loggedInUserId : string) : Promise<{

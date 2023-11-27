@@ -4,12 +4,12 @@ import { Typography } from 'antd';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProject } from '../../api/projects/create'
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { appendProject } from '../../redux/applicationDataSlice';
 
 const { Title, Text } = Typography;
 
-const CreateProject: React.FC = () => {
+const CreateProject = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id)

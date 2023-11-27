@@ -1,4 +1,4 @@
-import { ExternalCompanyNote } from "../../../types";
+import { ExternalCompanyNote } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getExternalCompanyNoteById = async (loggedInUserId : string, noteId : string) : Promise<{

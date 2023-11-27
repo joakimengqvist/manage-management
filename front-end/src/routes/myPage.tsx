@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../types/state';
+import { State } from '../interfaces/state';
 import {CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Typography, Space, Switch, notification, Button, Card } from 'antd';
 import { updateUserSettings } from '../api/users/userSettings/updateUserSettings';

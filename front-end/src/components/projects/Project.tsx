@@ -5,7 +5,7 @@ import { Button, Card, Input, Typography, notification, Popconfirm, Divider, Sel
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProject } from '../../api/projects/update';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { deleteProject } from '../../api/projects/delete';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from "@ant-design/icons";
@@ -14,8 +14,8 @@ import { PRIVILEGES } from '../../enums/privileges';
 import { createProjectNote } from '../../api/notes/project/create';
 import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectId';
 import { getAllExpensesByProjectId } from '../../api/economics/expenses/getAllByProjectId';
-import { ExpenseObject } from '../../types/expense';
-import { IncomeObject } from '../../types/income';
+import { ExpenseObject } from '../../interfaces/expense';
+import { IncomeObject } from '../../interfaces/income';
 import * as React from 'react';
 import { getAllIncomesByProjectId } from '../../api/economics/incomes/getAllByProjectId';
 import CreateNote from '../notes/CreateNote';
@@ -23,7 +23,7 @@ import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting
 import { NOTE_TYPE } from '../../enums/notes';
 import NoteList from '../notes/Notes';
 import ProjectStatus from '../status/ProjectStatus';
-import { ProjectNote } from '../../types';
+import { ProjectNote } from '../../interfaces';
 
 const { Text, Link } = Typography;
 
@@ -82,7 +82,7 @@ const economicsColumns = [
   },
 ];
 
-const Project: React.FC = () => {
+const Project = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();

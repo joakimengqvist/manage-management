@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { Button, Input, Space, notification, Select } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { externalCompanyOptions } from './options';
 import { updateExternalCompany } from '../../api/externalCompanies/update';
-import { ExternalCompany } from '../../types/externalCompany';
+import { ExternalCompany } from '../../interfaces/externalCompany';
 
 const { Text } = Typography;
 

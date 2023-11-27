@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import Expenses from '../../components/economics/expenses/expenses';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 
-const ExpensesRoute: React.FC = () => {
+const ExpensesRoute = () => {
     const navigate = useNavigate();
     const projects = useSelector((state: State) => state.application.projects);
     const userPrivileges = useSelector((state : State) => state.user.privileges)

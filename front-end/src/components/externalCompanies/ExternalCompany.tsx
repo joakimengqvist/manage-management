@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { getExternalCompanyById } from '../../api/externalCompanies/getById';
-import { ExternalCompany } from '../../types/externalCompany';
-import { ExternalCompanyNote } from '../../types/notes';
+import { ExternalCompany } from '../../interfaces/externalCompany';
+import { ExternalCompanyNote } from '../../interfaces/notes';
 import CreateNote from '../notes/CreateNote';
 import Notes from '../notes/Notes';
 import { NOTE_TYPE } from '../../enums/notes';
@@ -19,7 +19,7 @@ import { ExternalCompanyStatus } from '../status/ExternalCompanyStatus';
 
 const { Text, Title, Link } = Typography;
 
-const ExternalCompanyDetails: React.FC = () => {
+const ExternalCompanyDetails = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
     const users = useSelector((state : State) => state.application.users);

@@ -1,4 +1,4 @@
-import { IncomeNote } from "../../../types";
+import { IncomeNote } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getIncomeNoteById = async (loggedInUserId : string, noteId : string) : Promise<{

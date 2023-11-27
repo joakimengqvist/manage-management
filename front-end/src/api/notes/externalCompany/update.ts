@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "../../endpoints";
-import { NoteAuthor } from "../../../types/notes";
-import { ExternalCompanyNote } from "../../../types";
+import { NoteAuthor } from "../../../interfaces/notes";
+import { ExternalCompanyNote } from "../../../interfaces";
 
 /**
  * @param noteId note id

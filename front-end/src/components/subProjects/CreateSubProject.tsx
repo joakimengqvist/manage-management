@@ -4,7 +4,7 @@ import { Col, DatePicker, Row, Typography } from 'antd';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSubProject } from '../../api/subProjects/create';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { appendProject } from '../../redux/applicationDataSlice';
 import { subProjectStatusOptions } from '../economics/options';
 

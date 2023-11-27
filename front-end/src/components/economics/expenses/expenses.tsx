@@ -3,7 +3,7 @@
 import { Typography, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
 import { ZoomInOutlined } from '@ant-design/icons';
@@ -11,7 +11,7 @@ import { getAllExpenses } from '../../../api/economics/expenses/getAll';
 import { getAllExpensesByProjectId } from '../../../api/economics/expenses/getAllByProjectId';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import ExpenseStatus from '../../status/ExpenseStatus';
-import { ExpenseObject } from '../../../types/expense';
+import { ExpenseObject } from '../../../interfaces/expense';
 
 const { Text, Title, Link } = Typography;
 

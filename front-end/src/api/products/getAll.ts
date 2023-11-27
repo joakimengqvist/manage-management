@@ -1,4 +1,4 @@
-import { Product } from "../../types";
+import { Product } from "../../interfaces";
 import { ENDPOINTS } from "../endpoints";
 
 export const getAllProducts = async (loggedInUserId : string) : Promise<{

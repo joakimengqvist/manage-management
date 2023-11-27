@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "../../endpoints";
-import { ExpenseObject } from "../../../types";
+import { ExpenseObject } from "../../../interfaces";
 
 export const getAllExpensesByProjectId = async (loggedInUserId : string, projectId : string) : Promise<{
     error: boolean,

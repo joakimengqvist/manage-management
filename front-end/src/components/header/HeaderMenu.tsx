@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { LoginOutlined } from '@ant-design/icons';
 import { logout } from "../../redux/userDataSlice";
 import { clearData } from '../../redux/applicationDataSlice';
@@ -81,7 +81,7 @@ const headerTitle = (pathName : string) => {
     return 'Manage management'
 }
 
-const HeaderMenu: React.FC = () => {
+const HeaderMenu = () => {
     const user = useSelector((state: State) => state.user);
     const darkTheme = useSelector((state : State) => state.user.settings.dark_theme);
     const dispatch = useDispatch()

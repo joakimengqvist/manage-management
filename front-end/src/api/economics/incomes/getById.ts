@@ -1,4 +1,4 @@
-import { IncomeObject } from "../../../types";
+import { IncomeObject } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getIncomeById = async (loggedInUserId : string, incomeId : string) : Promise<{

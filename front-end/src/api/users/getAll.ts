@@ -1,4 +1,4 @@
-import { User } from "../../types";
+import { User } from "../../interfaces";
 import { ENDPOINTS } from "../endpoints";
 
 export const getAllUsers = async (loggedInUserId : string) : Promise<{

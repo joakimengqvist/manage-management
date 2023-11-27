@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { createExternalCompany } from '../../api/externalCompanies/create';
 import { externalCompanyOptions } from './options';
 
 const { Title, Text } = Typography;
 
-const CreateProjectExpense: React.FC = () => {
+const CreateProjectExpense = () => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const allProjects = useSelector((state: State) => state.application.projects);

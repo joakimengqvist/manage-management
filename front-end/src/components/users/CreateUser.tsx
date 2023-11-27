@@ -6,16 +6,16 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input, Space, Card, Select, Typography, notification } from 'antd';
 import type { SelectProps } from 'antd';
 import { createUser } from '../../api/users/create'
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { appendUser } from '../../redux/applicationDataSlice';
-import { Privilege } from '../../types/privilege';
-import { Project } from '../../types/project';
+import { Privilege } from '../../interfaces/privilege';
+import { Project } from '../../interfaces/project';
 import { BlueTags } from '../tags/BlueTags';
 import { PurpleTags } from '../tags/PurpleTags';
 
 const { Title, Text } = Typography;
 
-const CreateUser: React.FC = () => {
+const CreateUser = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);

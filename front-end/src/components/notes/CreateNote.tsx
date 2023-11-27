@@ -5,7 +5,7 @@ import { replaceUnderscore } from "../../helpers/stringFormatting";
 const { Text, Title } = Typography;
 const { TextArea } = Input;
 
-type CreateNoteProps = {
+const CreateNote = (props : {
     type: string
     title: string
     onTitleChange: (event : any) => void
@@ -13,9 +13,7 @@ type CreateNoteProps = {
     onNoteChange: (event : any) => void
     onClearNoteFields: () => void
     onSubmit: () => void
-}
-
-const CreateNote = (props : CreateNoteProps) => {
+}) => {
     const { type, title, onTitleChange, note, onNoteChange, onClearNoteFields, onSubmit } = props;
     return (<>
         <Title level={5} style={{margin: '0px'}}>Create new {replaceUnderscore(type)} note</Title>

@@ -1,4 +1,4 @@
-import { ExternalCompany } from "../../types";
+import { ExternalCompany } from "../../interfaces";
 import { ENDPOINTS } from "../endpoints";
 
 export const getAllExternalCompanies = async (loggedInUserId : string) : Promise<{

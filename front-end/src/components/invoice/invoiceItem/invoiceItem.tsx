@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { Space, Card, notification } from 'antd';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { getInvoiceItemById } from '../../../api/invoices/invoiceItem/getById';
 import { useParams } from 'react-router-dom';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
@@ -11,7 +11,7 @@ import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 
 const { Title, Text, Link } = Typography;
 
-const InvoiceItem: React.FC = () => {
+const InvoiceItem = () => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const products = useSelector((state : State) => state.application.products);

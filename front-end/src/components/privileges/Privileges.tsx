@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePrivilege } from '../../api/privileges/delete';
 import { Table, Button, Popconfirm, notification, Typography } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
@@ -29,7 +29,7 @@ const columns = [
     },
 ]
 
-const Privileges: React.FC = () => {
+const Privileges = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);

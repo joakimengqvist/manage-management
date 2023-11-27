@@ -1,4 +1,4 @@
-import { IncomeObject } from "../../../types";
+import { IncomeObject } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const updateIncome = async (

@@ -1,7 +1,7 @@
 import SubProjects from '../../components/subProjects/SubProjects';
 import { Row, Col, Button } from 'antd';
 import { useSelector } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { useNavigate } from 'react-router-dom';

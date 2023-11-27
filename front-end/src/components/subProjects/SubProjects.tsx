@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import { Table, Button, Popconfirm, notification, Modal, Select, Typography, Col, Row, Card } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { popProject } from '../../redux/applicationDataSlice';
 import { 
     QuestionCircleOutlined, 
@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { SubProject } from '../../types/subProject';
+import { SubProject } from '../../interfaces/subProject';
 import { deleteSubProject } from '../../api/subProjects/delete';
 import Priority from '../renderHelpers/Priority';
 import EstimatedDuration from '../renderHelpers/EstimatedDuration';
@@ -55,7 +55,7 @@ const columns = [
     },
 ]
 
-const SubProjects: React.FC = () => {
+const SubProjects = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);

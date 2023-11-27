@@ -1,4 +1,4 @@
-import { ExpenseNote } from "../../../types";
+import { ExpenseNote } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getAllExpenseNotesByExpenseId = async (loggedInUserId : string, expenseId : string) : Promise<{

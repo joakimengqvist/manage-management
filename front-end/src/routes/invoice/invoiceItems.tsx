@@ -1,12 +1,12 @@
 import { Row, Col } from 'antd';
 import { useSelector } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import CreateInvoiceItem from '../../components/invoice/invoiceItem/CreateInvoiceItem';
 import InvoiceIteams from '../../components/invoice/invoiceItem/InvoiceItems';
 
-const InvoiceItems: React.FC = () => {
+const InvoiceItems = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges)
     return (
         <Row>

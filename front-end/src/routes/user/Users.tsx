@@ -2,11 +2,11 @@ import Users from '../../components/users/Users';
 import CreateUser from '../../components/users/CreateUser';
 import { Row, Col } from 'antd';
 import { useSelector } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 
-const UsersDetails: React.FC = () => {
+const UsersDetails = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges)
     return (
         <Row>

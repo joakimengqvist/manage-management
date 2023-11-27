@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { Col, Divider, Row, Switch, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions } from '../options';
-import { IncomeObject } from '../../../types/income';
+import { IncomeObject } from '../../../interfaces/income';
 import { updateIncome } from '../../../api/economics/incomes/update';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 

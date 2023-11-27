@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Checkbox, Col, Row, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { createIncome } from '../../../api/economics/incomes/create';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions } from '../options';
@@ -13,7 +13,7 @@ const { TextArea } = Input;
 
 const numberPattern = /^[0-9]+$/;
 
-const CreateProjectIncome: React.FC = () => {
+const CreateProjectIncome = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);

@@ -1,12 +1,12 @@
 import Projects from '../../components/projects/Projects';
 import { Row, Col, Button } from 'antd';
 import { useSelector } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { useNavigate } from 'react-router-dom';
 
-const ProjectDetails: React.FC = () => {
+const ProjectDetails = () => {
     const navigate = useNavigate();
     const userPrivileges = useSelector((state : State) => state.user.privileges)
     return (

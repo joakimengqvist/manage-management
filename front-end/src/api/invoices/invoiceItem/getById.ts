@@ -1,4 +1,4 @@
-import { InvoiceItem } from "../../../types";
+import { InvoiceItem } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getInvoiceItemById = async (loggedInUserId : string, invoiceId : string) : Promise<{

@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { createInvoiceItem } from '../../../api/invoices/invoiceItem/create';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 
 const { Title, Text } = Typography;
 
-const CreateInvoiceItem: React.FC = () => {
+const CreateInvoiceItem = () => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const products = useSelector((state: State) => state.application.products);

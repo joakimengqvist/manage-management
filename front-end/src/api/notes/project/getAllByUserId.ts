@@ -1,4 +1,4 @@
-import { ProjectNote } from "../../../types";
+import { ProjectNote } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 /**

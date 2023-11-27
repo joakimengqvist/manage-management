@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Input, notification, Popconfirm, Typography } from "antd";
-import { Notes } from '../../types/notes';
+import { Notes } from '../../interfaces/notes';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { NOTE_TYPE } from '../../enums/notes';
 import { deleteIncomeNote } from "../../api/notes/income/delete";
@@ -10,7 +10,7 @@ import { DeleteOutlined, EditOutlined, SendOutlined, CloseCircleOutlined } from 
 import { deleteExternalCompanyNote } from "../../api/notes/externalCompany/delete";
 import { formatDateTimeToYYYYMMDDHHMM } from "../../helpers/stringDateFormatting";
 import { useEffect, useState } from "react";
-import { State } from "../../types/state";
+import { State } from "../../interfaces/state";
 import { updateExpenseNote } from "../../api/notes/expense/update";
 import { useSelector } from "react-redux";
 import { updateIncomeNote } from "../../api/notes/income/update";

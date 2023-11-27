@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import Invoices from '../../components/invoice/invoice/invoices';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 
-const InvoiceDetails: React.FC = () => {
+const InvoiceDetails = () => {
     const navigate = useNavigate();
     const userPrivileges = useSelector((state : State) => state.user.privileges)
 

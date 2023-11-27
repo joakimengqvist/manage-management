@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, Button, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { getInvoiceById } from '../../../api/invoices/invoice/getById';
-import { Invoice, InvoiceItem } from '../../../types/invoice'
+import { Invoice, InvoiceItem } from '../../../interfaces/invoice'
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 import { GoldTag } from '../../tags/GoldTag';
@@ -44,7 +44,7 @@ const invoiceItemsColumns = [
     },
 ]
 
-const InvoiceDetails: React.FC = () => {
+const InvoiceDetails = () => {
     const loggedInUser = useSelector((state : State) => state.user);
     const [invoice, setInvoice] = useState<null | Invoice>(null);
     const [editing, setEditing] = useState(false);

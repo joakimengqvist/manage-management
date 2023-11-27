@@ -3,9 +3,9 @@
 import { Typography, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { ZoomInOutlined } from '@ant-design/icons';
-import { InvoiceItem } from '../../../types/invoice';
+import { InvoiceItem } from '../../../interfaces/invoice';
 import { getAllInvoiceItems } from '../../../api/invoices/invoiceItem/getAll';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 

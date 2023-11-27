@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "../../endpoints";
-import { NoteAuthor } from "../../../types/notes";
+import { NoteAuthor } from "../../../interfaces/notes";
 
 /**
  * @param user userId, name and email

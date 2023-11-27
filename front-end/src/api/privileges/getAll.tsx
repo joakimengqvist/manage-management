@@ -1,4 +1,4 @@
-import { Privilege } from "../../types";
+import { Privilege } from "../../interfaces";
 import { ENDPOINTS } from "../endpoints";
 
 export const getAllPrivileges = async (loggedInUserId : string) : Promise<{

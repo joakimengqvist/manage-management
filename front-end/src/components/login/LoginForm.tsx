@@ -7,7 +7,7 @@ import { authenticate } from "../../redux/userDataSlice";
 
 const { Title } = Typography;
 
-const LoginForm: React.FC = () => {
+const LoginForm = () => {
   const dispatch = useDispatch();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');

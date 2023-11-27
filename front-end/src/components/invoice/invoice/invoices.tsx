@@ -3,10 +3,10 @@
 import { Typography, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { ZoomInOutlined } from '@ant-design/icons';
 import { getAllInvoices } from '../../../api/invoices/invoice/getAll';
-import { Invoice } from '../../../types/invoice';
+import { Invoice } from '../../../interfaces/invoice';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 import InvoiceStatus from '../../status/InvoiceStatus';
 

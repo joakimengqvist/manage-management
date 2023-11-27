@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom'
 import { Button, Card, Typography, notification, Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
-import { SubProject } from '../../types/subProject';
+import { SubProject } from '../../interfaces/subProject';
 import { getSubProjectById } from '../../api/subProjects/getById';
 import UpdateSubProject from './UpdateSubProject';
 import CreateNote from '../notes/CreateNote';
@@ -17,7 +17,7 @@ import NoteList from '../notes/Notes';
 import { createSubProjectNote } from '../../api/notes/subProject/create';
 import { getAllSubProjectNotesBySubProjectId } from '../../api/notes/subProject/getAllBySubProjectId';
 import SubProjectStatus from '../status/SubProjectStatus';
-import { SubProjectNote } from '../../types';
+import { SubProjectNote } from '../../interfaces';
 
 const { Text, Title, Link } = Typography;
 
@@ -32,7 +32,7 @@ const tabList = [
   },
 ];
 
-const Project: React.FC = () => {
+const Project = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
     const users = useSelector((state : State) => state.application.users);

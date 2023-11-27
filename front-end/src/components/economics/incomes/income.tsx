@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { getIncomeById } from '../../../api/economics/incomes/getById';
 import CreateNote from '../../notes/CreateNote';
 import { createIncomeNote } from '../../../api/notes/income/create';
-import { IncomeNote } from '../../../types/notes';
-import { IncomeObject } from '../../../types/income'
+import { IncomeNote } from '../../../interfaces/notes';
+import { IncomeObject } from '../../../interfaces/income'
 import Notes from '../../notes/Notes';
 import { NOTE_TYPE } from '../../../enums/notes';
 import { getAllIncomeNotesByIncomeId } from '../../../api/notes/income/getAllByIncomeId';
@@ -20,7 +20,7 @@ import { GoldTag } from '../../tags/GoldTag';
 
 const { Text, Title, Link } = Typography;
 
-const Income: React.FC = () => {
+const Income = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
     const [income, setIncome] = useState<null | IncomeObject>(null);

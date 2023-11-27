@@ -1,4 +1,4 @@
-export type NoteAuthor = {
+export interface NoteAuthor {
     id: string
     name: string
     email: string

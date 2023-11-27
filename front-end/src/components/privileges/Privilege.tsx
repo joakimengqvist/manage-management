@@ -6,7 +6,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePrivilege } from '../../api/privileges/update';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { deletePrivilege } from '../../api/privileges/delete';
 import { popPrivilege } from '../../redux/applicationDataSlice';
@@ -15,7 +15,7 @@ import { PRIVILEGES } from '../../enums/privileges';
 
 const { Text, Title } = Typography;
 
-const Privilege: React.FC = () => {
+const Privilege = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();

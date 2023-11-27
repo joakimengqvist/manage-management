@@ -2,14 +2,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser } from '../../api/users/delete';
 import { Table, Button, Popconfirm, notification, Typography } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { fetchUsers, popUser } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { getAllUsers } from '../../api/users/getAll';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
-import { User } from '../../types/user';
+import { User } from '../../interfaces/user';
 
 const { Link } = Typography;
 
@@ -36,7 +36,7 @@ const columns = [
     },
 ]
 
-const Users: React.FC = () => {
+const Users = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const users = useSelector((state : State) => state.application.users);

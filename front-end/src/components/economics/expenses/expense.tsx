@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { State } from '../../../types/state';
-import { ExpenseNote } from '../../../types/notes';
-import { ExpenseObject } from '../../../types/expense'
+import { State } from '../../../interfaces/state';
+import { ExpenseNote } from '../../../interfaces/notes';
+import { ExpenseObject } from '../../../interfaces/expense'
 import { getExpenseById } from '../../../api/economics/expenses/getById';
 import { getAllExpenseNotesByExpenseId } from '../../../api/notes/expense/getAllByExpenseId';
 import { createExpenseNote } from '../../../api/notes/expense/create'
@@ -19,7 +19,7 @@ import ExpenseStatus from '../../status/ExpenseStatus';
 
 const { Text, Title, Link } = Typography;
 
-const Expense: React.FC = () => {
+const Expense = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useSelector((state : State) => state.user);
     const [expense, setExpense] = useState<null | ExpenseObject>(null);

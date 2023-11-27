@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Checkbox, Col, Row, Table, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../types/state';
+import { State } from '../../../interfaces/state';
 import { createInvoice } from '../../../api/invoices/invoice/create';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { InvoiceItem } from '../../../types/invoice';
+import { InvoiceItem } from '../../../interfaces/invoice';
 import { statusOptions } from './options';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 
@@ -46,7 +46,7 @@ const invoiceItemsColumns = [
     },
   ];
 
-const CreateInvoice: React.FC = () => {
+const CreateInvoice = () => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
     const allProjects = useSelector((state: State) => state.application.projects);

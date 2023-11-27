@@ -4,13 +4,13 @@ import { Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification } from 'antd';
 import { createPrivilege } from '../../api/privileges/create'
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { appendPrivilege } from '../../redux/applicationDataSlice';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
-const CreatePrivilege: React.FC = () => {
+const CreatePrivilege  = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);

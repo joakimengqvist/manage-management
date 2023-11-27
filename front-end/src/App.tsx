@@ -19,7 +19,7 @@ import { clearData, fetchExternalCompanies, fetchInvoiceItems, fetchInvoices, fe
 import { fetchUserSettings, initiateUser } from './redux/userDataSlice'
 import { getAllUsers } from './api/users/getAll';
 import { getAllProjects } from './api/projects/getAll';
-import { State } from './types/state';
+import { State } from './interfaces/state';
 import { hasPrivilege } from './helpers/hasPrivileges';
 import { PRIVILEGES } from './enums/privileges';
 import MyPage from './routes/myPage';
@@ -53,7 +53,7 @@ import { getUserSettingsByUserId } from './api/users/userSettings/GetUserSetting
 
 const { Sider, Content } = Layout;
 
-const App: React.FC = () => {
+const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isInitiated, setIsInitiated] = useState(false);

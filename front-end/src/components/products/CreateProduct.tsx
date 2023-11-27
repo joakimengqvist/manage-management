@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, Typography, notification } from 'antd';
-import { State } from '../../types/state';
+import { State } from '../../interfaces/state';
 import { createProduct } from '../../api/products/create';
 
 const { Title, Text } = Typography;
 
-const CreateUser: React.FC = () => {
+const CreateUser = () => {
     const [api, contextHolder] = notification.useNotification();
     const userId = useSelector((state : State) => state.user.id);
 

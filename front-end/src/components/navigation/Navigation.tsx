@@ -15,7 +15,8 @@ import {
   FundOutlined,
   ClusterOutlined,
   BuildOutlined,
-  BankOutlined
+  BankOutlined,
+  ReadOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -67,6 +68,7 @@ const Navigation = (props : {
   ]),
     getItem('External companies', '5', <BankOutlined />, () => navigate("/external-companies")),
     getItem('Services', '6', <ClusterOutlined />, () => navigate("/services")),
+    getItem('Frontend docs', '7', <ReadOutlined />, () => navigate("/documentation")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 

@@ -50,6 +50,7 @@ import InvoiceItems from './routes/invoice/invoiceItems';
 import { getAllInvoiceItems } from './api/invoices/invoiceItem/getAll';
 import { getAllInvoices } from './api/invoices/invoice/getAll';
 import { getUserSettingsByUserId } from './api/users/userSettings/GetUserSettingsByUserId';
+import Documentation from './routes/Documentation';
 
 const { Sider, Content } = Layout;
 
@@ -116,6 +117,14 @@ const ThemePicker = () => {
 
   return [UserSettings.dark_theme ? theme.darkAlgorithm : theme.defaultAlgorithm]
 }
+
+  const isDocPage = () => {
+    if (window.location.pathname.includes('documentation')) {
+      if (!collapsed) setCollapsed(true)
+      return true
+    }
+    return false;
+  }
   return (
     <ConfigProvider
     theme={{
@@ -129,12 +138,12 @@ const ThemePicker = () => {
           </Sider>
         )}
         <Layout>
-          {authenticated && (
+          {authenticated && !isDocPage() && (
             <div style={{ padding: 0, height: '48px', width: '100%'}}>
               <HeaderMenu />
             </div>
           )}
-          <Content style={{ padding: 8, minHeight: 1200 }}>
+          <Content style={{ padding: isDocPage() ? 0 : 8, minHeight: 1200 }}>
             <Routes>
               <Route index element={<div>Home</div>} />
 
@@ -178,9 +187,9 @@ const ThemePicker = () => {
               <Route path="/invoice-item/:id" element={<InvoiceItem />} />
               <Route path="/invoice-items" element={<InvoiceItems />} />
 
-
-
               <Route path="/services" element={<ServiceOverviewPage />} />
+
+              <Route path="/documentation" element={<Documentation />} />
 
             </Routes>
           </Content>

@@ -3,7 +3,7 @@ import { Button, Select } from 'antd';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import ExternalCompanies from '../../components/externalCompanies/externalCompanies';
+import ExternalCompanies from '../../components/externalCompanies/ExternalCompanies';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { State } from '../../interfaces/state';

@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
-import CreateExternalCompany from '../../components/externalCompanies/createExternalCompany';
+import CreateExternalCompany from '../../components/externalCompanies/CreateExternalCompany';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { State } from '../../interfaces/state';
 
-const CreateExpense = () => {
+const CreateExternalCompanyPage = () => {
     const userPrivileges = useSelector((state : State) => state.user.privileges);
 
     if (!hasPrivilege(userPrivileges, PRIVILEGES.external_company_write)) return null;
@@ -12,4 +12,4 @@ const CreateExpense = () => {
     return <CreateExternalCompany />
 }
 
-export default CreateExpense;
+export default CreateExternalCompanyPage;

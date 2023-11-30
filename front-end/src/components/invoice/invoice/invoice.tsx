@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from 'react-router-dom'
-import { Card, Typography, Row, Col, Button, Table } from 'antd';
+import { Card, Typography, Row, Col, Button, Table, notification } from 'antd';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../../interfaces/state';
 import { getInvoiceById } from '../../../api/invoices/invoice/getById';
 import { Invoice, InvoiceItem } from '../../../interfaces/invoice'
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
@@ -12,6 +10,9 @@ import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 import { GoldTag } from '../../tags/GoldTag';
 import { GreenTag } from '../../tags/GreenTag';
 import InvoiceStatus from '../../status/InvoiceStatus';
+import { useGetExternalCompanies, useGetLoggedInUserId, useGetProducts, useGetProjects, useGetUsers } from '../../../hooks';
+import { useGetSubProjects } from '../../../hooks/useGetSubProjects';
+import { getInvoiceItemsByIds } from '../../../api/invoices/invoiceItem/getAllByIds';
 // import UpdateInvoice from './updateInvoice';
 
 const { Text, Title, Link } = Typography;
@@ -45,57 +46,67 @@ const invoiceItemsColumns = [
 ]
 
 const InvoiceDetails = () => {
-    const loggedInUser = useSelector((state : State) => state.user);
+    const [api, contextHolder] = notification.useNotification();
+    const loggedInUserId = useGetLoggedInUserId();
+    const users = useGetUsers();
+    const projects = useGetProjects();
+    const subProjects = useGetSubProjects();
+    const products = useGetProducts();
+    const externalCompanies = useGetExternalCompanies();
     const [invoice, setInvoice] = useState<null | Invoice>(null);
     const [editing, setEditing] = useState(false);
     const [invoiceItemsTableData, setInvoiceItemsTableData] = useState<any>([]);
-    const users = useSelector((state : State) => state.application.users);
-    const projects = useSelector((state : State) => state.application.projects);
-    const subProjects = useSelector((state : State) => state.application.subProjects);
-    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
-    const invoiceItems = useSelector((state : State) => state.application.invoiceItems);
-    const products = useSelector((state : State) => state.application.products);
     const { id } =  useParams(); 
     const invoiceId = id || '';
 
     useEffect(() => {
-        if (loggedInUser?.id) {
-            getInvoiceById(loggedInUser.id, invoiceId).then(response => {
+        if (loggedInUserId) {
+            getInvoiceById(loggedInUserId, invoiceId).then(response => {
                 setInvoice(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
         }
-    }, [loggedInUser]);
+    }, [loggedInUserId]);
 
     useEffect(() => {
         if (invoice) {
-            const invoiceItemsDataObject = invoice && invoice.invoice_items.map((invoiceItemId : string) => {
-                const invoiceItem : InvoiceItem | undefined = getInvoiceItem(invoiceItemId);
-                return {
-                    product_id: getProductName(invoiceItem?.product_id || ''),
-                    quantity: invoiceItem?.quantity,
-                    discount_percentage: `${invoiceItem?.discount_percentage}%`,
-                    actual_tax: `${invoiceItem?.actual_tax} SEK`,
-                    actual_price: `${invoiceItem?.actual_price} SEK`,
-                }     
-            });
-            setInvoiceItemsTableData(invoiceItemsDataObject);
+            getInvoiceItemsByIds(loggedInUserId, invoice.invoice_items).then(response => {
+                if (response?.error) {
+                    api.error({
+                        message: 'Error',
+                        description: response.message,
+                        placement: 'bottom',
+                        duration: 1.4
+                    });
+                    return;
+                }
+
+                const tableData = response.data.map((invoiceItem : InvoiceItem) => {
+                    return {
+                        product_id: getProductName(invoiceItem?.product_id || ''),
+                        quantity: invoiceItem?.quantity,
+                        discount_percentage: `${invoiceItem?.discount_percentage}%`,
+                        actual_tax: `${invoiceItem?.actual_tax} SEK`,
+                        actual_price: `${invoiceItem?.actual_price} SEK`,
+                    }});
+
+                setInvoiceItemsTableData(tableData);
+            }).catch(error => {
+                console.log('error fetching', error)
+            })
         }
     }, [invoice])
 
-    const getUserName = (id : string) => {
-        const user = users.find(user => user.id === id);
-        return `${user?.first_name} ${user?.last_name}`;
-    };
+    const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
+    const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
+    const getProjectName = (id : string) => projects?.[id]?.name;
+    const getProductName = (id : string) => products?.[id]?.name;
 
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
-    const getProjectName = (id : string) => projects.find(project => project.id === id)?.name;
     const getSubProjectName = (id : string) => subProjects.find(subProject => subProject.id === id)?.name;
-    const getProductName = (id : string) => products.find(item => item.id === id)?.name;
-    const getInvoiceItem = (id : string) => invoiceItems.find(item => item.id === id);
 
     return (<>
+        {contextHolder}
         {invoice && (
             <Row>
                 <Col span={16} style={{paddingRight: '24px'}}>

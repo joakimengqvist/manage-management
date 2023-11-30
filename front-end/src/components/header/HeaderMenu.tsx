@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
-import { State } from '../../interfaces/state';
+import { useDispatch } from 'react-redux';
 import { LoginOutlined } from '@ant-design/icons';
 import { logout } from "../../redux/userDataSlice";
 import { clearData } from '../../redux/applicationDataSlice';
 import { Button, Space, Typography } from "antd"
+import { useGetDarkThemeEnabled, useGetLoggedInUser } from "../../hooks";
+import { useGetAuthenticated } from "../../hooks/useGetAuthenticated";
 
 const { Text, Title } = Typography;
 
@@ -43,6 +44,15 @@ const headerTitle = (pathName : string) => {
     }
     if (pathName.includes('expenses')) {
         return 'Expenses'
+    }
+    if (pathName.includes('/invoice-item/')) {
+        return 'Invoice item details'
+    }
+    if (pathName.includes('create-invoice-item')) {
+        return 'Create new invoice item'
+    }
+    if (pathName.includes('invoice-items')) {
+        return 'Invoice items'
     }
     if (pathName.includes('/invoice/')) {
         return 'Invoice details'
@@ -82,10 +92,11 @@ const headerTitle = (pathName : string) => {
 }
 
 const HeaderMenu = () => {
-    const user = useSelector((state: State) => state.user);
-    const darkTheme = useSelector((state : State) => state.user.settings.dark_theme);
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const authenticated = useGetAuthenticated();
+    const loggedInUser = useGetLoggedInUser();
+    const darkTheme = useGetDarkThemeEnabled();
 
     const OnLoginButtonClick = (isAuth: boolean) => {
         if (isAuth) {
@@ -105,19 +116,19 @@ const HeaderMenu = () => {
                 <Title style={{paddingTop: '10px'}} level={5}>{headerTitle(window.location.pathname)}</Title>
             </div>
             <div style={{ height: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                {user.authenticated ? (
+                {authenticated ? (
                     <Space direction="horizontal">
-                        <Text>{user.firstName} {user.lastName}</Text>
-                        <Text onClick={() => navigate('/my-details')} underline italic style={{ marginRight: '4px', cursor: 'pointer' }}>{user.email}</Text>
+                        <Text>{loggedInUser.firstName} {loggedInUser.lastName}</Text>
+                        <Text onClick={() => navigate('/my-details')} underline italic style={{ marginRight: '4px', cursor: 'pointer' }}>{loggedInUser.email}</Text>
                         <Link to="/login">
-                            <Button onClick={() => OnLoginButtonClick(user.authenticated)}>
+                            <Button onClick={() => OnLoginButtonClick(authenticated)}>
                                 Log out
                             </Button>
                         </Link>
                     </Space>
 
                 ) : (
-                    <Button type="primary" onClick={() => OnLoginButtonClick(user.authenticated)}>
+                    <Button type="primary" onClick={() => OnLoginButtonClick(authenticated)}>
                         Log in <LoginOutlined />
                     </Button>
                 )}

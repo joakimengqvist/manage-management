@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Typography } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Input, Space, Card, notification } from 'antd';
 import { createPrivilege } from '../../api/privileges/create'
-import { State } from '../../interfaces/state';
 import { appendPrivilege } from '../../redux/applicationDataSlice';
+import { useGetLoggedInUserId } from '../../hooks';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -13,12 +13,12 @@ const { TextArea } = Input;
 const CreatePrivilege  = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
+    const loggedInUserId = useGetLoggedInUserId();
     const [name, setname] = useState('');
     const [description, setDescription] = useState('');
 
     const onSubmit = () => {
-        createPrivilege(userId, name, description)
+        createPrivilege(loggedInUserId, name, description)
             .then(response => {
                 if (response?.error) {
                     api.error({

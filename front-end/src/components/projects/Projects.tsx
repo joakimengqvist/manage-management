@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteProject } from '../../api/projects/delete';
 import { Table, Button, Popconfirm, notification, Card, Select, Modal, Typography, Row, Col } from 'antd';
-import { State } from '../../interfaces/state';
 import { Project } from '../../interfaces/project';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined, SettingOutlined } from '@ant-design/icons';
@@ -19,6 +18,9 @@ import ReactApexChart from 'react-apexcharts';
 import { addSubProjectsProjectConnection } from '../../api/subProjects/specialActions/addSubProjectsProjectConnection';
 import { removeSubProjectsProjectConnection } from '../../api/subProjects/specialActions/removeSubProjectsProjectsConnection';
 import ProjectStatus from '../status/ProjectStatus';
+import { getAllProjects } from '../../api';
+import { useGetLoggedInUser } from '../../hooks';
+import { useGetSubProjects } from '../../hooks/useGetSubProjects';
 
 const { Link, Text } = Typography;
 
@@ -99,11 +101,10 @@ const Projects = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
-    const projects = useSelector((state : State) => state.application.projects);
-    const subProjects = useSelector((state : State) => state.application.subProjects);
+    const loggedInUser = useGetLoggedInUser();
+    const subProjects = useGetSubProjects();
 
+    const [projects, setProjects] = useState<Array<Project>>([]);
     const [activeTab, setActiveTab] = useState('projects');
     const [innerActiveTab, setInnerActiveTab] = useState('sub_projects');
 
@@ -121,12 +122,33 @@ const Projects = () => {
         setIsModalOpen(true);
     }
 
+   
     const getProjectName = (id : string) => projects.find((project : Project) => project.id === id)?.name;
-    const getSubProjectName = (id : string) => subProjects.find((project : SubProject) => project.id === id)?.name;
-
+    const getSubProjectName = (id : string) => subProjects.find((subProject : SubProject) => subProject.id === id)?.name;
 
     useEffect(() => {
-        const selectedProject = projects.find(project => project.id === modalSelectedProjectId);
+        getAllProjects(loggedInUser.id).then(response => {
+            if (response?.error) {
+                api.error({
+                    message: `Error fetching projects`,
+                    description: response.message,
+                    placement: 'bottom',
+                    duration: 1.4
+                });
+                return;
+            }
+            setProjects(response.data);
+        }).catch(error => {
+            api.error({
+                message: `Error fetching projects`,
+                description: error.toString(),
+                placement: 'bottom',
+                duration: 1.4
+            });
+        });
+        
+        if (projects.length > 0) {
+        const selectedProject = projects.find((project : Project) => project.id === modalSelectedProjectId);
 
         if (!selectedProject || !selectedProject.sub_projects || selectedProject.sub_projects.length === 0) return;
 
@@ -138,13 +160,14 @@ const Projects = () => {
         });
          
         setModalAddSelectedSubProjects(options);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modalSelectedProjectId]);
 
     
     const onModalAddSubProjects = () => {
         setIsModalLoading(true);
-        addSubProjectsProjectConnection(userId, modalSelectedAddSubProjects, modalSelectedProjectId).then(response => {
+        addSubProjectsProjectConnection(loggedInUser.id, modalSelectedAddSubProjects, modalSelectedProjectId).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error adding sub projects to project`,
@@ -174,7 +197,7 @@ const Projects = () => {
 
     const onModalRemoveSubProjects = () => {
         setIsModalLoading(true);
-        removeSubProjectsProjectConnection(userId, modalRemoveSelectedSubProjects, modalSelectedProjectId).then(response => {
+        removeSubProjectsProjectConnection(loggedInUser.id, modalRemoveSelectedSubProjects, modalSelectedProjectId).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error removing project from sub project`,
@@ -203,7 +226,7 @@ const Projects = () => {
     }
 
     const onClickdeleteProject = async (id : string) => {
-        await deleteProject(userId, id)
+        await deleteProject(loggedInUser.id, id)
             .then(response => {
                 if (response?.error) {
                     api.error({
@@ -242,7 +265,7 @@ const Projects = () => {
             operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Button style={{ padding: '4px'}} type="link" onClick={() => openModal(project.id)}><SettingOutlined /></Button>
                 <Link style={{padding:'5px'}} href={`/project/${project.id}`}><ZoomInOutlined /></Link>
-                {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&
+                {hasPrivilege(loggedInUser.privileges, PRIVILEGES.project_sudo) &&
                 <Popconfirm
                     placement="top"
                     title="Are you sure?"
@@ -261,7 +284,7 @@ const Projects = () => {
 
     const expandableProps = useMemo(() => {
         const onClickdeleteSubProject = async (id : string) => {
-            await deleteSubProject(userId, id)
+            await deleteSubProject(loggedInUser.id, id)
                 .then(response => {
                     if (response?.error) {
                         api.error({
@@ -301,7 +324,7 @@ const Projects = () => {
                     estimated_duration: <EstimatedDuration duration={subProject.estimated_duration} />,
                     operations: (<div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                         <Link style={{padding: '5px'}} href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
-                        {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) &&
+                        {hasPrivilege(loggedInUser.privileges, PRIVILEGES.project_sudo) &&
                             <Popconfirm
                                 placement="top"
                                 title="Are you sure?"
@@ -404,7 +427,7 @@ const Projects = () => {
             )},
         };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [subProjects, userId, userPrivileges, innerActiveTab]);
+      }, [subProjects, loggedInUser, innerActiveTab]);
 
       const data : Array<any> = [];
 

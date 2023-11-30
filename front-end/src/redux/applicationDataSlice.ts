@@ -1,5 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from '@reduxjs/toolkit';
+import {
+  ExternalCompany,
+  Invoice,
+  InvoiceItem,
+  Privilege,
+  Product,
+  Project,
+  User,
+  StateExternalCompanies,
+  StateInvoiceItems,
+  StateInvoices,
+  StatePrivileges,
+  StateProducts,
+  StateProjects,
+  StateUsers
+} from '../interfaces';
 
 export const applicationStateName = 'ReduxApplicationData';
 const statename = 'application'
@@ -11,13 +27,13 @@ export const staticDataSlice = createSlice({
       name: '',
       id: 0,
     },
-    privileges: [],
-    users: [],
-    projects: [],
-    subProjects: [],
-    products: [],
-    invoices: [],
-    invoiceItems: [],
+    privileges: {},
+    users: {},
+    projects: {},
+    subProjects: {},
+    products: {},
+    invoices: {},
+    invoiceItems: {},
   },
   reducers: {
     initiateApplicationData: (state : any) => {
@@ -30,14 +46,17 @@ export const staticDataSlice = createSlice({
       }
     },
 
-    // -----------------------  |
-    // -- PRIVILEGES -------    |
-    // -------------------      V
-
     fetchPrivileges: (state : any, payload) => {
       const privileges = payload.payload || [];
-      state.privileges = privileges;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, privileges: privileges }));
+      const stateObject : StatePrivileges = {};
+      privileges.forEach((privilege : Privilege) => {
+        stateObject[privilege.id] = {
+          id: privilege.id,
+          name: privilege.name,
+        }
+      });
+      state.privileges = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, privileges: stateObject }));
       return state;
     },
     // updatePrivilege: (state : any, payload) => {
@@ -52,14 +71,18 @@ export const staticDataSlice = createSlice({
       return state;
     },
 
-    // -----------------------  |
-    // -- USERS ------------    |
-    // -------------------      V
-
     fetchUsers: (state : any, payload) => {
       const users = payload.payload || [];
-      state.users = users;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, users: users }));
+      const stateObject : StateUsers = {};
+      users.forEach((user : User) => {
+        stateObject[user.id] = {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+        }
+      });
+      state.users = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, users: stateObject }));
       return state;
     },
     updateUserState: (state : any, payload) => {
@@ -76,14 +99,18 @@ export const staticDataSlice = createSlice({
       return state;
     },
 
-    // -----------------------  |
-    // -- PROJECTS ---------    |
-    // -------------------      V
-
     fetchProjects: (state : any, payload) => {
       const projects = payload.payload || [];
-      state.projects = projects;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, projects: projects }));
+      const stateObject : StateProjects = {};
+      projects.forEach((project : Project) => {
+        stateObject[project.id] = {
+          id: project.id,
+          name: project.name,
+          sub_projects: project.sub_projects,
+        }
+      });
+      state.projects = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, projects: stateObject }));
       return state;
     },
     // updateProject: (state : any, payload) => {
@@ -102,14 +129,10 @@ export const staticDataSlice = createSlice({
       return state;
     },
 
-    // -------------------------  |
-    // -- SUB PROJECTS -------    |
-    // -------------------        V
-
     fetchSubProjects: (state : any, payload) => {
-      const payloadSubProjects = payload.payload || [];
-      state.subProjects = payloadSubProjects;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, subProjects: payloadSubProjects }));
+      const subProjects = payload.payload || [];
+      state.subProjects = subProjects;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, subProjects: subProjects }));
       return state;
     },
     // updatesubProject: (state : any, payload) => {
@@ -124,47 +147,60 @@ export const staticDataSlice = createSlice({
       return state;
     },
 
-    // -----------------------  |
-    // -- EXTERNAL COMPANIES    |
-    // -------------------      V
-
     fetchExternalCompanies: (state : any, payload) => {
-      const payloadExternalCompanies = payload.payload || [];
-      state.externalCompanies = payloadExternalCompanies;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, externalCompanies: payloadExternalCompanies }));
+      const externalCompanies = payload.payload || [];
+      const stateObject : StateExternalCompanies = {};
+      externalCompanies.forEach((externalCompany : ExternalCompany) => {
+        stateObject[externalCompany.id] = {
+          id: externalCompany.id,
+          company_name: externalCompany.company_name,
+        }
+      });
+      state.externalCompanies = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, externalCompanies: stateObject }));
       return state;
     },
-
-    // -----------------------  |
-    // -- EXTERNAL COMPANIES    |
-    // -------------------      V
 
     fetchProducts: (state : any, payload) => {
-      const payloadProducts = payload.payload || [];
-      state.products = payloadProducts;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, externalCompanies: payloadProducts }));
+      const products = payload.payload || [];
+      const stateObject : StateProducts = {};
+      products.forEach((product : Product) => {
+        stateObject[product.id] = {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+        }
+      });
+      state.products = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, externalCompanies: stateObject }));
       return state;
     },
-
-    // -----------------------  |
-    // -- INVOICES              |
-    // -------------------      V
 
     fetchInvoices: (state : any, payload) => {
-      const payloadInvoices = payload.payload || [];
-      state.invoices = payloadInvoices;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, invoices: payloadInvoices }));
+      const invoices = payload.payload || [];
+      const stateObject : StateInvoices = {};
+      invoices.forEach((invoice : Invoice) => {
+        stateObject[invoice.id] = {
+          id: invoice.id,
+          company_id: invoice.company_id,
+        }
+      });
+      state.invoices = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, invoices: stateObject }));
       return state;
     },
 
-    // -----------------------  |
-    // -- INVOICE ITEMS         |
-    // -------------------      V
-
     fetchInvoiceItems: (state : any, payload) => {
-      const payloadInvoiceItems = payload.payload || [];
-      state.invoiceItems = payloadInvoiceItems;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, invoiceItems: payloadInvoiceItems }));
+      const invoiceItems = payload.payload || [];
+      const stateObject : StateInvoiceItems = {};
+      invoiceItems.forEach((invoiceItem : InvoiceItem) => {
+        stateObject[invoiceItem.id] = {
+          id: invoiceItem.id,
+          product_id: invoiceItem.product_id,
+        }
+      });
+      state.invoiceItems = stateObject;
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, invoiceItems: stateObject }));
       return state;
     },
 
@@ -175,14 +211,14 @@ export const staticDataSlice = createSlice({
             name: '',
             id: 0,
           },
-          privileges: [],
-          users: [],
-          projects: [],
-          subProjects: [],
-          externalCompanies: [],
-          products: [],
-          invoices: [],
-          invoiceItems: [],
+          privileges: {},
+          users: {},
+          projects: {},
+          subProjects: {},
+          externalCompanies: {},
+          products: {},
+          invoices: {},
+          invoiceItems: {},
       }
       localStorage.setItem(applicationStateName, JSON.stringify(updatedData))
         return updatedData

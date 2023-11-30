@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { deletePrivilege } from '../../api/privileges/delete';
 import { Table, Button, Popconfirm, notification, Typography } from 'antd';
-import { State } from '../../interfaces/state';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { BlueTag } from '../tags/BlueTag';
+import { useEffect } from 'react';
+import { getAllPrivileges } from '../../api';
+import { Privilege } from '../../interfaces';
+import { useGetLoggedInUser } from '../../hooks';
 
 const { Link } = Typography;
 
@@ -31,13 +35,28 @@ const columns = [
 
 const Privileges = () => {
     const dispatch = useDispatch();
+    const loggedInUser = useGetLoggedInUser();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
-    const privileges = useSelector((state : State) => state.application.privileges);
+    const [privileges, setPrivileges] = useState<Array<Privilege>>([]);
+
+    useEffect(() => {
+        getAllPrivileges(loggedInUser.id).then(response => {
+            if (response?.error) {
+                api.error({
+                    message: `Error fetching privileges`,
+                    description: response.message,
+                    placement: 'bottom',
+                    duration: 1.4
+                  });
+                  return
+              }
+            setPrivileges(response.data)
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const onClickdeletePrivilege = async (id : string) => {
-        await deletePrivilege(userId, id)
+        await deletePrivilege(loggedInUser.id, id)
             .then(response => {
                 if (response?.error) {
                     api.error({
@@ -71,7 +90,7 @@ const Privileges = () => {
             description: privilege.description,
             operations: (<div style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <Link style={{padding: '5px'}} href={`/privilege/${privilege.id}`}><ZoomInOutlined /></Link>
-                {hasPrivilege(userPrivileges, PRIVILEGES.privilege_sudo) &&
+                {hasPrivilege(loggedInUser.privileges, PRIVILEGES.privilege_sudo) &&
                     <Popconfirm
                         placement="top"
                         title="Are you sure?"

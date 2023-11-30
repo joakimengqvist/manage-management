@@ -14,17 +14,15 @@ import {
   Popconfirm,
   Divider,
 } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getAllProjectNotesByUserId } from '../../api/notes/project/getAllByUserId';
 import { useEffect, useState } from "react";
 import { updateUser } from "../../api/users/update";
 import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
-import { State } from "../../interfaces/state";
 import { updateUserState, popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
-import { SelectOptions } from '../../interfaces/generics';
 import { NOTE_TYPE } from "../../enums/notes";
 import Notes from "../notes/Notes";
 import { getAllExpenseNotesByUserId } from "../../api/notes/expense/getAllByUserId";
@@ -40,7 +38,9 @@ import {
 import { getAllSubProjectNotesByUserId } from "../../api/notes/subProject/getAllByUserId";
 import { PurpleTags } from "../tags/PurpleTags";
 import { BlueTags } from "../tags/BlueTags";
-import { ExpenseNote, ExternalCompanyNote, IncomeNote, ProjectNote, SubProjectNote } from "../../interfaces";
+import { ExpenseNote, ExternalCompanyNote, IncomeNote, ProjectNote, SubProjectNote, User } from "../../interfaces";
+import { getUserById } from "../../api";
+import { useGetLoggedInUser, useGetPrivileges, useGetProjects } from "../../hooks";
 
 const { Text, Title } = Typography;
 
@@ -67,10 +67,13 @@ const userNotesTabList = [
   },
 ];
 
-const User = () => {
+const UserDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
+  const loggedInUser = useGetLoggedInUser();
+  const allProjects = useGetProjects();
+  const allPrivileges = useGetPrivileges();
 
   const [projectNotes, setProjectNotes] = useState<Array<ProjectNote>>([]);
   const [subProjectNotes, setSubProjectNotes] = useState<Array<SubProjectNote>>([]);
@@ -81,64 +84,46 @@ const User = () => {
   
   const { id } = useParams();
   const userId = id || '';
-  const users = useSelector((state: State) => state.application.users);
-  const user = users.find((u : any) => u.id === userId);
-
-  const allProjects = useSelector((state: State) => state.application.projects);
-  const loggedInUserId = useSelector((state: State) => state.user.id);
-  const userPrivileges = useSelector((state: State) => state.user.privileges);
-  const allPrivileges = useSelector((state: State) => state.application.privileges);
-
+  
+  const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [privilegesOptions, setPrivilegesOptions] = useState<Array<any>>([]);
   const [privileges, setPrivileges] = useState<Array<any>>([]);
   const [projects, setProjects] = useState<Array<any>>([]);
-  const [allProjectsOptions, setAllProjectsOptions] = useState<Array<SelectOptions>>([]);
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      try {
-
-        setEmail(user.email);
-        setFirstName(user.first_name);
-        setLastName(user.last_name);
-        setPrivileges(user.privileges);
-        setProjects(user.projects);
-
-        const userProjects : Array<any> = [];
-        allProjects.forEach(project => {
-          if (user.projects.includes(project.id)) {
-            userProjects.push({ label: project.name, value: project.id})
-          }
+    getUserById(loggedInUser.id, userId).then(response => {
+      if (response?.error) {
+        api.error({
+          message: `Error fetching user`,
+          description: response.error.toString(),
+          placement: "bottom",
+          duration: 2,
         });
-       
-        const privilegesOptions = allPrivileges.map(privilege => {
-          return { label: privilege.name, value: privilege.name }
-        });
-        setPrivilegesOptions(privilegesOptions);
-
-        const projectsOptions = allProjects.map(project => {
-          return { label: project.name, value: project.id }
-        });
-        setAllProjectsOptions(projectsOptions)
-
-        } catch (error : any) {
-          api.error({
-            message: `Error fetching user`,
-            description: error.toString(),
-            placement: "bottom",
-            duration: 2,
-          });
-        }
-    }
-  }, [user]);
+      }
+      if (response.data) {
+        setUser(response.data);
+        setEmail(response.data.email);
+        setFirstName(response.data.first_name);
+        setLastName(response.data.last_name);
+        setPrivileges(response.data.privileges);
+        setProjects(response.data.projects);
+      }
+    }).catch((error : any) => {
+      api.error({
+        message: `Error fetching user`,
+        description: error.toString(),
+        placement: "bottom",
+        duration: 2,
+      });
+    });
+  }, []);
 
   useEffect(() => {
-    if (loggedInUserId) {
-      getAllProjectNotesByUserId(loggedInUserId, userId).then(response => {
+    if (loggedInUser.id) {
+      getAllProjectNotesByUserId(loggedInUser.id, userId).then(response => {
         if (response.data?.length) {
           setProjectNotes(response.data);
         } else {
@@ -148,7 +133,7 @@ const User = () => {
         console.log('error fetching project notes', error);
       });
 
-      getAllSubProjectNotesByUserId(loggedInUserId, userId).then(response => {
+      getAllSubProjectNotesByUserId(loggedInUser.id, userId).then(response => {
         if (response.data?.length) {
           setSubProjectNotes(response.data);
         } else {
@@ -158,7 +143,7 @@ const User = () => {
         console.log('error fetching project notes', error);
       });
    
-      getAllExpenseNotesByUserId(loggedInUserId, userId).then(response => {
+      getAllExpenseNotesByUserId(loggedInUser.id, userId).then(response => {
         if (response.data?.length) {
           setExpenseNotes(response.data);
         } else {
@@ -168,7 +153,7 @@ const User = () => {
         console.log('error fetching expense notes', error);
       });
 
-      getAllIncomeNotesByUserId(loggedInUserId, userId).then(response => {
+      getAllIncomeNotesByUserId(loggedInUser.id, userId).then(response => {
         if (response.data?.length) {
           setIncomeNotes(response.data);
         } else {
@@ -177,7 +162,7 @@ const User = () => {
       }).catch((error : any) => {
         console.log('error fetching income notes', error);
       });
-      getAllExternalCompanyNotesByUserId(loggedInUserId, userId).then(response => {
+      getAllExternalCompanyNotesByUserId(loggedInUser.id, userId).then(response => {
         if (response.data?.length) {
           setExternalCompaniesNotes(response.data);
         } else {
@@ -187,7 +172,7 @@ const User = () => {
         console.log('error fetching income notes', error);
       });
     }
-  }, [loggedInUserId, activeNotesTab]);
+  }, [loggedInUser, activeNotesTab]);
 
   const onHandleEmailChange = (event: any) => setEmail(event.target.value);
   const onHandleFirstNameChange = (event: any) => setFirstName(event.target.value);
@@ -198,7 +183,7 @@ const User = () => {
 
   const onSaveEdittedUser = async () => {
     await updateUser(
-      loggedInUserId,
+      loggedInUser.id,
       userId,
       firstName,
       lastName,
@@ -234,7 +219,7 @@ const User = () => {
   };
 
   const onClickdeleteUser = async (id: string) => {
-    await deleteUser(loggedInUserId, id)
+    await deleteUser(loggedInUser.id, id)
       .then(response => {
         if (response?.error) {
           api.error({
@@ -265,12 +250,26 @@ const User = () => {
       });
   };
 
+  const projectOptions = Object.keys(allProjects).map(projectId => ({ 
+    label: allProjects[projectId].name, 
+    value: allProjects[projectId].id
+  }));
+
+  const privilegesOptions = Object.keys(allPrivileges).map(privilegeId => ({ 
+      label: allPrivileges[privilegeId].name, 
+      value: allPrivileges[privilegeId].id
+  }));
+
   const notesContentList: Record<string, React.ReactNode> = {
-    project: <Notes notes={projectNotes} type={NOTE_TYPE.project} userId={loggedInUserId} generalized /> ,
-    subProject: <Notes notes={subProjectNotes} type={NOTE_TYPE.sub_project} userId={loggedInUserId} generalized /> ,
-    expense:  <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUserId} generalized /> ,
-    income: <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUserId} generalized /> ,
-    companies: <Notes notes={externalCompaniesNotes} type={NOTE_TYPE.external_company} userId={loggedInUserId} generalized />
+    project: <Notes notes={projectNotes} type={NOTE_TYPE.project} userId={loggedInUser.id} generalized /> ,
+    subProject: <Notes notes={subProjectNotes} type={NOTE_TYPE.sub_project} userId={loggedInUser.id} generalized /> ,
+    expense:  <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUser.id} generalized /> ,
+    income: <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUser.id} generalized /> ,
+    companies: <Notes notes={externalCompaniesNotes} type={NOTE_TYPE.external_company} userId={loggedInUser.id} generalized />
+  }
+
+  if (!user) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -329,7 +328,7 @@ const User = () => {
                   tagRender={PurpleTags}
                   value={projects}
                   onChange={onHandleProjectsChange}
-                  options={allProjectsOptions}
+                  options={projectOptions}
                 />
             </Space>
             </div>
@@ -341,7 +340,7 @@ const User = () => {
               gap: "8px",
             }}
           >
-            {editing && hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) && (
+            {editing && hasPrivilege(loggedInUser.privileges, PRIVILEGES.user_sudo) && (
               <Popconfirm
                 placement="top"
                 title="Are you sure?"
@@ -390,4 +389,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default UserDetails;

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Col, Divider, Row, Switch, Typography } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Input, Space, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../interfaces/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions } from '../options';
 import { IncomeObject } from '../../../interfaces/income';
 import { updateIncome } from '../../../api/economics/incomes/update';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
+import { useGetExternalCompanies, useGetLoggedInUserId, useGetProjects } from '../../../hooks';
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -18,9 +18,9 @@ const numberPattern = /^[0-9]+$/;
 const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, setEditing : (open : boolean) => void}) => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
-    const externalCompanies = useSelector((state: State) => state.application.externalCompanies);
+    const loggedInUserId = useGetLoggedInUserId();
+    const externalCompanies = useGetExternalCompanies();
+    const projects = useGetProjects();
     const [project, setProject] = useState('');
     const [incomeDate, setIncomeDate] = useState('');
     const [incomeCategory, setIncomeCategory] = useState('');
@@ -32,7 +32,7 @@ const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, s
     const [incomeStatus, setIncomeStatus] = useState('');
     const [currency, setCurrency] = useState('');
 
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
+    const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
 
     useEffect(() => {
         setProject(income.project_id); 
@@ -45,12 +45,8 @@ const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, s
         setTax(income.tax.toString());
         setIncomeStatus(income.status.toString());
         setCurrency(income.currency);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
 
     const onChangeIncomeDate = (value : any) => {
         if (value) {
@@ -89,7 +85,7 @@ const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, s
             tax,
             incomeStatus,
             currency,
-            userId,
+            loggedInUserId,
         ).then(response => {
             if (response?.error || !response?.data) {
                 api.error({
@@ -121,9 +117,14 @@ const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, s
         })
     };
 
-    const vendorOptions = externalCompanies.map(company => ({
-        value: company.id,
-        label: company.company_name
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
+
+    const vendorOptions = Object.keys(externalCompanies).map(companyId => ({
+        value: externalCompanies[companyId].id,
+        label: externalCompanies[companyId].company_name
     }))
 
   return (<>

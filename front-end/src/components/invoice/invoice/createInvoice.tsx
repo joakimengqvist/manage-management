@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Checkbox, Col, Row, Table, Typography } from 'antd';
-import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../interfaces/state';
 import { createInvoice } from '../../../api/invoices/invoice/create';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { InvoiceItem } from '../../../interfaces/invoice';
 import { statusOptions } from './options';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
+import { getInvoiceItemsByIds } from '../../../api/invoices/invoiceItem/getAllByIds';
+import { useGetExternalCompanies, useGetInvoiceItems, useGetLoggedInUserId, useGetProducts, useGetProjects } from '../../../hooks';
+import { useGetSubProjects } from '../../../hooks/useGetSubProjects';
 
 const { Text, Title } = Typography;
 const { TextArea } = Input;
@@ -48,12 +49,12 @@ const invoiceItemsColumns = [
 
 const CreateInvoice = () => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
-    const allSubProjects = useSelector((state: State) => state.application.subProjects);
-    const products = useSelector((state: State) => state.application.products);
-    const externalCompanies = useSelector((state: State) => state.application.externalCompanies);
-    const allInvoiceItems = useSelector((state: State) => state.application.invoiceItems);
+    const loggedInUserId = useGetLoggedInUserId();
+    const projects = useGetProjects();
+    const subProjects = useGetSubProjects();
+    const products = useGetProducts();
+    const externalCompanies = useGetExternalCompanies();
+    const allInvoiceItems = useGetInvoiceItems();
 
     const [companyId, setCompanyId] = useState('');
     const [projectId, setProjectId] = useState('');
@@ -70,7 +71,7 @@ const CreateInvoice = () => {
     const [paymentDate, setPaymentDate] = useState('');
     const [subProjectOptions, setSubProjectOptions] = useState<any>([]);
 
-    const getProductName = (id : string) => products.find(project => project.id === id)?.name;
+    const getProductName = (id : string) => products?.[id]?.name;
 
     const onChangeInvoiceDate = (value : any) => {
         if (value) {
@@ -94,10 +95,17 @@ const CreateInvoice = () => {
     const onChangeProject = (value: string) => {
         setProjectId(value)
 
-        const subProjects = allProjects.find(project => project.id === value)?.sub_projects || [];
+        let subProjectsInProject: Array<string> = [];
+        Object.keys(projects).forEach(projectId => {
+            if (projects[projectId].id === value) {
+                subProjectsInProject = projects[projectId].sub_projects;
+            }
+        })
+
         const subProjectOptionsArray : Array<any> = [];
-        allSubProjects.forEach((subProject : any) => {
-            if (subProjects.includes(subProject.id)) {
+
+        subProjects.forEach((subProject : any) => {
+            if (subProjectsInProject.includes(subProject.id)) {
                 subProjectOptionsArray.push({
                     label: subProject.name,
                     value: subProject.id
@@ -112,21 +120,39 @@ const CreateInvoice = () => {
 
     const onChangeInvoiceItems = (value : Array<never>) => {
         setInvoiceItems(value)
-        const items = value.map((item : any) => allInvoiceItems.find(invoiceItem => invoiceItem.id === item));
-        const selectedItems = items.map((item : any) => {      
-            return {
-                product_name: getProductName(item.product_id),
-                quantity: item.quantity,
-                discount: `${item.discount_percentage}%`,
-                actual_price: item.actual_price,
-                actual_tax: item.actual_tax,
-                operations: (
-                    <Space direction="horizontal">
-                        <CloseCircleOutlined style={{ color: 'red' }} onClick={() => onRemoveInvoiceItem(item.id)} />
-                    </Space>)
+        getInvoiceItemsByIds(loggedInUserId, value).then((response : any) => {
+            if (response?.error) {
+                api.error({
+                    message: `Create external company failed`,
+                    description: response.message,
+                    placement: 'bottom',
+                    duration: 1.4
+                });
+                return;
             }
+
+            const selectedItems = response.data.map((item : any) => {      
+                return {
+                    product_name: getProductName(item.product_id),
+                    quantity: item.quantity,
+                    discount: `${item.discount_percentage}%`,
+                    actual_price: item.actual_price,
+                    actual_tax: item.actual_tax,
+                    operations: (
+                        <Space direction="horizontal">
+                            <CloseCircleOutlined style={{ color: 'red' }} onClick={() => onRemoveInvoiceItem(item.id)} />
+                        </Space>)
+                }})
+                setSelectedInvoiceItemsDetails(selectedItems);
+            }
+        ).catch((error : any) => {
+            api.error({
+                message: `Create external company failed`,
+                description: error.message,
+                placement: 'bottom',
+                duration: 1.4
+            });
         })
-        setSelectedInvoiceItemsDetails(selectedItems);
     };
 
     // Buggy - has to be fixed
@@ -164,7 +190,7 @@ const CreateInvoice = () => {
             false, // paid
             status,
             paymentDate,
-            userId,
+            loggedInUserId,
         ).then(response => {
             if (response?.error || !response?.data) {
                 api.error({
@@ -191,22 +217,21 @@ const CreateInvoice = () => {
         })
     };
 
-    const vendorOptions = externalCompanies.map(company => ({
-        value: company.id,
-        label: company.company_name
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
+
+    const vendorOptions = Object.keys(externalCompanies).map(companyId => ({
+        value: externalCompanies[companyId].id,
+        label: externalCompanies[companyId].company_name
     }))
 
-    const inviceItemsOptions = allInvoiceItems.map(invoiceItem => {
-        return { label: getProductName(invoiceItem.product_id), value: invoiceItem.id}
-      }
-    );
 
-    console.log('inviceItemsOptions', inviceItemsOptions);
-
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
+    const inviceItemsOptions = Object.keys(allInvoiceItems).map(invoiceItemId => ({
+        label: getProductName(allInvoiceItems[invoiceItemId].product_id), 
+        value: allInvoiceItems[invoiceItemId].id
+    }));
 
   return (
         <Card style={{maxWidth: '1600px'}}>

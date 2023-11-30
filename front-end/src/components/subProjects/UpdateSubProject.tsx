@@ -2,8 +2,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, DatePicker, Popconfirm, Row, Typography } from 'antd';
 import { Input, Space, notification, Select } from 'antd';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { subProjectStatusOptions } from '../economics/options';
 import { updateSubProject } from '../../api/subProjects/update';
 import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -11,14 +9,14 @@ import { SubProject } from '../../interfaces/subProject';
 import { deleteSubProject } from '../../api/subProjects/delete';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { useGetLoggedInUser } from '../../hooks';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 const UpdateSubProject = ({ subProject, setEditing } : { subProject : SubProject, setEditing : (edit :boolean) => void}) => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
+    const loggedInUser = useGetLoggedInUser();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('');
@@ -57,7 +55,7 @@ const UpdateSubProject = ({ subProject, setEditing } : { subProject : SubProject
 
     const onSubmit = () => {
         updateSubProject(
-            userId, 
+            loggedInUser.id, 
             subProject.id,
             name, 
             status, 
@@ -93,7 +91,7 @@ const UpdateSubProject = ({ subProject, setEditing } : { subProject : SubProject
     }
 
     const onClickdeleteProject = async () => {
-        await deleteSubProject(userId, subProject.id)
+        await deleteSubProject(loggedInUser.id, subProject.id)
           .then(response => {
             if (response?.error) {
               api.error({
@@ -128,7 +126,7 @@ const UpdateSubProject = ({ subProject, setEditing } : { subProject : SubProject
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <Title level={4}>Sub project</Title>
                     <div style={{display: 'flex', gap: '8px'}}>
-                    {hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) && (
+                    {hasPrivilege(loggedInUser.privileges, PRIVILEGES.project_sudo) && (
                   <Popconfirm
                       placement="top"
                       title="Are you sure?"

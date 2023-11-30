@@ -593,3 +593,58 @@ func (app *Config) GetInvoiceItemById(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
+
+func (app *Config) GetAllInvoiceItemsByIds(w http.ResponseWriter, r *http.Request) {
+	var requestPayload IDSpayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-all-invoice-items-by-ids", bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch invoice items"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - get invoice items by ids"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling invoice service - get invoice items by ids"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}

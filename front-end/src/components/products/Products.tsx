@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useSelector } from 'react-redux';
-import { Table, Button, Popconfirm, Typography } from 'antd';
-import { State } from '../../interfaces/state';
+import { Table, Button, Popconfirm, Typography, notification } from 'antd';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { Product } from '../../interfaces/product';
+import { useEffect, useState } from 'react';
+import { getAllProducts } from '../../api';
+import { useGetLoggedInUser } from '../../hooks';
 
 const { Link } = Typography;
 
@@ -43,8 +44,24 @@ const columns = [
 ]
 
 const Products = () => {
-    const products = useSelector((state : State) => state.application.products);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
+    const [api, contextHolder] = notification.useNotification();
+    const loggedInUser = useGetLoggedInUser();
+    const [products, setProducts] = useState<Array<Product>>([]);
+
+    useEffect(() => {
+        getAllProducts(loggedInUser.id).then(response => {
+            if (response?.error) {
+                api.error({
+                    message: `Error fetching privileges`,
+                    description: response.message,
+                    placement: 'bottom',
+                    duration: 1.4
+                  });
+                  return
+              }
+              setProducts(response.data)
+        })
+    }, [api, loggedInUser.id])
 
     const productsData: Array<any> = products.map((product : Product) => {
         return {                    
@@ -56,7 +73,7 @@ const Products = () => {
             operations: (
                 <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Link style={{padding: '5px'}} href={ `/product/${product.id}`}><ZoomInOutlined /></Link>
-                    {hasPrivilege(userPrivileges, PRIVILEGES.product_sudo) &&
+                    {hasPrivilege(loggedInUser.privileges, PRIVILEGES.product_sudo) &&
                         <Popconfirm
                             placement="top"
                             title="Are you sure?"
@@ -74,7 +91,7 @@ const Products = () => {
         }
     });
 
-    return  <><Table size="small" bordered columns={columns} dataSource={productsData} /></>
+    return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={productsData} /></>
 }
 
 export default Products;

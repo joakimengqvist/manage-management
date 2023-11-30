@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Col, Row, Typography } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../interfaces/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { createExpense } from '../../../api/economics/expenses/create';
 import { paymentMethodOptions, IncomeAndExpenseStatusOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseCategoryOptions } from '../options';
+import { useGetExternalCompanies, useGetLoggedInUserId, useGetProjects } from '../../../hooks';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -16,9 +16,9 @@ const numberPattern = /^[0-9]+$/;
 const CreateProjectExpense = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
-    const externalCompanies = useSelector((state: State) => state.application.externalCompanies);
+    const projects = useGetProjects();
+    const externalCompanies = useGetExternalCompanies();
+    const loggedInUserId = useGetLoggedInUserId();
     const [project, setProject] = useState('');
     const [expenseDate, setExpenseDate] = useState('');
     const [expenseCategory, setExpenseCategory] = useState('');
@@ -30,10 +30,15 @@ const CreateProjectExpense = () => {
     const [currency, setCurrency] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
 
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id }
-      }
-    );
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
+
+    const vendorOptions = Object.keys(externalCompanies).map(companyId => ({
+        value: externalCompanies[companyId].id,
+        label: externalCompanies[companyId].company_name
+    }))
 
     const onChangeExpenseDate = (value : any) => {
         if (value) {
@@ -72,7 +77,7 @@ const CreateProjectExpense = () => {
             expenseStatus,
             currency,
             paymentMethod,
-            userId,
+            loggedInUserId,
         ).then(response => {
             if (response?.error) {
                 api.error({
@@ -103,11 +108,6 @@ const CreateProjectExpense = () => {
             });
         })
     };
-
-    const vendorOptions = externalCompanies.map(company => ({
-        value: company.id,
-        label: company.company_name
-    }))
 
   return (
         <Card style={{maxWidth: '600px'}}>

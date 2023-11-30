@@ -2,13 +2,12 @@
 
 import { Typography, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../../interfaces/state';
 import { ZoomInOutlined } from '@ant-design/icons';
 import { getAllInvoices } from '../../../api/invoices/invoice/getAll';
 import { Invoice } from '../../../interfaces/invoice';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 import InvoiceStatus from '../../status/InvoiceStatus';
+import { useGetExternalCompanies, useGetLoggedInUserId } from '../../../hooks';
 
 const { Text, Link } = Typography;
 
@@ -56,11 +55,11 @@ const invoicesColumns = [
   ];
 
 const Invoices = () => {
-    const loggedInUserId = useSelector((state : State) => state.user.id);
-    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
+    const loggedInUserId = useGetLoggedInUserId();
+    const externalCompanies = useGetExternalCompanies();
     const [invoices, setInvoices] = useState<Array<Invoice>>([]);
 
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name || 'Unknown';
+    const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
 
     useEffect(() => {
         if (loggedInUserId) {

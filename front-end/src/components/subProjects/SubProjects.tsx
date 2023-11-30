@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Table, Button, Popconfirm, notification, Modal, Select, Typography, Col, Row, Card } from 'antd';
-import { State } from '../../interfaces/state';
 import { popProject } from '../../redux/applicationDataSlice';
 import { 
     QuestionCircleOutlined, 
@@ -19,6 +18,8 @@ import { useEffect, useState } from 'react';
 import { addProjectsSubProjectConnection } from '../../api/subProjects/specialActions/addProjectsSubProjectConnection';
 import { removeProjectsSubProjectConnection } from '../../api/subProjects/specialActions/removeProjectsSubProjectConnection';
 import SubProjectStatus from '../status/SubProjectStatus';
+import { useGetLoggedInUser, useGetProjects } from '../../hooks';
+import { useGetSubProjects } from '../../hooks/useGetSubProjects';
 
 const { Text, Link } = Typography;
 
@@ -58,10 +59,9 @@ const columns = [
 const SubProjects = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
-    const projects = useSelector((state : State) => state.application.projects);
-    const subProjects = useSelector((state : State) => state.application.subProjects);
+    const loggedInUser = useGetLoggedInUser();
+    const projects = useGetProjects();
+    const subProjects = useGetSubProjects();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalLoading, setIsModalLoading] = useState(false);
@@ -86,7 +86,7 @@ const SubProjects = () => {
     }, [modalSelectedSubProjectId]);
 
     const getSubProjectName = (id : string) => subProjects.find(subProject => subProject.id === id)?.name;
-    const getProjectName = (id : string) => projects.find(project => project.id === id)?.name;
+    const getProjectName = (id : string) => projects?.[id]?.name; 
 
     const onHandleModalSelectAddProjectIds = (value : any) => setModalAddSelectedProjects(value);
     const onHandleModalSelectRemoveProjectIds = (value : any) => setModalRemoveSelectedProjects(value);
@@ -98,7 +98,7 @@ const SubProjects = () => {
 
     const onModalAddProjects = () => {
         setIsModalLoading(true);
-        addProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalSelectedAddProjects).then(response => {
+        addProjectsSubProjectConnection(loggedInUser.id, modalSelectedSubProjectId, modalSelectedAddProjects).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error adding project to sub project`,
@@ -128,7 +128,7 @@ const SubProjects = () => {
 
     const onModalRemoveProjects = () => {
         setIsModalLoading(true);
-        removeProjectsSubProjectConnection(userId, modalSelectedSubProjectId, modalRemoveSelectedProjects).then(response => {
+        removeProjectsSubProjectConnection(loggedInUser.id, modalSelectedSubProjectId, modalRemoveSelectedProjects).then(response => {
             if (response?.error) {
                 api.error({
                     message: `Error removing project from sub project`,
@@ -157,7 +157,7 @@ const SubProjects = () => {
     }
 
     const onClickdeleteProject = async (id : string) => {
-        await deleteSubProject(userId, id)
+        await deleteSubProject(loggedInUser.id, id)
             .then(response => {
                 if (response?.error) {
                     api.error({
@@ -185,10 +185,10 @@ const SubProjects = () => {
             })
     };
 
-    const projectOptions = projects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
 
 
     const modalSelectedSubProject = subProjects.find(project => project.id === modalSelectedSubProjectId);
@@ -206,7 +206,7 @@ const SubProjects = () => {
                 <div  style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Button style={{ padding: '4px' }}  type="link" onClick={() => openModal(subProject.id)}><SettingOutlined /></Button>
                     <Link style={{padding:'5px'}} href={`/sub-project/${subProject.id}`}><ZoomInOutlined /></Link>
-                    {hasPrivilege(userPrivileges, PRIVILEGES.sub_project_sudo) &&
+                    {hasPrivilege(loggedInUser.privileges, PRIVILEGES.sub_project_sudo) &&
                     <Popconfirm
                         placement="top"
                         title="Are you sure?"

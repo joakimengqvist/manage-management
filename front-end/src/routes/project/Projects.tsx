@@ -1,14 +1,13 @@
 import Projects from '../../components/projects/Projects';
 import { Row, Col, Button } from 'antd';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { useNavigate } from 'react-router-dom';
+import { useGetLoggedInUserPrivileges } from '../../hooks/useGetLoggedInUserPrivileges';
 
 const ProjectDetails = () => {
     const navigate = useNavigate();
-    const userPrivileges = useSelector((state : State) => state.user.privileges)
+    const userPrivileges = useGetLoggedInUserPrivileges();
     return (
         <Row>
             <Col span={24}>

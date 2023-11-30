@@ -1,12 +1,11 @@
 import Privilege from '../../components/privileges/Privilege';
 import { Row, Col } from 'antd';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { useGetLoggedInUserPrivileges } from '../../hooks/useGetLoggedInUserPrivileges';
 
 const PrivilegeDetails = () => {
-    const userPrivileges = useSelector((state : State) => state.user.privileges)
+    const userPrivileges = useGetLoggedInUserPrivileges();
     return (
         <Row>
             <Col span={8}>

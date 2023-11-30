@@ -10,9 +10,7 @@ import { DeleteOutlined, EditOutlined, SendOutlined, CloseCircleOutlined } from 
 import { deleteExternalCompanyNote } from "../../api/notes/externalCompany/delete";
 import { formatDateTimeToYYYYMMDDHHMM } from "../../helpers/stringDateFormatting";
 import { useEffect, useState } from "react";
-import { State } from "../../interfaces/state";
 import { updateExpenseNote } from "../../api/notes/expense/update";
-import { useSelector } from "react-redux";
 import { updateIncomeNote } from "../../api/notes/income/update";
 import { updateProjectNote } from "../../api/notes/project/update";
 import { updateExternalCompanyNote } from "../../api/notes/externalCompany/update";
@@ -21,6 +19,7 @@ import { PRIVILEGES } from "../../enums/privileges";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { deleteSubProjectNote } from "../../api/notes/subProject/delete";
 import { updateSubProjectNote } from "../../api/notes/subProject/update";
+import { useGetLoggedInUser } from "../../hooks";
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -35,8 +34,7 @@ interface NoteProps {
 const Note = (props: NoteProps) => {
   const { type, generalized, userId, note } =  props;
   const [api, contextHolder] = notification.useNotification();
-  const user = useSelector((state : State) => state.user);
-  const userPrivileges = useSelector((state : State) => state.user.privileges);
+  const loggedInUser = useGetLoggedInUser();
 
   const [noteTitle, setNoteTitle] = useState('');
   const [noteBody, setNoteBody] = useState('');
@@ -121,9 +119,9 @@ const Note = (props: NoteProps) => {
 
     const onSaveUpdateNote = () => {
       const noteAuthor = {
-        id: user.id,
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email
+        id: loggedInUser.id,
+        name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+        email: loggedInUser.email
       }
       if (type === NOTE_TYPE.expense) {
         if (!note.expense) return;
@@ -194,7 +192,7 @@ const Note = (props: NoteProps) => {
           {editing && (
             <Button type="link" onClick={onSaveUpdateNote}style={{padding: '0px 4px 0px 0px'}}><SendOutlined /></Button>
           )}
-          {!editing && hasPrivilege(userPrivileges, PRIVILEGES.note_sudo) && (
+          {!editing && hasPrivilege(loggedInUser.privileges, PRIVILEGES.note_sudo) && (
             <Popconfirm
                 placement="top"
                 title="Are you sure?"

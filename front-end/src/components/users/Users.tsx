@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteUser } from '../../api/users/delete';
 import { Table, Button, Popconfirm, notification, Typography } from 'antd';
-import { State } from '../../interfaces/state';
-import { fetchUsers, popUser } from '../../redux/applicationDataSlice';
+import { popUser } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from '@ant-design/icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getAllUsers } from '../../api/users/getAll';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { User } from '../../interfaces/user';
+import { useGetLoggedInUser } from '../../hooks';
+import LargeLoader from '../loader/LargeLoader';
 
 const { Link } = Typography;
 
@@ -39,19 +40,41 @@ const columns = [
 const Users = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const users = useSelector((state : State) => state.application.users);
-    const loggedInUserId = useSelector((state : State) => state.user.id);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
+    const loggedInUser = useGetLoggedInUser();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [users, setUsers] = useState<Array<User>>([]);
 
     useEffect(() => {
-        if (loggedInUserId) {
-            getAllUsers(loggedInUserId).then(response => dispatch(fetchUsers(response.data))).catch(() => {});
-    }
+        if (loggedInUser.id) {
+            setLoading(true)
+            getAllUsers(loggedInUser.id).then(response => {
+                if (response?.error) {
+                    api.error({
+                        message: `Fetching users failed`,
+                        description: response.message,
+                        placement: 'bottom',
+                        duration: 1.4
+                      });
+                      setLoading(false)
+                      return
+                }
+                setUsers(response.data)
+                setLoading(false)
+            }).catch((error) => {
+                api.error({
+                    message: `Error fetching users`,
+                    description: error.toString(),
+                    placement: 'bottom',
+                    duration: 1.4
+                })
+                setLoading(false)
+            });
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loggedInUserId])
+    }, [loggedInUser.id])
 
     const onClickdeleteUser = async (id : string) => {
-        await deleteUser(loggedInUserId, id)
+        await deleteUser(loggedInUser.id, id)
             .then(response => {
                 if (response?.error) {
                     api.error({
@@ -87,7 +110,7 @@ const Users = () => {
             operations: (
                 <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Link style={{padding: '5px'}} href={ `/user/${user.id}`}><ZoomInOutlined /></Link>
-                    {hasPrivilege(userPrivileges, PRIVILEGES.user_sudo) &&
+                    {hasPrivilege(loggedInUser.privileges, PRIVILEGES.user_sudo) &&
                         <Popconfirm
                             placement="top"
                             title="Are you sure?"
@@ -105,7 +128,11 @@ const Users = () => {
         }
     });
 
-    return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={usersData} /></>
+    return (<>
+        {contextHolder}
+        {loading && <LargeLoader />}
+        {!loading && <Table size="small" bordered columns={columns} dataSource={usersData} />}
+     </>)
 }
 
 export default Users;

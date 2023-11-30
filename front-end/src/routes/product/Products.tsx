@@ -1,13 +1,12 @@
 import { Row, Col } from 'antd';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import CreateProduct from '../../components/products/CreateProduct';
 import Products from '../../components/products/Products';
+import { useGetLoggedInUserPrivileges } from '../../hooks/useGetLoggedInUserPrivileges';
 
 const ProjectDetails = () => {
-    const userPrivileges = useSelector((state : State) => state.user.privileges)
+    const userPrivileges = useGetLoggedInUserPrivileges();
     return (
         <Row>
             <Col span={16}>

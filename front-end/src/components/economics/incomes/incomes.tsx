@@ -2,8 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Typography, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../../interfaces/state';
 // https://charts.ant.design/en/manual/case
 import { Column, Pie } from '@ant-design/plots';
 import { getAllIncomes } from '../../../api/economics/incomes/getAll';
@@ -12,6 +10,7 @@ import { getAllIncomesByProjectId } from '../../../api/economics/incomes/getAllB
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import IncomeStatus from '../../status/IncomeStatus';
 import { IncomeObject } from '../../../interfaces/income';
+import { useGetExternalCompanies, useGetLoggedInUserId } from '../../../hooks';
 
 const { Text, Title, Link } = Typography;
 
@@ -97,12 +96,12 @@ const economicsColumns = [
   ];
 
 const Income = ({ project } : { project: string }) => {
-    const loggedInUserId = useSelector((state : State) => state.user.id);
-    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
+    const loggedInUserId = useGetLoggedInUserId();
+    const externalCompanies = useGetExternalCompanies();
     const [activeTab, setActiveTab] = useState<string>('incomes')
     const [incomes, setIncomes] = useState<Array<any>>([]);
 
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name || 'Unknown';
+    const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
 
     useEffect(() => {
         if (loggedInUserId && project === 'all') {

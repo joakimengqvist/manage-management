@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Checkbox, Col, Row, Typography } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Input, Space, Card, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../interfaces/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { createIncome } from '../../../api/economics/incomes/create';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions } from '../options';
+import { useGetExternalCompanies, useGetLoggedInUserId, useGetProjects } from '../../../hooks';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -16,9 +16,9 @@ const numberPattern = /^[0-9]+$/;
 const CreateProjectIncome = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
-    const externalCompanies = useSelector((state: State) => state.application.externalCompanies);
+    const loggedInUserId = useGetLoggedInUserId();
+    const externalCompanies = useGetExternalCompanies();
+    const projects = useGetProjects();
     const [project, setProject] = useState('');
     const [incomeDate, setIncomeDate] = useState('');
     const [incomeCategory, setIncomeCategory] = useState('');
@@ -30,12 +30,15 @@ const CreateProjectIncome = () => {
     const [incomeStatus, setIncomeStatus] = useState('');
     const [currency, setCurrency] = useState('');
 
+    const projectOptions = Object.keys(projects).map(projectId => ({
+        label: projects?.[projectId]?.name, 
+        value: projects?.[projectId]?.id
+    }));
 
-    
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
+    const vendorOptions = Object.keys(externalCompanies).map(companyId => ({
+        value: externalCompanies[companyId].id,
+        label: externalCompanies[companyId].company_name
+    }))
 
     const onChangeIncomeDate = (value : any) => {
         if (value) {
@@ -73,7 +76,7 @@ const CreateProjectIncome = () => {
             tax,
             incomeStatus,
             currency,
-            userId,
+            loggedInUserId,
         ).then(response => {
             if (response?.error || !response?.data) {
                 api.error({
@@ -104,11 +107,6 @@ const CreateProjectIncome = () => {
             });
         })
     };
-
-    const vendorOptions = externalCompanies.map(company => ({
-        value: company.id,
-        label: company.company_name
-    }))
 
   return (
         <Card style={{maxWidth: '600px'}}>

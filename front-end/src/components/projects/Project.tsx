@@ -3,9 +3,8 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, Input, Typography, notification, Popconfirm, Divider, Select, Col, Row, Table } from 'antd';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { updateProject } from '../../api/projects/update';
-import { State } from '../../interfaces/state';
 import { deleteProject } from '../../api/projects/delete';
 import { popProject } from '../../redux/applicationDataSlice';
 import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from "@ant-design/icons";
@@ -23,7 +22,9 @@ import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting
 import { NOTE_TYPE } from '../../enums/notes';
 import NoteList from '../notes/Notes';
 import ProjectStatus from '../status/ProjectStatus';
-import { ProjectNote } from '../../interfaces';
+import { Project, ProjectNote } from '../../interfaces';
+import { getProjectById } from '../../api';
+import { useGetExternalCompanies, useGetLoggedInUser, useGetProjects, useGetUsers } from '../../hooks';
 
 const { Text, Link } = Typography;
 
@@ -82,15 +83,15 @@ const economicsColumns = [
   },
 ];
 
-const Project = () => {
+const ProjectDetails = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUser = useSelector((state : State) => state.user);
-    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
-    const users = useSelector((state : State) => state.application.users);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
-    const projects = useSelector((state : State) => state.application.projects);
+    const loggedInUser = useGetLoggedInUser();
+    const users = useGetUsers();
+    const projects = useGetProjects();
+    const externalCompanies = useGetExternalCompanies();
+    const [project, setProject]= useState<Project | null>(null);
     const [name, setName] = useState('');
     const [projectStatus, setProjectStatus] = useState('');
     const [noteTitle, setNoteTitle] = useState('');
@@ -104,22 +105,23 @@ const Project = () => {
     const { id } =  useParams();
     const projectId = id || '';
 
-    const project = projects.find((p : any) => p.id === projectId)
-
     useEffect(() => {
-        if (project) {
-          try {
-            setName(project?.name);
-            setProjectStatus(project?.status)
-            } catch (error : any) {
-              api.error({
-                message: `Error fetching privilege`,
-                description: error.toString(),
-                placement: "bottom",
-                duration: 1.4,
-              });
-            }
+      getProjectById(loggedInUser.id, projectId).then(response => {
+        if (response?.error) {
+          api.error({
+            message: `Error fetching project`,
+            description: response.message,
+            placement: "bottom",
+            duration: 1.4,
+          })
         }
+        setName(response.data.name);
+        setProjectStatus(response.data.status)
+        setProject(response.data)
+        }).catch(error => {
+          console.log('error fetching project', error)
+        })
+
         if (projectNotes && projectNotes.length === 0 && loggedInUser?.id) {
           getAllProjectNotesByProjectId(loggedInUser.id, projectId).then(response => {
             if (!response.error && response.data) {
@@ -129,6 +131,7 @@ const Project = () => {
             console.log('error fetching project notes', error)
           })
         }
+
         if (projectExpenses && projectExpenses.length === 0 && loggedInUser?.id) {
           getAllExpensesByProjectId(loggedInUser.id, projectId).then(response => {
             if (!response.error && response.data) {
@@ -138,6 +141,7 @@ const Project = () => {
             console.log('error fetching project notes', error)
           })
         }
+
         if (projectIncomes && projectIncomes.length === 0 && loggedInUser?.id) {
           getAllIncomesByProjectId(loggedInUser.id, projectId).then(response => {
             if (!response.error && response.data) {
@@ -147,6 +151,7 @@ const Project = () => {
             console.log('error fetching project notes', error)
           })
         }
+
       }, [projects, projectId, projectNotes, projectExpenses, projectIncomes]);
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
@@ -245,11 +250,8 @@ const Project = () => {
         })
       }
 
-      const getUserName = (id : string) => {
-        const user = users.find(user => user.id === id);
-        return `${user?.first_name} ${user?.last_name}`;
-    };
-      const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
+      const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
+      const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
 
       const expensesData: Array<any> = projectExpenses.map((expense : ExpenseObject) => {
         return {                    
@@ -308,7 +310,7 @@ const Project = () => {
               )}
           </div>
           <div style={{paddingRight: '24px'}}>
-          {hasPrivilege(userPrivileges, 'user_read') && project && (<>
+          {hasPrivilege(loggedInUser.privileges, 'user_read') && project && (<>
             <Text strong>Created by</Text><br />
             <Link href={`/user/${project.created_by}`}>{getUserName(project.created_by)}</Link><br />
             <Text strong>Created at</Text><br />
@@ -322,7 +324,7 @@ const Project = () => {
           </div>
           <Divider />
           <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px'}}>
-              {editing && hasPrivilege(userPrivileges, PRIVILEGES.project_sudo) && (
+              {editing && hasPrivilege(loggedInUser.privileges, PRIVILEGES.project_sudo) && (
                   <Popconfirm
                       placement="top"
                       title="Are you sure?"
@@ -378,7 +380,7 @@ const Project = () => {
             onClearNoteFields={clearNoteFields}
             onSubmit={onSubmitProjectNote}
           />
-        {hasPrivilege(userPrivileges, 'note_read') && projectNotes && (
+        {hasPrivilege(loggedInUser.privileges, 'note_read') && projectNotes && (
           <NoteList notes={projectNotes} type={NOTE_TYPE.project} userId={loggedInUser.id} />
         )}
         </Card>
@@ -387,4 +389,4 @@ const Project = () => {
       )
 }
 
-export default Project;
+export default ProjectDetails;

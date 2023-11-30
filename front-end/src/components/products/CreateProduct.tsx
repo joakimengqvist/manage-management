@@ -1,25 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, Typography, notification } from 'antd';
-import { State } from '../../interfaces/state';
 import { createProduct } from '../../api/products/create';
+import { useGetLoggedInUserId } from '../../hooks';
 
 const { Title, Text } = Typography;
 
 const CreateUser = () => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
+    const loggedInUserId = useGetLoggedInUserId();
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
-    const [price, setPrice] = useState(0.0);
+    const [price, setPrice] = useState(0.0); 
     const [taxPercentage, setTaxPercentage] = useState(0.0);
 
     const onSubmit = () => {
-        createProduct(userId, name, description, category, price, taxPercentage)
+        createProduct(loggedInUserId, name, description, category, price, taxPercentage)
             .then(response => {
                 if (response?.error) {
                     api.error({

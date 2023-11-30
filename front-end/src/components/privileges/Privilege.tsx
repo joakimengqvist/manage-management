@@ -4,14 +4,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, Space, Input, Typography, notification, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { updatePrivilege } from '../../api/privileges/update';
-import { State } from '../../interfaces/state';
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { deletePrivilege } from '../../api/privileges/delete';
 import { popPrivilege } from '../../redux/applicationDataSlice';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { getPrivilegeById } from '../../api';
+import { useGetLoggedInUser } from '../../hooks';
 
 const { Text, Title } = Typography;
 
@@ -19,9 +20,7 @@ const Privilege = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUserId = useSelector((state : State) => state.user.id);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
-    const privileges = useSelector((state : State) => state.application.privileges);
+    const loggedInUser = useGetLoggedInUser();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [editing, setEditing] = useState(false);
@@ -29,27 +28,26 @@ const Privilege = () => {
     const privilegeId = id || '';
 
     useEffect(() => {
-        const privilege = privileges.find((p : any) => p.id === id);
-        if (privilege) {
-          try {
-            setName(privilege.name);
-            setDescription(privilege.description);
-            } catch (error : any) {
-              api.error({
-                message: `Error fetching privilege`,
-                description: error.toString(),
-                placement: "bottom",
-                duration: 1.4,
-              });
-            }
-        }
-      }, [privileges]);
+        getPrivilegeById(loggedInUser.id, privilegeId).then(response => {
+            if (response?.error) {
+                api.error({
+                    message: `Error fetching privilege`,
+                    description: response.message,
+                    placement: 'bottom',
+                    duration: 1.4
+                  });
+                  return
+              }
+            setName(response.data.name);
+            setDescription(response.data.description);
+        })
+    }, [privilegeId]);
 
     const onHandleNameChange = (event : any) => setName(event.target.value);
     const onHandleDescriptionChange = (event : any) => setDescription(event.target.value);
 
     const onSaveEdittedPrivilege = async () => {
-        await updatePrivilege(loggedInUserId, privilegeId, name, description)
+        await updatePrivilege(loggedInUser.id, privilegeId, name, description)
             .then(response => {
               if (response?.error) {
                 api.error({
@@ -78,7 +76,7 @@ const Privilege = () => {
     };
 
     const onClickdeletePrivilege = async () => {
-        await deletePrivilege(loggedInUserId, privilegeId)
+        await deletePrivilege(loggedInUser.id, privilegeId)
           .then(response => {
             if (response?.error) {
               api.error({
@@ -127,7 +125,7 @@ const Privilege = () => {
                     <Text>{description}</Text>
                 )}
                 <div style={{display: 'flex', justifyContent: editing ? 'space-between' : 'flex-end', paddingTop: '18px'}}>
-                    {editing && hasPrivilege(userPrivileges, PRIVILEGES.privilege_sudo) && (
+                    {editing && hasPrivilege(loggedInUser.privileges, PRIVILEGES.privilege_sudo) && (
                         <Popconfirm
                             placement="top"
                             title="Are you sure?"

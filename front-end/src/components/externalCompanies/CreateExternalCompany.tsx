@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Col, Row, Typography } from 'antd';
-import { useSelector } from 'react-redux';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { State } from '../../interfaces/state';
 import { createExternalCompany } from '../../api/externalCompanies/create';
 import { externalCompanyOptions } from './options';
+import { useGetLoggedInUserId, useGetProjects } from '../../hooks';
 
 const { Title, Text } = Typography;
 
 const CreateProjectExpense = () => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
+    const loggedInUserId = useGetLoggedInUserId();
+    const projects = useGetProjects();
     const [companyName, setCompanyName] = useState('');
     const [companyRegistrationNumber, setCompanyRegistrationNumber] = useState('');
     const [contactPerson, setContactPerson] = useState('');
@@ -33,10 +32,10 @@ const CreateProjectExpense = () => {
     const [invoiceHistory, setInvoiceHistory] = useState<Array<string>>([]);
     const [contractualAgreements, setContractualAgreements] = useState<Array<string>>([]);
 
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
+    const projectOptions = Object.keys(projects).map(projectId => ({
+        label: projects?.[projectId]?.name, 
+        value: projects?.[projectId]?.id
+    }));
 
     const onChangeStatus = (value : any) => setStatus(value);
     const onChangeAssignedProjects = (value: any) => setAssignedProjects(value);
@@ -47,7 +46,7 @@ const CreateProjectExpense = () => {
 
     const onSubmit = () => {
         createExternalCompany(
-            userId,
+            loggedInUserId,
             companyName,
             companyRegistrationNumber,
             contactPerson,

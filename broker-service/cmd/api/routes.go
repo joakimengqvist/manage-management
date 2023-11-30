@@ -129,6 +129,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/invoice/update-invoice-item", app.UpdateInvoiceItem)
 	mux.Post("/invoice/get-invoice-item-by-id", app.GetInvoiceItemById)
 	mux.Post("/invoice/get-all-invoice-items-by-product-id", app.GetAllInvoiceItemsByProductId)
+	mux.Post("/invoice/get-all-invoice-items-by-ids", app.GetAllInvoiceItemsByIds)
 
 	mux.Post("/email/send", app.SendEmail)
 

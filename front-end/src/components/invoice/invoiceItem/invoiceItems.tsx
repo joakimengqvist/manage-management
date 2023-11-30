@@ -2,12 +2,11 @@
 
 import { Typography, Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../../interfaces/state';
 import { ZoomInOutlined } from '@ant-design/icons';
 import { InvoiceItem } from '../../../interfaces/invoice';
 import { getAllInvoiceItems } from '../../../api/invoices/invoiceItem/getAll';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
+import { useGetLoggedInUserId, useGetProducts } from '../../../hooks';
 
 const { Text, Link } = Typography;
 
@@ -45,11 +44,11 @@ const invoiceItemsColumns = [
   ];
 
 const InvoiceItems = () => {
-    const loggedInUserId = useSelector((state : State) => state.user.id);
-    const products = useSelector((state : State) => state.application.products);
+    const loggedInUserId = useGetLoggedInUserId();
+    const products = useGetProducts();
     const [invoiceItems, setInvoiceItems] = useState<Array<InvoiceItem>>([]);
 
-    const getProductName = (id : string) => products.find(product => product.id === id)?.name || 'Unknown';
+    const getProductName = (id : string) => products?.[id]?.name;
 
     useEffect(() => {
         if (loggedInUserId) {

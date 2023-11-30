@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Select } from 'antd';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ExternalCompanies from '../../components/externalCompanies/ExternalCompanies';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
-import { State } from '../../interfaces/state';
+import { useGetProjects } from '../../hooks';
+import { useGetLoggedInUserPrivileges } from '../../hooks/useGetLoggedInUserPrivileges';
 
 const ExternalCompaniesRoute = () => {
     const navigate = useNavigate();
-    const projects = useSelector((state: State) => state.application.projects);
-    const userPrivileges = useSelector((state : State) => state.user.privileges)
+    const projects = useGetProjects();
+    const userPrivileges = useGetLoggedInUserPrivileges();
     const [project, setProject] = useState('all');
 
     if (!projects) {
@@ -21,13 +21,12 @@ const ExternalCompaniesRoute = () => {
     if (!hasPrivilege(userPrivileges, PRIVILEGES.economics_read)) return null;
 
     const projectOptions = [{label: 'All projects', value: 'all'}]
-    projects.forEach(project => {
+    Object.keys(projects).map(projectId => {
         projectOptions.push({
-            value: project.id,
-            label: project.name,
+            value: projects[projectId].id,
+            label: projects[projectId].name,
         })
     });
-    
 
     const onSelectProject = (value: any) => setProject(value);
     

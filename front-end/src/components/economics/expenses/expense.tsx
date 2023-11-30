@@ -3,8 +3,6 @@
 import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../../interfaces/state';
 import { ExpenseNote } from '../../../interfaces/notes';
 import { ExpenseObject } from '../../../interfaces/expense'
 import { getExpenseById } from '../../../api/economics/expenses/getById';
@@ -16,20 +14,21 @@ import { NOTE_TYPE } from '../../../enums/notes';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import UpdateProjectExpense from './updateProjectExpense';
 import ExpenseStatus from '../../status/ExpenseStatus';
+import { useGetExternalCompanies, useGetLoggedInUser, useGetProjects, useGetUsers } from '../../../hooks';
 
 const { Text, Title, Link } = Typography;
 
 const Expense = () => {
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUser = useSelector((state : State) => state.user);
+    const loggedInUser = useGetLoggedInUser();
+    const users = useGetUsers();
+    const externalCompanies = useGetExternalCompanies();
+    const projects = useGetProjects();
     const [expense, setExpense] = useState<null | ExpenseObject>(null);
     const [expenseNotes, setExpenseNotes] = useState<Array<ExpenseNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
     const [editing, setEditing] = useState(false);
-    const users = useSelector((state : State) => state.application.users);
-    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
-    const projects = useSelector((state : State) => state.application.projects);
     const { id } =  useParams(); 
     const expenseId = id || '';
 
@@ -48,19 +47,16 @@ const Expense = () => {
         }
     }, [loggedInUser, expenseId]);
 
-    const getUserName = (id : string) => {
-        const user = users.find(user => user.id === id);
-        return `${user?.first_name} ${user?.last_name}`;
-    };
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
-    const getProjectName = (id : string) => projects.find(project => project.id === id)?.name;
+    const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
+    const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
+    const getProjectName = (id : string) => projects?.[id]?.name;
 
     const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
     const onHandleNoteChange = (event : any) => setNote(event.target.value);
 
     const clearNoteFields = () => {
-    setNoteTitle('');
-    setNote('');
+        setNoteTitle('');
+        setNote('');
     }
 
     const onSubmitExpenseNote = () => {

@@ -3,8 +3,6 @@
 import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button } from 'antd';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { getExternalCompanyById } from '../../api/externalCompanies/getById';
 import { ExternalCompany } from '../../interfaces/externalCompany';
 import { ExternalCompanyNote } from '../../interfaces/notes';
@@ -16,13 +14,14 @@ import { getAllExternalCompanyNotesByExternalCompanyId } from '../../api/notes/e
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import UpdateProjectExpense from './UpdateExternalCompany';
 import { ExternalCompanyStatus } from '../status/ExternalCompanyStatus';
+import { useGetLoggedInUser, useGetUsers } from '../../hooks';
 
 const { Text, Title, Link } = Typography;
 
 const ExternalCompanyDetails = () => {
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUser = useSelector((state : State) => state.user);
-    const users = useSelector((state : State) => state.application.users);
+    const loggedInUser = useGetLoggedInUser();
+    const users = useGetUsers();
     const [externalCompanyNotes, setExternalCompanyNotes] = useState<Array<ExternalCompanyNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
@@ -31,7 +30,7 @@ const ExternalCompanyDetails = () => {
     const { id } =  useParams(); 
     const externalCompanyId = id || '';
 
-    const getUserName = (userId : string) => users.find(user => user.id === userId)?.first_name;
+    const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
 
     useEffect(() => {
         if (loggedInUser.id) {

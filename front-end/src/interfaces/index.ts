@@ -20,6 +20,15 @@ import { Project } from "./project";
 import { SubProject } from "./subProject";
 import { User } from "./user";
 import { State } from "./state";
+import { StatePrivileges } from "./state";
+import { StateInvoiceItems } from "./state";
+import { StateInvoices } from "./state";
+import { StateProducts } from "./state";
+import { StateExternalCompanies } from "./state";
+import { StateSubProjects } from "./state";
+import { StateProjects } from "./state";
+import { StateUsers } from "./state";
+
 
 export type {
     ExpenseObject,
@@ -40,5 +49,13 @@ export type {
     Project,
     SubProject,
     User,
-    State
+    State,
+    StatePrivileges,
+    StateInvoiceItems,
+    StateInvoices,
+    StateProducts,
+    StateExternalCompanies,
+    StateSubProjects,
+    StateProjects,
+    StateUsers,
 }

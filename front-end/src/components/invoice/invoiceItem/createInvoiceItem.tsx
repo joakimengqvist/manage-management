@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
-import { useSelector } from 'react-redux';
+
 import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { State } from '../../../interfaces/state';
 import { createInvoiceItem } from '../../../api/invoices/invoiceItem/create';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
+import { useGetLoggedInUserId, useGetProducts } from '../../../hooks';
 
 const { Title, Text } = Typography;
 
 const CreateInvoiceItem = () => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const products = useSelector((state: State) => state.application.products);
+    const loggedInUserId = useGetLoggedInUserId();
+    const products = useGetProducts();
     const [productId, setProductId] = useState('');
     const [originalPrice, setOriginalPrice] = useState(0.0);
     const [actualPrice, setActualPrice] = useState(0.0);
@@ -41,13 +41,13 @@ const CreateInvoiceItem = () => {
         }
     }, [quantity, selectedProduct, discountPercentage]);
 
-    const productsOptions = products.map(product => {
-        return { label: product.name, value: product.id}
-      }
-    );
+    const productsOptions = Object.keys(products).map(projectId => ({ 
+        label: products[projectId].name, 
+        value: products[projectId].id
+    }));
 
     const onChangeProduct = (value : string) =>  {
-        const product = products.find(product => product.id === value);
+        const product = products[value];
         if (product) {
             setSelectedProduct(product);
             setOriginalPrice(product.price * quantity);
@@ -66,7 +66,7 @@ const CreateInvoiceItem = () => {
             discountPercentage,
             discountAmount,
             quantity, 
-            userId,
+            loggedInUserId,
         ).then(response => {
             if (response?.error || !response?.data) {
                 api.error({

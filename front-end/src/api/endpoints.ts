@@ -126,8 +126,10 @@ export enum ENDPOINTS {
     CreateInvoiceItem = "http://localhost:8080/invoice/create-invoice-item",
     GetInvoiceItemById = "http://localhost:8080/invoice/get-invoice-item-by-id",
     GetAllInvoiceItems = "http://localhost:8080/invoice/get-all-invoice-items",
+    getAllInvoiceItemsByIds = "http://localhost:8080/invoice/get-all-invoice-items-by-ids",
     UpdateInvoiceItem = "http://localhost:8080/invoice/update-invoice-item",
     DeleteInvoiceItem = "http://localhost:8080/invoice/delete-invoice-item",
+    GetAllInvoiceItemsByInvoiceId = "http://localhost:8080/invoice/get-all-invoice-items-by-invoice-id",
 
 
     // EMAIL

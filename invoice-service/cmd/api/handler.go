@@ -15,6 +15,10 @@ type IDpayload struct {
 	ID string `json:"id"`
 }
 
+type IDSpayload struct {
+	IDs []string `json:"ids"`
+}
+
 type PrivilegeCheckPayload struct {
 	UserId string `json:"userId"`
 	Action string `json:"action"`

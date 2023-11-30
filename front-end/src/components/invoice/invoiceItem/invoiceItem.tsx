@@ -1,30 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
-import { useSelector } from 'react-redux';
 import { Space, Card, notification } from 'antd';
-import { State } from '../../../interfaces/state';
 import { getInvoiceItemById } from '../../../api/invoices/invoiceItem/getById';
 import { useParams } from 'react-router-dom';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
+import { useGetLoggedInUserId, useGetProducts, useGetUsers } from '../../../hooks';
 
 const { Title, Text, Link } = Typography;
 
 const InvoiceItem = () => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const products = useSelector((state : State) => state.application.products);
-    const users = useSelector((state : State) => state.application.users);
+    const loggedInUserId = useGetLoggedInUserId();
+    const products = useGetProducts();
+    const users = useGetUsers();
     const [invoiceItem, setInvoiceItem] = useState<any>({});
     const { id } =  useParams(); 
     const invoiceItemId = id || '';
-    
-    const getProductName = (id : string) => products.find(product => product.id === id)?.name || 'Unknown';
-    const getUserName = (userId : string) => users.find(user => user.id === userId)?.first_name || 'Unknown';
+
+    const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
+    const getProductName = (id : string) => products?.[id]?.name;
 
     useEffect(() => {
-        getInvoiceItemById(userId,invoiceItemId).then(response => {
+        getInvoiceItemById(loggedInUserId, invoiceItemId).then(response => {
             if (response?.error || !response?.data) {
                 api.error({
                     message: `Create project invoiceItem failed`,
@@ -44,6 +43,7 @@ const InvoiceItem = () => {
                 duration: 1.4
             });
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
   return (

@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from 'antd';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Invoices from '../../components/invoice/invoice/invoices';
 import { PRIVILEGES } from '../../enums/privileges';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
-import { State } from '../../interfaces/state';
+import { useGetLoggedInUserPrivileges } from '../../hooks/useGetLoggedInUserPrivileges';
 
 const InvoiceDetails = () => {
     const navigate = useNavigate();
-    const userPrivileges = useSelector((state : State) => state.user.privileges)
+    const userPrivileges = useGetLoggedInUserPrivileges();
 
     if (!hasPrivilege(userPrivileges, PRIVILEGES.invoice_read)) return null;
 

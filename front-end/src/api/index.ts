@@ -1,3 +1,5 @@
+import { ENDPOINTS } from "./endpoints";
+
 import { createExpense } from "./economics/expenses/create";
 import { getExpenseById } from "./economics/expenses/getById";
 import { updateExpense } from "./economics/expenses/update";
@@ -102,6 +104,8 @@ import { getUserSettingsByUserId } from "./users/userSettings/GetUserSettingsByU
 import { updateUserSettings } from "./users/userSettings/updateUserSettings";
 
 export {
+    ENDPOINTS,
+    
     createExpense,
     getExpenseById,
     updateExpense,

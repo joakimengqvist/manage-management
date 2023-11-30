@@ -2,17 +2,17 @@
 import { useState } from 'react';
 import { Typography } from 'antd';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createProject } from '../../api/projects/create'
-import { State } from '../../interfaces/state';
 import { appendProject } from '../../redux/applicationDataSlice';
+import { useGetLoggedInUserId } from '../../hooks';
 
 const { Title, Text } = Typography;
 
 const CreateProject = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id)
+    const loggedInUserId = useGetLoggedInUserId();
     const [name, setName] = useState('');
     const [status, setStatus] = useState('')
 
@@ -20,7 +20,7 @@ const CreateProject = () => {
     const onHandleStatusChange = (value : any) => setStatus(value);
 
     const onSubmit = () => {
-        createProject(userId, name, status)
+        createProject(loggedInUserId, name, status)
             .then(response => {
                 if (response?.error) {
                     api.error({

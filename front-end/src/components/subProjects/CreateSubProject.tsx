@@ -2,11 +2,11 @@
 import { useState } from 'react';
 import { Col, DatePicker, Row, Typography } from 'antd';
 import { Button, Input, Space, Card, notification, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createSubProject } from '../../api/subProjects/create';
-import { State } from '../../interfaces/state';
 import { appendProject } from '../../redux/applicationDataSlice';
 import { subProjectStatusOptions } from '../economics/options';
+import { useGetLoggedInUserId } from '../../hooks';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -14,7 +14,7 @@ const { TextArea } = Input;
 const CreateSubProject = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
+    const loggedInUserId = useGetLoggedInUserId();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('');
@@ -41,7 +41,7 @@ const CreateSubProject = () => {
 
     const onSubmit = () => {
         createSubProject(
-            userId, 
+            loggedInUserId, 
             name, 
             status, 
             description, 

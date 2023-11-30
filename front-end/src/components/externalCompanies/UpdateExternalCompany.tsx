@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
-import { useSelector } from 'react-redux';
 import { Button, Input, Space, notification, Select } from 'antd';
-import { State } from '../../interfaces/state';
 import { externalCompanyOptions } from './options';
 import { updateExternalCompany } from '../../api/externalCompanies/update';
 import { ExternalCompany } from '../../interfaces/externalCompany';
+import { useGetLoggedInUserId, useGetProjects } from '../../hooks';
 
 const { Text } = Typography;
 
 const UpdateProjectExpense = ({ externalCompany, setEditing } : { externalCompany : ExternalCompany, setEditing : (open : boolean) => void }) => {
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
+    const loggedInUserId = useGetLoggedInUserId();
+    const projects = useGetProjects();
     const [companyName, setCompanyName] = useState('');
     const [companyRegistrationNumber, setCompanyRegistrationNumber] = useState('');
     const [contactPerson, setContactPerson] = useState('');
@@ -57,10 +56,10 @@ const UpdateProjectExpense = ({ externalCompany, setEditing } : { externalCompan
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
 
     const onChangeStatus = (value : any) => setStatus(value);
     const onChangeAssignedProjects = (value: any) => setAssignedProjects(value);
@@ -71,7 +70,7 @@ const UpdateProjectExpense = ({ externalCompany, setEditing } : { externalCompan
 
     const onSubmit = () => {
         updateExternalCompany(
-            userId,
+            loggedInUserId,
             externalCompany.id,
             companyName,
             companyRegistrationNumber,

@@ -1,13 +1,66 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { ExternalCompany } from "./externalCompany"
-import { Invoice, InvoiceItem } from "./invoice"
-import { Privilege } from "./privilege"
-import { Product } from "./product"
-import { Project } from "./project"
-import { SubProject } from "./subProject"
-import { User } from "./user"
+import { SubProject } from "./subProject";
 
+export interface StatePrivileges {
+    [key: string]: {
+        id: string
+        name: string
+    };
+}
+
+export interface StateUsers {
+    [key: string]: {
+        id: string
+        first_name: string
+        last_name: string
+    };
+}
+
+export interface StateProjects {
+    [key: string]: {
+        id: string
+        name: string
+        sub_projects: Array<string>
+    };
+}
+
+export interface StateSubProjects {
+    [key: string]: {
+        id: string
+        name: string
+        projects: Array<string>
+    };
+}
+
+export interface StateExternalCompanies {
+    [key: string]: {
+        id: string
+        company_name: string
+    };
+}
+
+export interface StateProducts {
+    [key: string]: {
+        id: string
+        name: string
+        price: number
+    };
+}
+
+export interface StateInvoices {
+    [key: string]: {
+        id: string
+        company_id: string
+    }
+}
+
+export interface StateInvoiceItems {
+    [key: string]: {
+        id: string
+        product_id: string
+    }
+}
 export interface State {
     user: {
         id: string,
@@ -23,13 +76,13 @@ export interface State {
         }
     }
     application: {
-        privileges: Array<Privilege>
-        projects: Array<Project>
+        users: StateUsers
+        privileges: StatePrivileges
+        projects: StateProjects
         subProjects: Array<SubProject>
-        users: Array<User>
-        externalCompanies: Array<ExternalCompany>
-        products: Array<Product>
-        invoices: Array<Invoice>
-        invoiceItems: Array<InvoiceItem>
+        externalCompanies: StateExternalCompanies
+        products: StateProducts
+        invoices: StateInvoices
+        invoiceItems: StateInvoiceItems
     }
 }

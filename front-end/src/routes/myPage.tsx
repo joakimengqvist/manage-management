@@ -1,34 +1,39 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../interfaces/state';
+import { useDispatch } from 'react-redux';
 import {CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Typography, Space, Switch, notification, Button, Card } from 'antd';
 import { updateUserSettings } from '../api/users/userSettings/updateUserSettings';
 import { updateDarkTheme, updateCompactUI } from '../redux/userDataSlice';
 import { BlueTag } from '../components/tags/BlueTag';
+import { useGetDarkThemeEnabled, useGetLoggedInUser, useGetCompactUIEnabled } from '../hooks';
 
 const { Text, Title } = Typography
 
 const MyPage = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const user = useSelector((state : State) => state.user);
-    const isDarkTheme = useSelector((state : State) => state.user.settings.dark_theme);
-    const isCompactUI = useSelector((state : State) => state.user.settings.compact_ui);
+    const loggedInUser = useGetLoggedInUser();
+    const darkTheme = useGetDarkThemeEnabled();
+    const compactUi = useGetCompactUIEnabled();
 
-    if (!user) {
+    if (!loggedInUser) {
         return <Title level={1}>Something went wrong with fetching your details</Title>;
     }
 
     const updateDarkThemeToggle = () => {
-        dispatch(updateDarkTheme(!isDarkTheme));
+        dispatch(updateDarkTheme(!darkTheme));
     }
 
     const updateCompactUIToggle = () => {
-        dispatch(updateCompactUI(!isCompactUI));
+        dispatch(updateCompactUI(!compactUi));
     }
 
     const saveCosmeticSettings = () => {
-        updateUserSettings(user.id, user.id, isDarkTheme, isCompactUI).then(() => {
+        updateUserSettings(
+            loggedInUser.id,
+            loggedInUser.id,
+            darkTheme,
+            compactUi
+        ).then(() => {
             api.success({
                 message: 'Cosmetic settings updated',
                 placement: 'bottom',
@@ -50,9 +55,9 @@ const MyPage = () => {
             <div style={{width: '100%', display: 'flex', justifyContent: 'flex-start', gap: '24px', marginBottom: '24px'}}>
             <Card style={{width: 'fit-content', height: 'fit-content', minWidth: '400px'}} title="User details">
             <Title level={5}>Name</Title>
-            <Text>{user.firstName} {user.lastName}</Text>
+            <Text>{loggedInUser.firstName} {loggedInUser.lastName}</Text>
             <Title level={5}>Email</Title>
-            <Text>{user.email}</Text>
+            <Text>{loggedInUser.email}</Text>
             </Card>
             <Card style={{width: 'fit-content', height: 'fit-content',}} title="Cosmetic settings">
                 <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginBottom: '24px', gap: '24px'}}>
@@ -61,7 +66,7 @@ const MyPage = () => {
                         <Switch
                             checkedChildren={<CheckOutlined />}
                             unCheckedChildren={<CloseOutlined />}
-                            checked={isDarkTheme}
+                            checked={darkTheme}
                             onChange={updateDarkThemeToggle}
                         />
                     </Space>
@@ -71,7 +76,7 @@ const MyPage = () => {
                             checkedChildren={<CheckOutlined />}
                             unCheckedChildren={<CloseOutlined />}
                             onChange={updateCompactUIToggle}
-                            checked={isCompactUI}
+                            checked={compactUi}
                         />
                     </Space>
                 </div>
@@ -82,7 +87,7 @@ const MyPage = () => {
             </div>
             <div style={{width: '100%', display: 'flex', justifyContent: 'flex-start', gap: '24px', marginBottom: '24px'}}>
             <Card style={{width: 'fit-content', height: 'fit-content', maxWidth: '800px'}} title="Privileges">
-            <div style={{marginBottom: '8px'}}>{user.privileges.map(privilege => <BlueTag label={privilege}/>)}</div>
+            <div style={{marginBottom: '8px'}}>{loggedInUser.privileges.map(privilege => <BlueTag label={privilege}/>)}</div>
             </Card>
             </div>
         </div>

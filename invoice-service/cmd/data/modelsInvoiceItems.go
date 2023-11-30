@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 )
@@ -215,12 +216,12 @@ func GetAllInvoiceItems() ([]*InvoiceItem, error) {
 	return invoiceItems, nil
 }
 
-func GetAllInvoiceItemsByInvoiceId(invoiceId string) ([]*InvoiceItem, error) {
+func GetAllInvoiceItemsByIds(ids string) ([]*InvoiceItem, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	query := `select
-		id,
+		id, 
 		product_id,
 		quantity,
 		original_price,
@@ -234,11 +235,14 @@ func GetAllInvoiceItemsByInvoiceId(invoiceId string) ([]*InvoiceItem, error) {
 		created_at,
 		updated_by,
 		updated_at
-		from invoice_items where invoice_id = $1`
+        from invoice_items
+        where id = ANY($1)
+		order by created_at asc
+    `
 
-	rows, err := db.QueryContext(ctx, query, invoiceId)
+	rows, err := db.QueryContext(ctx, query, ids)
 	if err != nil {
-		log.Println("Error querying", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -263,7 +267,8 @@ func GetAllInvoiceItemsByInvoiceId(invoiceId string) ([]*InvoiceItem, error) {
 			&invoiceItem.UpdatedAt,
 		)
 		if err != nil {
-			log.Println("Error scanning", err)
+			fmt.Println("Error scanning", err)
+			return nil, err
 		}
 
 		invoiceItems = append(invoiceItems, &invoiceItem)

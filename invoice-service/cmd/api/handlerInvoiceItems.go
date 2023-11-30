@@ -165,6 +165,67 @@ func (app *Config) GetAllInvoiceItems(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+func (app *Config) GetAllInvoiceItemsByIds(w http.ResponseWriter, r *http.Request) {
+
+	var requestPayload IDSpayload
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "invoice_read")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	invoiceItems, err := data.GetAllInvoiceItemsByIds(app.convertToPostgresArray(requestPayload.IDs))
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	var invoiceItemsSlice []data.InvoiceItem
+	for _, invoiceItemsPtr := range invoiceItems {
+		invoiceItem := *invoiceItemsPtr
+
+		returnedSlice := data.InvoiceItem{
+			ID:                 invoiceItem.ID,
+			ProductId:          invoiceItem.ProductId,
+			Quantity:           invoiceItem.Quantity,
+			OriginalPrice:      invoiceItem.OriginalPrice,
+			ActualPrice:        invoiceItem.ActualPrice,
+			DiscountPercentage: invoiceItem.DiscountPercentage,
+			DiscountAmount:     invoiceItem.DiscountAmount,
+			TaxPercentage:      invoiceItem.TaxPercentage,
+			OriginalTax:        invoiceItem.OriginalTax,
+			ActualTax:          invoiceItem.ActualTax,
+			CreatedBy:          invoiceItem.CreatedBy,
+			CreatedAt:          invoiceItem.CreatedAt,
+			UpdatedBy:          invoiceItem.UpdatedBy,
+			UpdatedAt:          invoiceItem.UpdatedAt,
+		}
+
+		invoiceItemsSlice = append(invoiceItemsSlice, returnedSlice)
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Fetched all invoice items by product id",
+		Data:    invoiceItemsSlice,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
 func (app *Config) GetAllInvoiceItemsByProductId(w http.ResponseWriter, r *http.Request) {
 
 	var requestPayload IDpayload

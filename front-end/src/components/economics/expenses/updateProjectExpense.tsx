@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Col, Divider, Row, Typography } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Input, Space, notification, DatePicker, Select } from 'antd';
-import { State } from '../../../interfaces/state';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
 import { ExpenseObject } from '../../../interfaces/expense';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { updateExpense } from '../../../api/economics/expenses/update';
+import { useGetExternalCompanies, useGetLoggedInUserId, useGetProjects } from '../../../hooks';
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -18,9 +18,9 @@ const numberPattern = /^[0-9]+$/;
 const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObject, setEditing : (open : boolean) => void}) => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const allProjects = useSelector((state: State) => state.application.projects);
-    const externalCompanies = useSelector((state: State) => state.application.externalCompanies);
+    const loggedInUserId = useGetLoggedInUserId();
+    const externalCompanies = useGetExternalCompanies();
+    const projects = useGetProjects();
     const [project, setProject] = useState('');
     const [expenseDate, setExpenseDate] = useState('');
     const [expenseCategory, setExpenseCategory] = useState('');
@@ -32,7 +32,7 @@ const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObjec
     const [currency, setCurrency] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
 
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
+    const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
 
     useEffect(() => {
         setProject(expense.project_id); 
@@ -45,12 +45,8 @@ const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObjec
         setExpenseStatus(expense.status.toString());
         setCurrency(expense.currency);
         setPaymentMethod(expense.payment_method);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const projectOptions = allProjects.map(project => {
-        return { label: project.name, value: project.id}
-      }
-    );
 
     const onChangeExpenseDate = (value : any) => {
         if (value) {
@@ -90,7 +86,7 @@ const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObjec
             expenseStatus,
             currency,
             paymentMethod,
-            userId,
+            loggedInUserId,
         ).then(response => {
             if (response?.error || !response?.data) {
                 api.error({
@@ -122,9 +118,14 @@ const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObjec
         })
     };
 
-    const vendorOptions = externalCompanies.map(company => ({
-        value: company.id,
-        label: company.company_name
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
+
+    const vendorOptions = Object.keys(externalCompanies).map(companyId => ({
+        value: externalCompanies[companyId].id,
+        label: externalCompanies[companyId].company_name
     }))
 
   return (<>

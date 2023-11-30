@@ -4,8 +4,6 @@ import * as React from 'react';
 import { useParams } from 'react-router-dom'
 import { Button, Card, Typography, notification, Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../helpers/stringDateFormatting';
 import { SubProject } from '../../interfaces/subProject';
@@ -18,6 +16,7 @@ import { createSubProjectNote } from '../../api/notes/subProject/create';
 import { getAllSubProjectNotesBySubProjectId } from '../../api/notes/subProject/getAllBySubProjectId';
 import SubProjectStatus from '../status/SubProjectStatus';
 import { SubProjectNote } from '../../interfaces';
+import { useGetLoggedInUser, useGetUsers } from '../../hooks';
 
 const { Text, Title, Link } = Typography;
 
@@ -34,9 +33,8 @@ const tabList = [
 
 const Project = () => {
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUser = useSelector((state : State) => state.user);
-    const users = useSelector((state : State) => state.application.users);
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
+    const loggedInUser = useGetLoggedInUser();
+    const users = useGetUsers();
     const [subProject, setSubProject] = useState<SubProject | null>(null);
     const [editing, setEditing] = useState(false);
     const [noteTitle, setNoteTitle] = useState('');
@@ -75,10 +73,7 @@ const Project = () => {
         }
     }, []);
 
-    const getUserName = (id : string) => {
-        const user = users.find(user => user.id === id);
-        return `${user?.first_name} ${user?.last_name}`;
-    };
+    const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
 
     const clearNoteFields = () => {
         setNoteTitle('');
@@ -129,7 +124,7 @@ const Project = () => {
               <SubProjectStatus status={subProject.status} />
           </div>
           <div style={{paddingRight: '24px'}}>
-          {hasPrivilege(userPrivileges, 'user_read') && (<>
+          {hasPrivilege(loggedInUser.privileges, 'user_read') && (<>
             <Text strong>Created by</Text><br />
             <Link href={`/user/${subProject.created_by}`}>{getUserName(subProject.created_by)}</Link><br />
             <Text strong>Created at</Text><br />
@@ -173,7 +168,7 @@ const Project = () => {
             onClearNoteFields={clearNoteFields}
             onSubmit={onSubmitProjectNote}
           />
-        {hasPrivilege(userPrivileges, 'note_read') && subProjectNotes && (
+        {hasPrivilege(loggedInUser.privileges, 'note_read') && subProjectNotes && (
           <NoteList notes={subProjectNotes} type={NOTE_TYPE.sub_project} userId={loggedInUser.id} />
         )}
         </Card>

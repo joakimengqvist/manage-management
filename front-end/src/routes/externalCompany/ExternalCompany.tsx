@@ -1,11 +1,10 @@
-import { useSelector } from "react-redux";
 import ExternalCompanyDetails from "../../components/externalCompanies/ExternalCompany";
 import { PRIVILEGES } from "../../enums/privileges";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
-import { State } from "../../interfaces/state";
+import { useGetLoggedInUserPrivileges } from "../../hooks/useGetLoggedInUserPrivileges";
 
 const ExternalCompanyDetailsPage = () => {
-    const userPrivileges = useSelector((state : State) => state.user.privileges);
+    const userPrivileges = useGetLoggedInUserPrivileges();
 
     if (!hasPrivilege(userPrivileges, PRIVILEGES.external_company_read)) return null;
     

@@ -1,61 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input, Space, Card, Select, Typography, notification } from 'antd';
-import type { SelectProps } from 'antd';
 import { createUser } from '../../api/users/create'
-import { State } from '../../interfaces/state';
 import { appendUser } from '../../redux/applicationDataSlice';
-import { Privilege } from '../../interfaces/privilege';
-import { Project } from '../../interfaces/project';
 import { BlueTags } from '../tags/BlueTags';
 import { PurpleTags } from '../tags/PurpleTags';
+import { useGetLoggedInUserId, useGetPrivileges, useGetProjects } from '../../hooks';
 
 const { Title, Text } = Typography;
 
 const CreateUser = () => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
-    const userId = useSelector((state : State) => state.user.id);
-    const privileges = useSelector((state : State) => state.application.privileges);
-    const projects = useSelector((state : State) => state.application.projects);
+    const loggedInUserId = useGetLoggedInUserId();
+    const projects = useGetProjects();
+    const privileges = useGetPrivileges();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [privilegesOptions, setPrivilegesOptions] = useState<SelectProps['options']>([]);
     const [selectedPrivilegesOptions, setSelectedPrivilegesOptions] = useState<Array<string>>([]);
-    const [projectsOptions, setProjectsOptions] = useState<SelectProps['options']>([]);
     const [selectedProjectsOptions, setSelectedProjectsOptions] = useState<Array<string>>([]);
-
-    useEffect(() => {
-        const optionsPrivileges: SelectProps['options'] = [];
-        privileges.forEach((privilege : Privilege) => {
-            optionsPrivileges.push({
-                label: privilege.name,
-                value: privilege.name,
-                });
-        })
-        setPrivilegesOptions(optionsPrivileges);
-
-        const optionsProjects: SelectProps['options'] = [];
-        projects.forEach((project : Project) => {
-            optionsProjects.push({
-                label: project.name,
-                value: project.id,
-                });
-        })
-        setProjectsOptions(optionsProjects);
-    }, [projects, privileges])
 
     const onHandlePrivilegeChange = (value : any) => setSelectedPrivilegesOptions(value);
     const onHandleProjectsChange = (value : any) => setSelectedProjectsOptions(value);
 
     const onSubmit = () => {
-        createUser(userId, firstName, lastName, email, selectedPrivilegesOptions, selectedProjectsOptions, password)
+        createUser(loggedInUserId, firstName, lastName, email, selectedPrivilegesOptions, selectedProjectsOptions, password)
             .then(response => {
                 if (response?.error) {
                     api.error({
@@ -89,6 +64,16 @@ const CreateUser = () => {
                 });
             })
     }
+
+    const projectOptions = Object.keys(projects).map(projectId => ({ 
+        label: projects[projectId].name, 
+        value: projects[projectId].id
+    }));
+
+    const privilegesOptions = Object.keys(privileges).map(privilegeId => ({ 
+        label: privileges[privilegeId].name, 
+        value: privileges[privilegeId].id
+    }));
 
   return (
         <Card>
@@ -141,7 +126,7 @@ const CreateUser = () => {
                     tagRender={PurpleTags}
                     defaultValue={[]}
                     onChange={onHandleProjectsChange}
-                    options={projectsOptions}
+                    options={projectOptions}
                 />
                 <div style={{display: 'flex', justifyContent: 'space-between', gap: '16px', marginTop: '8px'}}>
                     <Button type="primary" onClick={onSubmit}>Create user</Button>

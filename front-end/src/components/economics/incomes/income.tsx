@@ -3,8 +3,6 @@
 import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../../interfaces/state';
 import { getIncomeById } from '../../../api/economics/incomes/getById';
 import CreateNote from '../../notes/CreateNote';
 import { createIncomeNote } from '../../../api/notes/income/create';
@@ -17,20 +15,21 @@ import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatt
 import UpdateProjectIncome from './updateProjectIncome';
 import IncomeStatus from '../../status/IncomeStatus';
 import { GoldTag } from '../../tags/GoldTag';
+import { useGetExternalCompanies, useGetLoggedInUser, useGetProjects, useGetUsers } from '../../../hooks';
 
 const { Text, Title, Link } = Typography;
 
 const Income = () => {
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUser = useSelector((state : State) => state.user);
+    const loggedInUser = useGetLoggedInUser();
+    const users = useGetUsers();
+    const externalCompanies = useGetExternalCompanies();
+    const projects = useGetProjects();
     const [income, setIncome] = useState<null | IncomeObject>(null);
     const [incomeNotes, setIncomeNotes] = useState<Array<IncomeNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
     const [editing, setEditing] = useState(false);
-    const users = useSelector((state : State) => state.application.users);
-    const projects = useSelector((state : State) => state.application.projects);
-    const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     const { id } =  useParams(); 
     const incomeId = id || '';
 
@@ -49,12 +48,9 @@ const Income = () => {
         }
       }, [loggedInUser, incomeId]);
 
-    const getUserName = (id : string) => {
-        const user = users.find(user => user.id === id);
-        return `${user?.first_name} ${user?.last_name}`;
-    };
-    const getVendorName = (id : string) => externalCompanies.find(company => company.id === id)?.company_name;
-    const getProjectName = (id : string) => projects.find(project => project.id === id)?.name;
+      const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
+      const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
+      const getProjectName = (id : string) => projects?.[id]?.name;
 
       const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
       const onHandleNoteChange = (event : any) => setNote(event.target.value);

@@ -2,12 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Typography, Table, Card } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { ExternalCompanyStatus } from '../status/ExternalCompanyStatus';
 import { getAllExternalCompanies } from '../../api/externalCompanies/getAll';
 import { ExternalCompany } from '../../interfaces/externalCompany';
 import { ZoomInOutlined } from '@ant-design/icons';
+import { useGetLoggedInUserId } from '../../hooks';
 
 const { Text, Link } = Typography;
 
@@ -51,7 +50,7 @@ const economicsColumns = [
   ];
 
 const Expenses = ({ project } : { project: string }) => {
-    const loggedInUserId = useSelector((state : State) => state.user.id);
+    const loggedInUserId = useGetLoggedInUserId();
     const [externalCompanies, setExternalCompanies] = useState<Array<any>>([]);
 
     useEffect(() => {

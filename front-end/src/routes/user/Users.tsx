@@ -1,13 +1,13 @@
 import Users from '../../components/users/Users';
 import CreateUser from '../../components/users/CreateUser';
 import { Row, Col } from 'antd';
-import { useSelector } from 'react-redux';
-import { State } from '../../interfaces/state';
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
+import { useGetLoggedInUserPrivileges } from '../../hooks/useGetLoggedInUserPrivileges';
 
 const UsersDetails = () => {
-    const userPrivileges = useSelector((state : State) => state.user.privileges)
+    const userPrivileges = useGetLoggedInUserPrivileges();
+    console.log('userPrivileges', userPrivileges);
     return (
         <Row>
             <Col span={16}>

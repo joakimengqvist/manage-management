@@ -17,6 +17,8 @@ React app running on Vite
 
 run yarn install in the front-end folder, and then simply run `make start` in project folder.
 
+- if front-end Docs are outdated, or an update is made that affects documentation, to generate new docs -> run:  npx typedoc
+
 ## backend
 
 Go micro services

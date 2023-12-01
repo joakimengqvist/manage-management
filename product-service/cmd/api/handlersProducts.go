@@ -155,25 +155,30 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ProductId
 
 	userId := r.Header.Get("X-User-Id")
+	fmt.Println("userId", userId)
 	authenticated, err := app.CheckPrivilege(w, userId, "product_read")
 	if err != nil {
+		fmt.Println("authenticated call", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		fmt.Println("not authenticated (!) call", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		fmt.Println("readJSON call", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	product, err := data.GetProductById(requestPayload.ID)
 	if err != nil {
+		fmt.Println("product call", err)
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return
 	}

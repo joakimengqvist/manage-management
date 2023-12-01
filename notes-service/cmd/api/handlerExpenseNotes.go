@@ -11,7 +11,7 @@ type NewExpenseNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Expense     string `json:"expense"`
+	ExpenseId   string `json:"expense_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -21,7 +21,7 @@ type UpdateExpenseNotePayload struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Expense     string `json:"expense"`
+	ExpenseId   string `json:"expense_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -55,7 +55,7 @@ func (app *Config) CreateExpenseNote(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
-		Expense:     requestPayload.Expense,
+		ExpenseId:   requestPayload.ExpenseId,
 		Title:       requestPayload.Title,
 		Note:        requestPayload.Note,
 	}
@@ -112,7 +112,7 @@ func (app *Config) GetAllExpenseNotesByUserId(w http.ResponseWriter, r *http.Req
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
 			AuthorEmail: note.AuthorEmail,
-			Expense:     note.Expense,
+			ExpenseId:   note.ExpenseId,
 			Title:       note.Title,
 			Note:        note.Note,
 			CreatedAt:   note.CreatedAt,
@@ -167,7 +167,7 @@ func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
 			AuthorEmail: note.AuthorEmail,
-			Expense:     note.Expense,
+			ExpenseId:   note.ExpenseId,
 			Title:       note.Title,
 			Note:        note.Note,
 			CreatedAt:   note.CreatedAt,
@@ -218,7 +218,7 @@ func (app *Config) GetExpenseNoteById(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    note.AuthorId,
 		AuthorName:  note.AuthorName,
 		AuthorEmail: note.AuthorEmail,
-		Expense:     note.Expense,
+		ExpenseId:   note.ExpenseId,
 		Title:       note.Title,
 		Note:        note.Note,
 		CreatedAt:   note.CreatedAt,
@@ -260,7 +260,7 @@ func (app *Config) UpdateExpenseNote(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
-		Expense:     requestPayload.Expense,
+		ExpenseId:   requestPayload.ExpenseId,
 		Title:       requestPayload.Title,
 		Note:        requestPayload.Note,
 	}

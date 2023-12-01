@@ -172,7 +172,7 @@ export const staticDataSlice = createSlice({
         }
       });
       state.products = stateObject;
-      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, externalCompanies: stateObject }));
+      localStorage.setItem(applicationStateName, JSON.stringify({ ...state, products: stateObject }));
       return state;
     },
 

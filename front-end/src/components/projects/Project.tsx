@@ -11,10 +11,10 @@ import { QuestionCircleOutlined, DeleteOutlined, ZoomInOutlined } from "@ant-des
 import { hasPrivilege } from '../../helpers/hasPrivileges';
 import { PRIVILEGES } from '../../enums/privileges';
 import { createProjectNote } from '../../api/notes/project/create';
-import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectId';
+import { getAllProjectNotesByProjectId } from '../../api/notes/project/getAllByProjectd';
 import { getAllExpensesByProjectId } from '../../api/economics/expenses/getAllByProjectId';
-import { ExpenseObject } from '../../interfaces/expense';
-import { IncomeObject } from '../../interfaces/income';
+import { Expense } from '../../interfaces/expense';
+import { Income } from '../../interfaces/income';
 import * as React from 'react';
 import { getAllIncomesByProjectId } from '../../api/economics/incomes/getAllByProjectId';
 import CreateNote from '../notes/CreateNote';
@@ -98,8 +98,8 @@ const ProjectDetails = () => {
     const [note, setNote] = useState('');
     const [editing, setEditing] = useState(false);
     const [projectNotes, setProjectNotes] = useState<Array<ProjectNote>>([]);
-    const [projectExpenses, setProjectExpenses] = useState<Array<ExpenseObject>>([]);
-    const [projectIncomes, setProjectIncomes] = useState<Array<IncomeObject>>([]);
+    const [projectExpenses, setProjectExpenses] = useState<Array<Expense>>([]);
+    const [projectIncomes, setProjectIncomes] = useState<Array<Income>>([]);
     const [activeTab, setActiveTab] = useState<string>('projectInformation');
     const [activeEconomicTab, setActiveEconomicTab] = useState<string>('expenses');
     const { id } =  useParams();
@@ -253,7 +253,7 @@ const ProjectDetails = () => {
       const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
       const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
 
-      const expensesData: Array<any> = projectExpenses.map((expense : ExpenseObject) => {
+      const expensesData: Array<any> = projectExpenses.map((expense : Expense) => {
         return {                    
             vendor: <Link href={`/external-company/${expense?.vendor}`}>{getVendorName(expense?.vendor)}</Link>,
             description: <Text>{expense?.description}</Text>,
@@ -264,7 +264,7 @@ const ProjectDetails = () => {
           }
       })
 
-      const incomesData: Array<any> = projectIncomes.map((income : IncomeObject) => {
+      const incomesData: Array<any> = projectIncomes.map((income : Income) => {
         return {                    
             vendor:  <Link href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
             description: <Text>{income.description}</Text>,

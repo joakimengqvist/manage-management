@@ -1,10 +1,10 @@
-import { ExpenseObject } from "../../../interfaces";
+import { Expense } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getAllExpenses = async (loggedInUserId : string) : Promise<{
     error: boolean,
     message: string,
-    data: Array<ExpenseObject>
+    data: Array<Expense>
 }> => {
 
     const headers = new Headers();

@@ -9,34 +9,34 @@ import (
 )
 
 type ExternalCompanyNote struct {
-	ID              string    `json:"id"`
-	AuthorId        string    `json:"author_id"`
-	AuthorName      string    `json:"author_name"`
-	AuthorEmail     string    `json:"author_email"`
-	ExternalCompany string    `json:"external_company"`
-	Title           string    `json:"title"`
-	Note            string    `json:"note"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	ID                string    `json:"id"`
+	AuthorId          string    `json:"author_id"`
+	AuthorName        string    `json:"author_name"`
+	AuthorEmail       string    `json:"author_email"`
+	ExternalCompanyId string    `json:"external_company_id"`
+	Title             string    `json:"title"`
+	Note              string    `json:"note"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
 }
 
 type NewExternalCompanyNote struct {
-	AuthorId        string `json:"author_id"`
-	AuthorName      string `json:"author_name"`
-	AuthorEmail     string `json:"author_email"`
-	ExternalComapny string `json:"external_company"`
-	Title           string `json:"title"`
-	Note            string `json:"note"`
+	AuthorId          string `json:"author_id"`
+	AuthorName        string `json:"author_name"`
+	AuthorEmail       string `json:"author_email"`
+	ExternalComapnyId string `json:"external_company_id"`
+	Title             string `json:"title"`
+	Note              string `json:"note"`
 }
 
 type UpdateExternalCompanyNote struct {
-	ID              string `json:"id"`
-	AuthorId        string `json:"author_id"`
-	AuthorName      string `json:"author_name"`
-	AuthorEmail     string `json:"author_email"`
-	ExternalCompany string `json:"external_company"`
-	Title           string `json:"title"`
-	Note            string `json:"note"`
+	ID                string `json:"id"`
+	AuthorId          string `json:"author_id"`
+	AuthorName        string `json:"author_name"`
+	AuthorEmail       string `json:"author_email"`
+	ExternalCompanyId string `json:"external_company_id"`
+	Title             string `json:"title"`
+	Note              string `json:"note"`
 }
 
 func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Request) {

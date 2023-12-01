@@ -44,6 +44,13 @@ import { updateExternalCompanyNote } from "./notes/externalCompany/update";
 import { getAllExternalCompanyNotesByExternalCompanyId } from "./notes/externalCompany/getAllByExternalCompanyId";
 import { getAllExternalCompanyNotesByUserId } from "./notes/externalCompany/getAllByUserId";
 
+import { createProductNote } from "./notes/product/create";
+import { deleteProductNote } from "./notes/product/delete";
+import { getProductNoteById } from "./notes/product/getById";
+import { updateProductNote } from "./notes/product/update";
+import { getAllProductNotesByProductId } from "./notes/product/getAllByProductId";
+import { getAllProductNotesByUserId } from "./notes/product/getAllByUserId";
+
 import { createIncomeNote } from "./notes/income/create";
 import { deleteIncomeNote } from "./notes/income/delete";
 import { getIncomeNoteById } from "./notes/income/getById";
@@ -55,7 +62,7 @@ import { createProjectNote } from "./notes/project/create";
 import { deleteProjectNote } from "./notes/project/delete";
 import { getProjectNoteById } from "./notes/project/getById";
 import { updateProjectNote } from "./notes/project/update";
-import { getAllProjectNotesByProjectId } from "./notes/project/getAllByProjectId";  
+import { getAllProjectNotesByProjectId } from "./notes/project/getAllByProjectd";  
 import { getAllProjectNotesByUserId } from "./notes/project/getAllByUserId";
 
 import { createSubProjectNote } from "./notes/subProject/create";
@@ -64,6 +71,20 @@ import { getSubProjectNoteById } from "./notes/subProject/getById";
 import { updateSubProjectNote } from "./notes/subProject/update";
 import { getAllSubProjectNotesBySubProjectId } from "./notes/subProject/getAllBySubProjectId";
 import { getAllSubProjectNotesByUserId } from "./notes/subProject/getAllByUserId";
+
+import { createInvoiceNote } from "./notes/invoice/create";
+import { deleteInvoiceNote } from "./notes/invoice/delete";
+import { getInvoiceNoteById } from "./notes/invoice/getById";
+import { updateInvoiceNote } from "./notes/invoice/update";
+import { getAllInvoiceNotesByInvoiceId } from "./notes/invoice/getAllByInvoiceId";  
+import { getAllInvoiceNotesByUserId } from "./notes/invoice/getAllByUserId";
+
+import { createInvoiceItemNote } from "./notes/invoiceItem/create";
+import { deleteInvoiceItemNote } from "./notes/invoiceItem/delete";
+import { getInvoiceItemNoteById } from "./notes/invoiceItem/getById";
+import { updateInvoiceItemNote } from "./notes/invoiceItem/update";
+import { getAllInvoiceItemNotesByInvoiceItemId } from "./notes/invoiceItem/getAllByInvoiceItemId";  
+import { getAllInvoiceItemNotesByUserId } from "./notes/invoiceItem/getAllByUserId";
 
 import { createPrivilege } from "./privileges/create";
 import { getPrivilegeById } from "./privileges/getById";
@@ -163,6 +184,13 @@ export {
     updateProjectNote,
     getAllProjectNotesByProjectId,
     getAllProjectNotesByUserId,
+
+    createProductNote,
+    deleteProductNote,
+    getProductNoteById,
+    updateProductNote,
+    getAllProductNotesByProductId,
+    getAllProductNotesByUserId,
     
     createSubProjectNote,
     deleteSubProjectNote,
@@ -170,6 +198,20 @@ export {
     updateSubProjectNote,
     getAllSubProjectNotesBySubProjectId,
     getAllSubProjectNotesByUserId,
+
+    createInvoiceNote,
+    deleteInvoiceNote,
+    getInvoiceNoteById,
+    updateInvoiceNote,
+    getAllInvoiceNotesByInvoiceId,
+    getAllInvoiceNotesByUserId,
+
+    createInvoiceItemNote,
+    deleteInvoiceItemNote,
+    getInvoiceItemNoteById,
+    updateInvoiceItemNote,
+    getAllInvoiceItemNotesByInvoiceItemId,
+    getAllInvoiceItemNotesByUserId,
     
     createPrivilege,
     getPrivilegeById,

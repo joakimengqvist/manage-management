@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "../../endpoints";
-import { ExpenseObject } from "../../../interfaces";
+import { Expense } from "../../../interfaces";
 
 export const updateExpense = async (
     id: string,
@@ -17,7 +17,7 @@ export const updateExpense = async (
 ) : Promise<{
     error: boolean,
     message: string,
-    data: ExpenseObject
+    data: Expense
 }> => {
     const payload = {
         project_id: project_id,

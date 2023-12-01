@@ -1,5 +1,5 @@
-import { ExpenseObject } from "./expense";
-import { IncomeObject } from "./income";
+import { Expense } from "./expense";
+import { Income } from "./income";
 import { ExternalCompany } from "./externalCompany";
 import  { SelectOptions } from "./generics";
 
@@ -10,6 +10,9 @@ import { ExternalCompanyNote } from "./notes";
 import { IncomeNote } from "./notes";
 import { ProjectNote } from "./notes";
 import { SubProjectNote } from "./notes";
+import { ProductNote } from "./notes";
+import { InvoiceNote } from "./notes";
+import { InvoiceItemNote } from "./notes";
 
 import { Invoice } from "./invoice";
 import { InvoiceItem } from "./invoice";
@@ -31,8 +34,8 @@ import { StateUsers } from "./state";
 
 
 export type {
-    ExpenseObject,
-    IncomeObject,
+    Expense,
+    Income,
     ExternalCompany,
     SelectOptions,
     NoteAuthor,
@@ -42,8 +45,11 @@ export type {
     IncomeNote,
     ProjectNote,
     SubProjectNote,
+    ProductNote,
+    InvoiceNote,
     Invoice,
     InvoiceItem,
+    InvoiceItemNote,
     Privilege,
     Product,
     Project,

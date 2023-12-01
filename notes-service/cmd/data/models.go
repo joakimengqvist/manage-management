@@ -20,6 +20,9 @@ func New(dbPool *sql.DB) Models {
 		IncomeNote:          IncomeNote{},
 		ExpenseNote:         ExpenseNote{},
 		ExternalCompanyNote: ExternalCompanyNote{},
+		ProductNote:         ProductNote{},
+		InvoiceNote:         InvoiceNote{},
+		InvoiceItemNote:     InvoiceItemNote{},
 	}
 }
 
@@ -29,6 +32,9 @@ type Models struct {
 	IncomeNote          IncomeNote
 	ExpenseNote         ExpenseNote
 	ExternalCompanyNote ExternalCompanyNote
+	ProductNote         ProductNote
+	InvoiceNote         InvoiceNote
+	InvoiceItemNote     InvoiceItemNote
 }
 
 type ProjectNote struct {
@@ -36,7 +42,7 @@ type ProjectNote struct {
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
 	AuthorEmail string    `json:"author_email"`
-	Project     string    `json:"project"`
+	ProjectId   string    `json:"project_id"`
 	Title       string    `json:"title"`
 	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -44,15 +50,15 @@ type ProjectNote struct {
 }
 
 type SubProjectNote struct {
-	ID          string    `json:"id"`
-	AuthorId    string    `json:"author_id"`
-	AuthorName  string    `json:"author_name"`
-	AuthorEmail string    `json:"author_email"`
-	SubProject  string    `json:"sub_project"`
-	Title       string    `json:"title"`
-	Note        string    `json:"note"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID           string    `json:"id"`
+	AuthorId     string    `json:"author_id"`
+	AuthorName   string    `json:"author_name"`
+	AuthorEmail  string    `json:"author_email"`
+	SubProjectId string    `json:"sub_project_id"`
+	Title        string    `json:"title"`
+	Note         string    `json:"note"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 type IncomeNote struct {
@@ -60,7 +66,7 @@ type IncomeNote struct {
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
 	AuthorEmail string    `json:"author_email"`
-	Income      string    `json:"income"`
+	IncomeId    string    `json:"income_id"`
 	Title       string    `json:"title"`
 	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -72,7 +78,7 @@ type ExpenseNote struct {
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
 	AuthorEmail string    `json:"author_email"`
-	Expense     string    `json:"expense"`
+	ExpenseId   string    `json:"expense_id"`
 	Title       string    `json:"title"`
 	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -80,13 +86,49 @@ type ExpenseNote struct {
 }
 
 type ExternalCompanyNote struct {
-	ID              string    `json:"id"`
-	AuthorId        string    `json:"author_id"`
-	AuthorName      string    `json:"author_name"`
-	AuthorEmail     string    `json:"author_email"`
-	ExternalCompany string    `json:"external_company"`
-	Title           string    `json:"title"`
-	Note            string    `json:"note"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	ID                string    `json:"id"`
+	AuthorId          string    `json:"author_id"`
+	AuthorName        string    `json:"author_name"`
+	AuthorEmail       string    `json:"author_email"`
+	ExternalCompanyId string    `json:"external_company_id"`
+	Title             string    `json:"title"`
+	Note              string    `json:"note"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+}
+
+type ProductNote struct {
+	ID          string    `json:"id"`
+	AuthorId    string    `json:"author_id"`
+	AuthorName  string    `json:"author_name"`
+	AuthorEmail string    `json:"author_email"`
+	ProductId   string    `json:"product_id"`
+	Title       string    `json:"title"`
+	Note        string    `json:"note"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type InvoiceNote struct {
+	ID          string    `json:"id"`
+	AuthorId    string    `json:"author_id"`
+	AuthorName  string    `json:"author_name"`
+	AuthorEmail string    `json:"author_email"`
+	InvoiceId   string    `json:"invoice_id"`
+	Title       string    `json:"title"`
+	Note        string    `json:"note"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type InvoiceItemNote struct {
+	ID            string    `json:"id"`
+	AuthorId      string    `json:"author_id"`
+	AuthorName    string    `json:"author_name"`
+	AuthorEmail   string    `json:"author_email"`
+	InvoiceItemId string    `json:"invoice_item_id"`
+	Title         string    `json:"title"`
+	Note          string    `json:"note"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }

@@ -7,7 +7,7 @@ import { getIncomeById } from '../../../api/economics/incomes/getById';
 import CreateNote from '../../notes/CreateNote';
 import { createIncomeNote } from '../../../api/notes/income/create';
 import { IncomeNote } from '../../../interfaces/notes';
-import { IncomeObject } from '../../../interfaces/income'
+import { Income } from '../../../interfaces/income'
 import Notes from '../../notes/Notes';
 import { NOTE_TYPE } from '../../../enums/notes';
 import { getAllIncomeNotesByIncomeId } from '../../../api/notes/income/getAllByIncomeId';
@@ -19,13 +19,13 @@ import { useGetExternalCompanies, useGetLoggedInUser, useGetProjects, useGetUser
 
 const { Text, Title, Link } = Typography;
 
-const Income = () => {
+const IncomeDetails = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useGetLoggedInUser();
     const users = useGetUsers();
     const externalCompanies = useGetExternalCompanies();
     const projects = useGetProjects();
-    const [income, setIncome] = useState<null | IncomeObject>(null);
+    const [income, setIncome] = useState<null | Income>(null);
     const [incomeNotes, setIncomeNotes] = useState<Array<IncomeNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
@@ -49,8 +49,10 @@ const Income = () => {
       }, [loggedInUser, incomeId]);
 
       const getUserName = (id : string) => `${users?.[id]?.first_name} ${users?.[id]?.last_name}`;
-      const getVendorName = (id : string) => externalCompanies?.[id]?.company_name;
+      const getVendorName = (id : string) => externalCompanies?.[id]?.company_name || 'unknown';
       const getProjectName = (id : string) => projects?.[id]?.name;
+
+      console.log('externalCompanies', externalCompanies);
 
       const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
       const onHandleNoteChange = (event : any) => setNote(event.target.value);
@@ -82,14 +84,22 @@ const Income = () => {
                 });
             })
         }
+
     return (<>
         {income && (
             <Row>
                 {contextHolder}
-                <Col span={16} style={{paddingRight: '24px'}}>
-                        <Card style={{marginBottom: '16px'}}>
+                <Col span={16} style={{paddingRight: '8px'}}>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginBottom: '4px'}}>
+                    {editing ? (
+                        <Button onClick={() => setEditing(false)}>Cancel</Button>
+                    ) : (
+                        <Button onClick={() => setEditing(true)}>Edit income info</Button>
+                    )}    
+                    </div>
+                    <Card style={{marginBottom: '16px'}}>
                         {editing ? (
-                            <UpdateProjectIncome income={income} setEditing={setEditing} />
+                            <UpdateProjectIncome income={income} />
                         ) : (
                         <>
                             <Row>
@@ -100,8 +110,7 @@ const Income = () => {
                                             {income.description}<br />
                                             {formatDateTimeToYYYYMMDDHHMM(income.income_date)}<br />
                                         </div>
-                                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', paddingRight: '20px', gap: '4px'}}>
-                                            <Button onClick={() => setEditing(true)}>Edit income info</Button>
+                                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', paddingRight: '0px', gap: '4px'}}>
                                             {income.statistics_income && <GoldTag label="Statistics income" />}
                                             <Link style={{paddingRight: '4px'}} href={`/invoice/${income.invoice_id}`}>Go to invoice</Link><br/>
                                         </div>
@@ -161,4 +170,4 @@ const Income = () => {
     </>)
 }
 
-export default Income;
+export default IncomeDetails;

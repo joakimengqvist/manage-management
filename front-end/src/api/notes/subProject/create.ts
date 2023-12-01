@@ -3,12 +3,11 @@ import { NoteAuthor } from "../../../interfaces/notes";
 
 /**
  * @param user userId, name and email
- * @param subProject sub project id
  * @param title note title
  * @param note note text
  * @returns Resolved promise returns the created sub project note ID
  */
-export const createSubProjectNote = async (user : NoteAuthor, subProject : string, title : string, note : string) : Promise<{
+export const createSubProjectNote = async (user : NoteAuthor, subProjectId : string, title : string, note : string) : Promise<{
     error: boolean,
     message: string,
     data: string
@@ -17,7 +16,7 @@ export const createSubProjectNote = async (user : NoteAuthor, subProject : strin
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        sub_project: subProject,
+        sub_project_id: subProjectId,
         title: title,
         note: note
     };

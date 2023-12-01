@@ -5,5 +5,5 @@ import { State } from "../interfaces";
 export const useGetLoggedInUserId = () => {
     const userId = useSelector((state : State) => state.user.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return useMemo(() => userId, []);
+    return useMemo(() => userId, [userId]);
 }

@@ -8,22 +8,22 @@ import (
 )
 
 type NewExternalCompanyNote struct {
-	AuthorId        string `json:"author_id"`
-	AuthorName      string `json:"author_name"`
-	AuthorEmail     string `json:"author_email"`
-	ExternalCompany string `json:"external_company"`
-	Title           string `json:"title"`
-	Note            string `json:"note"`
+	AuthorId          string `json:"author_id"`
+	AuthorName        string `json:"author_name"`
+	AuthorEmail       string `json:"author_email"`
+	ExternalCompanyId string `json:"external_company_id"`
+	Title             string `json:"title"`
+	Note              string `json:"note"`
 }
 
 type UpdateExternalCompanyNotePayload struct {
-	ID              string `json:"id"`
-	AuthorId        string `json:"author_id"`
-	AuthorName      string `json:"author_name"`
-	AuthorEmail     string `json:"author_email"`
-	ExternalCompany string `json:"external_company"`
-	Title           string `json:"title"`
-	Note            string `json:"note"`
+	ID                string `json:"id"`
+	AuthorId          string `json:"author_id"`
+	AuthorName        string `json:"author_name"`
+	AuthorEmail       string `json:"author_email"`
+	ExternalCompanyId string `json:"external_company_id"`
+	Title             string `json:"title"`
+	Note              string `json:"note"`
 }
 
 type ReturnedIExternalCompanyNotes struct {
@@ -52,12 +52,12 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	}
 
 	newNote := data.ExternalCompanyNote{
-		AuthorId:        requestPayload.AuthorId,
-		AuthorName:      requestPayload.AuthorName,
-		AuthorEmail:     requestPayload.AuthorEmail,
-		ExternalCompany: requestPayload.ExternalCompany,
-		Title:           requestPayload.Title,
-		Note:            requestPayload.Note,
+		AuthorId:          requestPayload.AuthorId,
+		AuthorName:        requestPayload.AuthorName,
+		AuthorEmail:       requestPayload.AuthorEmail,
+		ExternalCompanyId: requestPayload.ExternalCompanyId,
+		Title:             requestPayload.Title,
+		Note:              requestPayload.Note,
 	}
 
 	noteId, err := app.Models.ExternalCompanyNote.InsertExternalCompanyNote(newNote)
@@ -108,15 +108,15 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 		note := *notePtr
 
 		returnedNote := data.ExternalCompanyNote{
-			ID:              note.ID,
-			AuthorId:        note.AuthorId,
-			AuthorName:      note.AuthorName,
-			AuthorEmail:     note.AuthorEmail,
-			ExternalCompany: note.ExternalCompany,
-			Title:           note.Title,
-			Note:            note.Note,
-			CreatedAt:       note.CreatedAt,
-			UpdatedAt:       note.UpdatedAt,
+			ID:                note.ID,
+			AuthorId:          note.AuthorId,
+			AuthorName:        note.AuthorName,
+			AuthorEmail:       note.AuthorEmail,
+			ExternalCompanyId: note.ExternalCompanyId,
+			Title:             note.Title,
+			Note:              note.Note,
+			CreatedAt:         note.CreatedAt,
+			UpdatedAt:         note.UpdatedAt,
 		}
 
 		noteSlice = append(noteSlice, returnedNote)
@@ -163,15 +163,15 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 		note := *notePtr
 
 		returnedNote := data.ExternalCompanyNote{
-			ID:              note.ID,
-			AuthorId:        note.AuthorId,
-			AuthorName:      note.AuthorName,
-			AuthorEmail:     note.AuthorEmail,
-			ExternalCompany: note.ExternalCompany,
-			Title:           note.Title,
-			Note:            note.Note,
-			CreatedAt:       note.CreatedAt,
-			UpdatedAt:       note.UpdatedAt,
+			ID:                note.ID,
+			AuthorId:          note.AuthorId,
+			AuthorName:        note.AuthorName,
+			AuthorEmail:       note.AuthorEmail,
+			ExternalCompanyId: note.ExternalCompanyId,
+			Title:             note.Title,
+			Note:              note.Note,
+			CreatedAt:         note.CreatedAt,
+			UpdatedAt:         note.UpdatedAt,
 		}
 
 		noteSlice = append(noteSlice, returnedNote)
@@ -214,15 +214,15 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 	}
 
 	returnedNote := data.ExternalCompanyNote{
-		ID:              note.ID,
-		AuthorId:        note.AuthorId,
-		AuthorName:      note.AuthorName,
-		AuthorEmail:     note.AuthorEmail,
-		ExternalCompany: note.ExternalCompany,
-		Title:           note.Title,
-		Note:            note.Note,
-		CreatedAt:       note.CreatedAt,
-		UpdatedAt:       note.UpdatedAt,
+		ID:                note.ID,
+		AuthorId:          note.AuthorId,
+		AuthorName:        note.AuthorName,
+		AuthorEmail:       note.AuthorEmail,
+		ExternalCompanyId: note.ExternalCompanyId,
+		Title:             note.Title,
+		Note:              note.Note,
+		CreatedAt:         note.CreatedAt,
+		UpdatedAt:         note.UpdatedAt,
 	}
 
 	payload := jsonResponse{
@@ -256,13 +256,13 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	}
 
 	returnedNote := data.ExternalCompanyNote{
-		ID:              requestPayload.ID,
-		AuthorId:        requestPayload.AuthorId,
-		AuthorName:      requestPayload.AuthorName,
-		AuthorEmail:     requestPayload.AuthorEmail,
-		ExternalCompany: requestPayload.ExternalCompany,
-		Title:           requestPayload.Title,
-		Note:            requestPayload.Note,
+		ID:                requestPayload.ID,
+		AuthorId:          requestPayload.AuthorId,
+		AuthorName:        requestPayload.AuthorName,
+		AuthorEmail:       requestPayload.AuthorEmail,
+		ExternalCompanyId: requestPayload.ExternalCompanyId,
+		Title:             requestPayload.Title,
+		Note:              requestPayload.Note,
 	}
 
 	err = returnedNote.UpdateExternalCompanyNote()

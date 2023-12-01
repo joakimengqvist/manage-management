@@ -104,7 +104,9 @@ func (u *Project) GetProjectById(id string) (*PostgresProject, error) {
 		&project.Notes,
 		&project.SubProjects,
 		&project.CreatedAt,
+		&project.CreatedBy,
 		&project.UpdatedAt,
+		&project.UpdatedBy,
 	)
 
 	if err != nil {

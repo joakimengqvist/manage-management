@@ -10,7 +10,7 @@ func (n *ExpenseNote) GetExpenseNoteById(id string) (*ExpenseNote, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, author_id, author_name, author_email, expense, title, note, created_at, updated_at from expense_notes where id = $1`
+	query := `select id, author_id, author_name, author_email, expense_id, title, note, created_at, updated_at from expense_notes where id = $1`
 
 	var note ExpenseNote
 	row := db.QueryRowContext(ctx, query, id)
@@ -20,7 +20,7 @@ func (n *ExpenseNote) GetExpenseNoteById(id string) (*ExpenseNote, error) {
 		&note.AuthorId,
 		&note.AuthorName,
 		&note.AuthorEmail,
-		&note.Expense,
+		&note.ExpenseId,
 		&note.Title,
 		&note.Note,
 		&note.CreatedAt,
@@ -38,7 +38,7 @@ func (n *ExpenseNote) GetExpenseNotesByExpenseId(id string) ([]*ExpenseNote, err
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, author_id, author_name, author_email, expense, title, note, created_at, updated_at from expense_notes where expense = $1`
+	query := `select id, author_id, author_name, author_email, expense_id, title, note, created_at, updated_at from expense_notes where expense_id = $1`
 
 	rows, err := db.QueryContext(ctx, query, id)
 	if err != nil {
@@ -55,7 +55,7 @@ func (n *ExpenseNote) GetExpenseNotesByExpenseId(id string) ([]*ExpenseNote, err
 			&note.AuthorId,
 			&note.AuthorName,
 			&note.AuthorEmail,
-			&note.Expense,
+			&note.ExpenseId,
 			&note.Title,
 			&note.Note,
 			&note.CreatedAt,
@@ -77,7 +77,7 @@ func (n *ExpenseNote) GetExpenseNotesByAuthorId(id string) ([]*ExpenseNote, erro
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, author_id, author_name, author_email, expense, title, note, created_at, updated_at from expense_notes where author_id = $1 order by updated_at desc`
+	query := `select id, author_id, author_name, author_email, expense_id, title, note, created_at, updated_at from expense_notes where author_id = $1 order by updated_at desc`
 
 	rows, err := db.QueryContext(ctx, query, id)
 	if err != nil {
@@ -94,7 +94,7 @@ func (n *ExpenseNote) GetExpenseNotesByAuthorId(id string) ([]*ExpenseNote, erro
 			&note.AuthorId,
 			&note.AuthorName,
 			&note.AuthorEmail,
-			&note.Expense,
+			&note.ExpenseId,
 			&note.Title,
 			&note.Note,
 			&note.CreatedAt,
@@ -120,7 +120,7 @@ func (n *ExpenseNote) UpdateExpenseNote() error {
 		author_id = $1,
 		author_name = $2,
 		author_email = $3,
-		expense = $4,
+		expense_id = $4,
 		title = $5,
 		note = $6,
 		updated_at = $7
@@ -131,27 +131,13 @@ func (n *ExpenseNote) UpdateExpenseNote() error {
 		n.AuthorId,
 		n.AuthorName,
 		n.AuthorEmail,
-		n.Expense,
+		n.ExpenseId,
 		n.Title,
 		n.Note,
 		time.Now(),
 		n.ID,
 	)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (n *ExpenseNote) DeleteExpenseNote() error {
-	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-	defer cancel()
-
-	stmt := `delete from expense_notes where id = $1`
-
-	_, err := db.ExecContext(ctx, stmt, n.ID)
 	if err != nil {
 		return err
 	}
@@ -178,14 +164,14 @@ func (u *ExpenseNote) InsertExpenseNote(note ExpenseNote) (string, error) {
 	defer cancel()
 
 	var newID string
-	stmt := `insert into expense_notes (author_id, author_name, author_email, expense, title, note, created_at, updated_at)
+	stmt := `insert into expense_notes (author_id, author_name, author_email, expense_id, title, note, created_at, updated_at)
 		values ($1, $2, $3, $4, $5, $6, $7, $8) returning id`
 
 	err := db.QueryRowContext(ctx, stmt,
 		note.AuthorId,
 		note.AuthorName,
 		note.AuthorEmail,
-		note.Expense,
+		note.ExpenseId,
 		note.Title,
 		note.Note,
 		time.Now(),

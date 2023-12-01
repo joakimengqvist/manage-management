@@ -13,7 +13,7 @@ type NewProjectNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Project     string `json:"project"`
+	ProjectId   string `json:"project_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -23,13 +23,9 @@ type UpdateProjectNotePayload struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Project     string `json:"project"`
+	ProjectId   string `json:"project_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
-}
-
-type IDpayload struct {
-	ID string `json:"id"`
 }
 
 type ReturnedProjectNotes struct {
@@ -39,11 +35,6 @@ type ReturnedProjectNotes struct {
 type UpdateProjectNote struct {
 	NoteId    string `json:"note_id"`
 	ProjectId string `json:"project_id"`
-}
-
-type UpdateUserNotes struct {
-	NoteId string `json:"note_id"`
-	UserId string `json:"user_id"`
 }
 
 type DeleteProjectNoteIdPayload struct {
@@ -77,7 +68,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
-		Project:     requestPayload.Project,
+		ProjectId:   requestPayload.ProjectId,
 		Title:       requestPayload.Title,
 		Note:        requestPayload.Note,
 	}
@@ -89,7 +80,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	updateProject := UpdateProjectNote{
-		ProjectId: requestPayload.Project,
+		ProjectId: requestPayload.ProjectId,
 		NoteId:    noteId,
 	}
 
@@ -174,7 +165,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
 			AuthorEmail: note.AuthorEmail,
-			Project:     note.Project,
+			ProjectId:   note.ProjectId,
 			Title:       note.Title,
 			Note:        note.Note,
 			CreatedAt:   note.CreatedAt,
@@ -230,7 +221,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
 			AuthorEmail: note.AuthorEmail,
-			Project:     note.Project,
+			ProjectId:   note.ProjectId,
 			Title:       note.Title,
 			Note:        note.Note,
 			CreatedAt:   note.CreatedAt,
@@ -281,7 +272,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    note.AuthorId,
 		AuthorName:  note.AuthorName,
 		AuthorEmail: note.AuthorEmail,
-		Project:     note.Project,
+		ProjectId:   note.ProjectId,
 		Title:       note.Title,
 		Note:        note.Note,
 		CreatedAt:   note.CreatedAt,
@@ -324,7 +315,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
-		Project:     requestPayload.Project,
+		ProjectId:   requestPayload.ProjectId,
 		Title:       requestPayload.Title,
 		Note:        requestPayload.Note,
 	}

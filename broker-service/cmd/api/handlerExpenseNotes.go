@@ -13,7 +13,7 @@ type ExpenseNote struct {
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
 	AuthorEmail string    `json:"author_email"`
-	Expense     string    `json:"expense"`
+	ExpenseId   string    `json:"expense_id"`
 	Title       string    `json:"title"`
 	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -24,7 +24,7 @@ type NewExpenseNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Expense     string `json:"expense"`
+	ExpenseId   string `json:"expense_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -34,7 +34,7 @@ type UpdateExpenseNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Expense     string `json:"expense"`
+	Expense_id  string `json:"expense_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }

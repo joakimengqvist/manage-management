@@ -5,11 +5,10 @@ import { ExpenseNote } from "../../../interfaces";
 /**
  * @param noteId note id
  * @param user userId, name and email
- * @param expense expense id
  * @param title note title
  * @param note note text
  */
-export const updateExpenseNote = async (noteId : string, user : NoteAuthor, expense : string, title : string, note : string) : Promise<{
+export const updateExpenseNote = async (noteId : string, user : NoteAuthor, expenseId : string, title : string, note : string) : Promise<{
     error: boolean,
     message: string,
     data: ExpenseNote
@@ -19,7 +18,7 @@ export const updateExpenseNote = async (noteId : string, user : NoteAuthor, expe
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        expense: expense,
+        expense_id: expenseId,
         title: title,
         note: note
     };

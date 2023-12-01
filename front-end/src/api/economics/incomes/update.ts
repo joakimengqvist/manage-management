@@ -1,4 +1,4 @@
-import { IncomeObject } from "../../../interfaces";
+import { Income } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const updateIncome = async (
@@ -17,7 +17,7 @@ export const updateIncome = async (
 ) : Promise<{
     error: boolean,
     message: string,
-    data: IncomeObject
+    data: Income
 }> => {
     const payload = {
         project_id: project_id,

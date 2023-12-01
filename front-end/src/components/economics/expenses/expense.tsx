@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Card, Typography, Row, Col, notification, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { ExpenseNote } from '../../../interfaces/notes';
-import { ExpenseObject } from '../../../interfaces/expense'
+import { Expense } from '../../../interfaces/expense'
 import { getExpenseById } from '../../../api/economics/expenses/getById';
 import { getAllExpenseNotesByExpenseId } from '../../../api/notes/expense/getAllByExpenseId';
 import { createExpenseNote } from '../../../api/notes/expense/create'
@@ -18,13 +18,13 @@ import { useGetExternalCompanies, useGetLoggedInUser, useGetProjects, useGetUser
 
 const { Text, Title, Link } = Typography;
 
-const Expense = () => {
+const ExpenseDetails = () => {
     const [api, contextHolder] = notification.useNotification();
     const loggedInUser = useGetLoggedInUser();
     const users = useGetUsers();
     const externalCompanies = useGetExternalCompanies();
     const projects = useGetProjects();
-    const [expense, setExpense] = useState<null | ExpenseObject>(null);
+    const [expense, setExpense] = useState<null | Expense>(null);
     const [expenseNotes, setExpenseNotes] = useState<Array<ExpenseNote> | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [note, setNote] = useState('');
@@ -164,4 +164,4 @@ const Expense = () => {
 
 }
 
-export default Expense;
+export default ExpenseDetails;

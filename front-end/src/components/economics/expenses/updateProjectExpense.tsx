@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Input, Space, notification, DatePicker, Select } from 'antd';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions, paymentMethodOptions } from '../options';
-import { ExpenseObject } from '../../../interfaces/expense';
+import { Expense } from '../../../interfaces/expense';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { updateExpense } from '../../../api/economics/expenses/update';
 import { useGetExternalCompanies, useGetLoggedInUserId, useGetProjects } from '../../../hooks';
@@ -15,7 +15,7 @@ const { TextArea } = Input;
 
 const numberPattern = /^[0-9]+$/;
 
-const UpdateProjectExpense = ({ expense, setEditing } : { expense : ExpenseObject, setEditing : (open : boolean) => void}) => {
+const UpdateProjectExpense = ({ expense, setEditing } : { expense : Expense, setEditing : (open : boolean) => void}) => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const loggedInUserId = useGetLoggedInUserId();

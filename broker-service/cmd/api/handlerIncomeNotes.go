@@ -13,7 +13,7 @@ type IncomeNote struct {
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
 	AuthorEmail string    `json:"author_email"`
-	Income      string    `json:"income"`
+	IncomeId    string    `json:"income_id"`
 	Title       string    `json:"title"`
 	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -24,7 +24,7 @@ type NewIncomeNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Income      string `json:"income"`
+	IncomeId    string `json:"income_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -34,7 +34,7 @@ type UpdateIncomeNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Income      string `json:"income"`
+	IncomeId    string `json:"income_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }

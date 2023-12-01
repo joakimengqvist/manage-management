@@ -5,5 +5,5 @@ import { State } from "../interfaces";
 export const useGetExternalCompanies = () => {
     const externalCompanies = useSelector((state : State) => state.application.externalCompanies);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return useMemo(() => externalCompanies, []);
+    return useMemo(() => externalCompanies, [externalCompanies]);
 }

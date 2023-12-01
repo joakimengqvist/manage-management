@@ -1,10 +1,10 @@
-import { IncomeObject } from "../../../interfaces";
+import { Income } from "../../../interfaces";
 import { ENDPOINTS } from "../../endpoints";
 
 export const getIncomeById = async (loggedInUserId : string, incomeId : string) : Promise<{
     error: boolean,
     message: string,
-    data: IncomeObject
+    data: Income
 }> => {
     const payload = {
       id: incomeId,

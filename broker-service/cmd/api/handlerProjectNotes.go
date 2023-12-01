@@ -13,7 +13,7 @@ type ProjectNote struct {
 	AuthorId    string    `json:"author_id"`
 	AuthorName  string    `json:"author_name"`
 	AuthorEmail string    `json:"author_email"`
-	Project     string    `json:"project"`
+	ProjectId   string    `json:"project_id"`
 	Title       string    `json:"title"`
 	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -24,7 +24,7 @@ type NewProjectNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Project     string `json:"project"`
+	ProjectId   string `json:"project_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -34,7 +34,7 @@ type UpdateProjectNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Project     string `json:"project"`
+	ProjectId   string `json:"project_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -234,7 +234,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-notes-by-project-id", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-project-notes-by-project-id", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -287,7 +287,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-notes-by-user-id", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-project-notes-by-user-id", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

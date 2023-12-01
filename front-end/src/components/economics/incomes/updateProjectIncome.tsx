@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Input, Space, notification, DatePicker, Select } from 'antd';
 import { appendPrivilege } from '../../../redux/applicationDataSlice';
 import { IncomeAndExpenseCategoryOptions, IncomeAndExpenseCurrencyOptions, IncomeAndExpenseStatusOptions } from '../options';
-import { IncomeObject } from '../../../interfaces/income';
+import { Income } from '../../../interfaces/income';
 import { updateIncome } from '../../../api/economics/incomes/update';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import { useGetExternalCompanies, useGetLoggedInUserId, useGetProjects } from '../../../hooks';
@@ -15,7 +15,7 @@ const { TextArea } = Input;
 
 const numberPattern = /^[0-9]+$/;
 
-const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, setEditing : (open : boolean) => void}) => {
+const UpdateProjectIncome = ({ income } : { income : Income }) => {
     const dispatch = useDispatch();
     const [api, contextHolder] = notification.useNotification();
     const loggedInUserId = useGetLoggedInUserId();
@@ -137,8 +137,7 @@ const UpdateProjectIncome = ({ income, setEditing } : { income : IncomeObject, s
                         {income.description}<br />
                         {formatDateTimeToYYYYMMDDHHMM(income.income_date)}<br />
                     </span>
-                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px'}}>
-                        <Button onClick={() => setEditing(false)}>Cancel</Button>
+                    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                         <Button type="primary" onClick={onSubmit}>Save</Button>
                     </div>
                 </div>

@@ -5,11 +5,10 @@ import { ExternalCompanyNote } from "../../../interfaces";
 /**
  * @param noteId note id
  * @param user userId, name and email
- * @param external_company external company id
  * @param title note title
  * @param note note text
  */
-export const updateExternalCompanyNote = async (noteId : string, user : NoteAuthor, external_company : string, title : string, note : string) : Promise<{
+export const updateExternalCompanyNote = async (noteId : string, user : NoteAuthor, externalCompanyId : string, title : string, note : string) : Promise<{
     error: boolean,
     message: string,
     data: ExternalCompanyNote
@@ -19,7 +18,7 @@ export const updateExternalCompanyNote = async (noteId : string, user : NoteAuth
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        external_company: external_company,
+        external_company_id: externalCompanyId,
         title: title,
         note: note
     };

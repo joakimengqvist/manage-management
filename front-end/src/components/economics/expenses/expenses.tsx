@@ -9,12 +9,12 @@ import { getAllExpenses } from '../../../api/economics/expenses/getAll';
 import { getAllExpensesByProjectId } from '../../../api/economics/expenses/getAllByProjectId';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import ExpenseStatus from '../../status/ExpenseStatus';
-import { ExpenseObject } from '../../../interfaces/expense';
+import { Expense } from '../../../interfaces/expense';
 import { useGetExternalCompanies, useGetLoggedInUserId } from '../../../hooks';
 
 const { Text, Title, Link } = Typography;
 
-const calculateTotalAmountAndTax = (expenses: ExpenseObject[], getVendorName : (id: string) => string | undefined) => {
+const calculateTotalAmountAndTax = (expenses: Expense[], getVendorName : (id: string) => string | undefined) => {
     let totalAmount = 0;
     let totalTax = 0;
     let totalExpenses = 0;
@@ -124,7 +124,7 @@ const Expenses = ({ project } : { project: string }) => {
     const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
     const economicsData: Array<any> = useMemo(() => {
-      const expensesListItem = expenses && expenses.map((expense : ExpenseObject) => {
+      const expensesListItem = expenses && expenses.map((expense : Expense) => {
       return {                    
           vendor: <Link href={`/external-company/${expense.vendor}`}>{getVendorName(expense.vendor)}</Link>,
           description: <Text>{expense.description}</Text>,

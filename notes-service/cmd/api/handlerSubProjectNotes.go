@@ -10,22 +10,22 @@ import (
 )
 
 type NewSubProjectNote struct {
-	AuthorId    string `json:"author_id"`
-	AuthorName  string `json:"author_name"`
-	AuthorEmail string `json:"author_email"`
-	SubProject  string `json:"sub_project"`
-	Title       string `json:"title"`
-	Note        string `json:"note"`
+	AuthorId     string `json:"author_id"`
+	AuthorName   string `json:"author_name"`
+	AuthorEmail  string `json:"author_email"`
+	SubProjectId string `json:"sub_project_id"`
+	Title        string `json:"title"`
+	Note         string `json:"note"`
 }
 
 type UpdateSubProjectNotePayload struct {
-	ID          string `json:"id"`
-	AuthorId    string `json:"author_id"`
-	AuthorName  string `json:"author_name"`
-	AuthorEmail string `json:"author_email"`
-	SubProject  string `json:"sub_project"`
-	Title       string `json:"title"`
-	Note        string `json:"note"`
+	ID           string `json:"id"`
+	AuthorId     string `json:"author_id"`
+	AuthorName   string `json:"author_name"`
+	AuthorEmail  string `json:"author_email"`
+	SubProjectId string `json:"sub_project_id"`
+	Title        string `json:"title"`
+	Note         string `json:"note"`
 }
 
 type ReturnedSubProjectNotes struct {
@@ -65,12 +65,12 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	}
 
 	newNote := data.SubProjectNote{
-		AuthorId:    requestPayload.AuthorId,
-		AuthorName:  requestPayload.AuthorName,
-		AuthorEmail: requestPayload.AuthorEmail,
-		SubProject:  requestPayload.SubProject,
-		Title:       requestPayload.Title,
-		Note:        requestPayload.Note,
+		AuthorId:     requestPayload.AuthorId,
+		AuthorName:   requestPayload.AuthorName,
+		AuthorEmail:  requestPayload.AuthorEmail,
+		SubProjectId: requestPayload.SubProjectId,
+		Title:        requestPayload.Title,
+		Note:         requestPayload.Note,
 	}
 
 	fmt.Println("creating note", err)
@@ -83,7 +83,7 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	}
 
 	updateSubProject := UpdateSubProjectNote{
-		SubProjectId: requestPayload.SubProject,
+		SubProjectId: requestPayload.SubProjectId,
 		NoteId:       noteId,
 	}
 
@@ -162,15 +162,15 @@ func (app *Config) GetAllSubProjectNotesBySubProjectId(w http.ResponseWriter, r 
 		note := *notePtr
 
 		returnedNote := data.SubProjectNote{
-			ID:          note.ID,
-			AuthorId:    note.AuthorId,
-			AuthorName:  note.AuthorName,
-			AuthorEmail: note.AuthorEmail,
-			SubProject:  note.SubProject,
-			Title:       note.Title,
-			Note:        note.Note,
-			CreatedAt:   note.CreatedAt,
-			UpdatedAt:   note.UpdatedAt,
+			ID:           note.ID,
+			AuthorId:     note.AuthorId,
+			AuthorName:   note.AuthorName,
+			AuthorEmail:  note.AuthorEmail,
+			SubProjectId: note.SubProjectId,
+			Title:        note.Title,
+			Note:         note.Note,
+			CreatedAt:    note.CreatedAt,
+			UpdatedAt:    note.UpdatedAt,
 		}
 
 		noteSlice = append(noteSlice, returnedNote)
@@ -218,15 +218,15 @@ func (app *Config) GetAllSubProjectNotesByUserId(w http.ResponseWriter, r *http.
 		note := *notePtr
 
 		returnedNote := data.SubProjectNote{
-			ID:          note.ID,
-			AuthorId:    note.AuthorId,
-			AuthorName:  note.AuthorName,
-			AuthorEmail: note.AuthorEmail,
-			SubProject:  note.SubProject,
-			Title:       note.Title,
-			Note:        note.Note,
-			CreatedAt:   note.CreatedAt,
-			UpdatedAt:   note.UpdatedAt,
+			ID:           note.ID,
+			AuthorId:     note.AuthorId,
+			AuthorName:   note.AuthorName,
+			AuthorEmail:  note.AuthorEmail,
+			SubProjectId: note.SubProjectId,
+			Title:        note.Title,
+			Note:         note.Note,
+			CreatedAt:    note.CreatedAt,
+			UpdatedAt:    note.UpdatedAt,
 		}
 
 		noteSlice = append(noteSlice, returnedNote)
@@ -269,15 +269,15 @@ func (app *Config) GetSubProjectNoteById(w http.ResponseWriter, r *http.Request)
 	}
 
 	returnedNote := data.SubProjectNote{
-		ID:          note.ID,
-		AuthorId:    note.AuthorId,
-		AuthorName:  note.AuthorName,
-		AuthorEmail: note.AuthorEmail,
-		SubProject:  note.SubProject,
-		Title:       note.Title,
-		Note:        note.Note,
-		CreatedAt:   note.CreatedAt,
-		UpdatedAt:   note.UpdatedAt,
+		ID:           note.ID,
+		AuthorId:     note.AuthorId,
+		AuthorName:   note.AuthorName,
+		AuthorEmail:  note.AuthorEmail,
+		SubProjectId: note.SubProjectId,
+		Title:        note.Title,
+		Note:         note.Note,
+		CreatedAt:    note.CreatedAt,
+		UpdatedAt:    note.UpdatedAt,
 	}
 
 	payload := jsonResponse{
@@ -311,13 +311,13 @@ func (app *Config) UpdateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	}
 
 	returnedNote := data.SubProjectNote{
-		ID:          requestPayload.ID,
-		AuthorId:    requestPayload.AuthorId,
-		AuthorName:  requestPayload.AuthorName,
-		AuthorEmail: requestPayload.AuthorEmail,
-		SubProject:  requestPayload.SubProject,
-		Title:       requestPayload.Title,
-		Note:        requestPayload.Note,
+		ID:           requestPayload.ID,
+		AuthorId:     requestPayload.AuthorId,
+		AuthorName:   requestPayload.AuthorName,
+		AuthorEmail:  requestPayload.AuthorEmail,
+		SubProjectId: requestPayload.SubProjectId,
+		Title:        requestPayload.Title,
+		Note:         requestPayload.Note,
 	}
 
 	err = returnedNote.UpdateSubProjectNote()

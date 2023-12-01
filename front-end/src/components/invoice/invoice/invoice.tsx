@@ -10,9 +10,15 @@ import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 import { GoldTag } from '../../tags/GoldTag';
 import { GreenTag } from '../../tags/GreenTag';
 import InvoiceStatus from '../../status/InvoiceStatus';
-import { useGetExternalCompanies, useGetLoggedInUserId, useGetProducts, useGetProjects, useGetUsers } from '../../../hooks';
+import { useGetExternalCompanies, useGetLoggedInUser, useGetProducts, useGetProjects, useGetUsers } from '../../../hooks';
 import { useGetSubProjects } from '../../../hooks/useGetSubProjects';
 import { getInvoiceItemsByIds } from '../../../api/invoices/invoiceItem/getAllByIds';
+import CreateNote from '../../notes/CreateNote';
+import { NOTE_TYPE } from '../../../enums';
+import { InvoiceNote } from '../../../interfaces';
+import { getAllInvoiceNotesByInvoiceId } from '../../../api/notes/invoice/getAllByInvoiceId';
+import Notes from '../../notes/Notes';
+import { createInvoiceNote } from '../../../api/notes/invoice/create';
 // import UpdateInvoice from './updateInvoice';
 
 const { Text, Title, Link } = Typography;
@@ -47,12 +53,15 @@ const invoiceItemsColumns = [
 
 const InvoiceDetails = () => {
     const [api, contextHolder] = notification.useNotification();
-    const loggedInUserId = useGetLoggedInUserId();
+    const loggedInUser = useGetLoggedInUser();
     const users = useGetUsers();
     const projects = useGetProjects();
     const subProjects = useGetSubProjects();
     const products = useGetProducts();
     const externalCompanies = useGetExternalCompanies();
+    const [invoiceNotes, setInvoiceNotes] = useState<Array<InvoiceNote> | null>(null);
+    const [noteTitle, setNoteTitle] = useState('');
+    const [note, setNote] = useState('');
     const [invoice, setInvoice] = useState<null | Invoice>(null);
     const [editing, setEditing] = useState(false);
     const [invoiceItemsTableData, setInvoiceItemsTableData] = useState<any>([]);
@@ -60,18 +69,23 @@ const InvoiceDetails = () => {
     const invoiceId = id || '';
 
     useEffect(() => {
-        if (loggedInUserId) {
-            getInvoiceById(loggedInUserId, invoiceId).then(response => {
+        if (loggedInUser.id) {
+            getInvoiceById(loggedInUser.id, invoiceId).then(response => {
                 setInvoice(response.data)
             }).catch(error => {
                 console.log('error fetching', error)
             })
+            getAllInvoiceNotesByInvoiceId(loggedInUser.id, invoiceId).then(response => {
+                setInvoiceNotes(response.data)
+            }).catch(error => {
+                console.log('error fetching', error)
+            })
         }
-    }, [loggedInUserId]);
+    }, []);
 
     useEffect(() => {
         if (invoice) {
-            getInvoiceItemsByIds(loggedInUserId, invoice.invoice_items).then(response => {
+            getInvoiceItemsByIds(loggedInUser.id, invoice.invoice_items).then(response => {
                 if (response?.error) {
                     api.error({
                         message: 'Error',
@@ -105,12 +119,53 @@ const InvoiceDetails = () => {
 
     const getSubProjectName = (id : string) => subProjects.find(subProject => subProject.id === id)?.name;
 
+    const onHandleNoteTitleChange = (event : any) => setNoteTitle(event.target.value);
+    const onHandleNoteChange = (event : any) => setNote(event.target.value);
+
+    const clearNoteFields = () => {
+        setNoteTitle('');
+        setNote('');
+    }
+
+    const onSubmitInvoiceNote = () => {
+    const user = {
+        id: loggedInUser.id,
+        name: `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+        email: loggedInUser.email
+
+    }
+    createInvoiceNote(user, invoiceId, noteTitle, note).then((response) => {
+        api.info({
+            message: response.message,
+            placement: "bottom",
+            duration: 1.2,
+        });
+        }).catch(error => {
+            api.error({
+                message: `Error creating note`,
+                description: error.toString(),
+                placement: "bottom",
+                duration: 1.4,
+            });
+        })
+    }
+
     return (<>
         {contextHolder}
         {invoice && (
             <Row>
-                <Col span={16} style={{paddingRight: '24px'}}>
-                        <Card style={{marginBottom: '16px'}}>
+                <Col span={16} style={{paddingRight: '8px'}}>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '4px', marginBottom: '4px'}}>
+                        <Button onClick={() => setEditing(!editing)}>
+                            {editing ? 'Cancel editing' : 'Edit invoice info'}
+                        </Button>
+                        {editing && (
+                            <Button type="primary">
+                                Update invoice
+                            </Button>
+                        )}
+                    </div>
+                    <Card style={{marginBottom: '16px'}}>
                         {editing ? (<></>
                         // <UpdateInvoice invoice={invoice} setEditing={setEditing} />
                         ) : (
@@ -125,13 +180,12 @@ const InvoiceDetails = () => {
                                             {invoice.invoice_description}<br />
                                             {formatDateTimeToYYYYMMDDHHMM(invoice.invoice_date)}<br />
                                         </div>
-                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', paddingRight: '20px', gap: '4px'}}>
-                                                <Button onClick={() => setEditing(true)} style={{marginTop: '16px'}}>Edit invoice info</Button>
+                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', gap: '4px'}}>
                                                 <div style={{display: 'flex', justifyContent: 'flex-end', gap: '4px'}}>
                                                     {invoice.paid && <GreenTag label="Paid" />}
                                                     {invoice.statistics_invoice && <GoldTag label="Statistics invoice" />}
                                                 </div>
-                                                <Link href={`/income/${invoice.income_id}`}>Go to income</Link><br/>
+                                                <Link href={`/income/${invoice.income_id}`} style={{marginRight: '8px'}}>Go to income</Link><br/>
                                             </div>
                                     </div>
                                 </Col>
@@ -191,6 +245,21 @@ const InvoiceDetails = () => {
                         </Card>
                 </Col>
                 <Col span={8}>
+                <Card>
+                    <CreateNote
+                        type={NOTE_TYPE.invoice}
+                        title={noteTitle}
+                        onTitleChange={onHandleNoteTitleChange}
+                        note={note}
+                        onNoteChange={onHandleNoteChange}
+                        onClearNoteFields={clearNoteFields}
+                        onSubmit={onSubmitInvoiceNote}
+                    />
+                    <Title level={4}>Notes</Title>
+                    {invoiceNotes && invoiceNotes.length > 0 && 
+                        <Notes notes={invoiceNotes} type={NOTE_TYPE.invoice} userId={loggedInUser.id} />
+                    }
+                </Card>
                 </Col>
             </Row>
         )}

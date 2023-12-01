@@ -27,7 +27,6 @@ export enum ENDPOINTS {
     GetProjectsByIds = "http://localhost:8080/project/get-projects-by-ids",
     GetAllProjects = "http://localhost:8080/project/get-all-projects",
 
-
     // PROJECT NOTES
     CreateProjectNote = "http://localhost:8080/notes/create-project-note",
     GetProjectNoteById = "http://localhost:8080/notes/get-project-note-by-id",
@@ -49,7 +48,7 @@ export enum ENDPOINTS {
     AddSubProjectsProjectConnection = "http://localhost:8080/project/add-sub-projects-project-connection",
     RemoveSubProjectsProjectConnection = "http://localhost:8080/project/delete-sub-projects-project-connection",
 
-    // PROJECT NOTES
+    // SUB PROJECT NOTES
     CreateSubProjectNote = "http://localhost:8080/notes/create-sub-project-note",
     GetSubProjectNoteById = "http://localhost:8080/notes/get-sub-project-note-by-id",
     UpdateSubProjectNote = "http://localhost:8080/notes/update-sub-project-note",
@@ -113,6 +112,14 @@ export enum ENDPOINTS {
     UpdateProduct = "http://localhost:8080/product/update-product",
     getProductsByIds = "http://localhost:8080/product/get-products-by-ids",
 
+    // PRODUCT NOTES
+    CreateProductNote = "http://localhost:8080/notes/create-product-note",
+    GetProductNoteById = "http://localhost:8080/notes/get-product-note-by-id",
+    UpdateProductNote = "http://localhost:8080/notes/update-product-note",
+    GetAllProductNotesByProductId = "http://localhost:8080/notes/get-all-product-notes-by-product-id",
+    GetAllProductNotesByUserId = "http://localhost:8080/notes/get-all-product-notes-by-user-id",
+    DeleteProductNote = "http://localhost:8080/notes/delete-product-note",
+
     // INVOICES
     CreateInvoice = "http://localhost:8080/invoice/create-invoice",
     GetInvoiceById = "http://localhost:8080/invoice/get-invoice-by-id",
@@ -122,6 +129,14 @@ export enum ENDPOINTS {
     UpdateInvoice = "http://localhost:8080/invoice/update-invoice",
     DeleteInvoice = "http://localhost:8080/invoice/delete-invoice",
 
+    // INVOICE NOTES
+    CreateInvoiceNote = "http://localhost:8080/notes/create-invoice-note",
+    GetInvoiceNoteById = "http://localhost:8080/notes/get-invoice-note-by-id",
+    UpdateInvoiceNote = "http://localhost:8080/notes/update-invoice-note",
+    GetAllInvoiceNotesByInvoiceId = "http://localhost:8080/notes/get-all-invoice-notes-by-invoice-id",
+    GetAllInvoiceNotesByUserId = "http://localhost:8080/notes/get-all-invoice-notes-by-user-id",
+    DeleteInvoiceNote = "http://localhost:8080/notes/delete-invoice-note",
+
     // INVOICE ITEMS
     CreateInvoiceItem = "http://localhost:8080/invoice/create-invoice-item",
     GetInvoiceItemById = "http://localhost:8080/invoice/get-invoice-item-by-id",
@@ -130,6 +145,14 @@ export enum ENDPOINTS {
     UpdateInvoiceItem = "http://localhost:8080/invoice/update-invoice-item",
     DeleteInvoiceItem = "http://localhost:8080/invoice/delete-invoice-item",
     GetAllInvoiceItemsByInvoiceId = "http://localhost:8080/invoice/get-all-invoice-items-by-invoice-id",
+
+    // INVOICE NOTES
+    CreateInvoiceItemNote = "http://localhost:8080/notes/create-invoice-item-note",
+    GetInvoiceItemNoteById = "http://localhost:8080/notes/get-invoice-item-note-by-id",
+    UpdateInvoiceItemNote = "http://localhost:8080/notes/update-invoice-item-note",
+    GetAllInvoiceItemNotesByInvoiceItemId = "http://localhost:8080/notes/get-all-invoice-item-notes-by-invoice-item-id",
+    GetAllInvoiceItemNotesByUserId = "http://localhost:8080/notes/get-all-invoice-item-notes-by-user-id",
+    DeleteInvoiceItemNote = "http://localhost:8080/notes/delete-invoice-item-note",
 
 
     // EMAIL

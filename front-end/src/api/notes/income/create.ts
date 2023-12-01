@@ -3,12 +3,11 @@ import { NoteAuthor } from "../../../interfaces/notes";
 
 /**
  * @param user userId, name and email
- * @param income income id
  * @param title note title
  * @param note note text
  * @returns Resolved promise returns the created income note ID
  */
-export const createIncomeNote = async (user : NoteAuthor, income : string, title : string, note : string) : Promise<{
+export const createIncomeNote = async (user : NoteAuthor, incomeId : string, title : string, note : string) : Promise<{
     error: boolean,
     message: string,
     data: string
@@ -17,7 +16,7 @@ export const createIncomeNote = async (user : NoteAuthor, income : string, title
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        income: income,
+        income_id: incomeId,
         title: title,
         note: note
     };

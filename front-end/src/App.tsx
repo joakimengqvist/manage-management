@@ -53,6 +53,8 @@ import Documentation from './routes/Documentation';
 import { useGetCompactUIEnabled, useGetDarkThemeEnabled, useGetLoggedInUserId } from './hooks';
 import { useGetAuthenticated } from './hooks/useGetAuthenticated';
 import { useGetLoggedInUserPrivileges } from './hooks/useGetLoggedInUserPrivileges';
+import LargeLoader from './components/loader/LargeLoader';
+import Product from './components/products/Product';
 
 const { Sider, Content } = Layout;
 
@@ -65,10 +67,6 @@ const App = () => {
   const darkTheme = useGetDarkThemeEnabled();
   const compactUI = useGetCompactUIEnabled();
   const [collapsed, setCollapsed] = useState(false);
-
-  if (!authenticated) {
-    navigate('/login')
-  }
 
   useEffect(() => {
       dispatch(initiateUser());
@@ -102,7 +100,7 @@ const App = () => {
         getAllInvoiceItems(loggedInUserId).then(response => dispatch(fetchInvoiceItems(response.data))).catch(() => {})
       }
     }
-}, [loggedInUserId, authenticated])
+}, [loggedInUserId, authenticated, loggedInUserPrivileges.length])
 
 const ThemePicker = () => {
   if (compactUI) {
@@ -122,6 +120,15 @@ const isDocPage = () => {
       return true
     }
     return false;
+}
+
+if (!authenticated) {
+  navigate('/login')
+}
+
+
+if (authenticated && !loggedInUserId) {
+  return <LargeLoader />
 }
 
 return (
@@ -178,6 +185,8 @@ return (
             <Route path="/external-company/:id" element={<ExternalCompany />} />
 
             <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<Product />} />
+
 
             <Route path="/invoice/:id" element={<Invoice />} />
             <Route path="/invoices" element={<Invoices />} />

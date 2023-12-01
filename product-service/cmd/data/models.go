@@ -157,7 +157,7 @@ func GetProductById(id string) (*Product, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select select id, name, description, category, price, tax_percentage, created_at, created_by, updated_at, updated_by 
+	query := `select id, name, description, category, price, tax_percentage, created_at, created_by, updated_at, updated_by 
 	from products where id = $1`
 
 	var product Product
@@ -177,6 +177,7 @@ func GetProductById(id string) (*Product, error) {
 	)
 
 	if err != nil {
+		fmt.Println("GetProductById model", err)
 		return nil, err
 	}
 

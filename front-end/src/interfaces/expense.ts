@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface ExpenseObject {
+export interface Expense {
 	id: string,
 	project_id: string
     expense_date: any

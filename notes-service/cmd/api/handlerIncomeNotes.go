@@ -11,7 +11,7 @@ type NewIncomeNote struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Income      string `json:"income"`
+	IncomeId    string `json:"income_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -21,7 +21,7 @@ type UpdateIncomeNotePayload struct {
 	AuthorId    string `json:"author_id"`
 	AuthorName  string `json:"author_name"`
 	AuthorEmail string `json:"author_email"`
-	Income      string `json:"income"`
+	IncomeId    string `json:"income_id"`
 	Title       string `json:"title"`
 	Note        string `json:"note"`
 }
@@ -55,7 +55,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
-		Income:      requestPayload.Income,
+		IncomeId:    requestPayload.IncomeId,
 		Title:       requestPayload.Title,
 		Note:        requestPayload.Note,
 	}
@@ -112,7 +112,7 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
 			AuthorEmail: note.AuthorEmail,
-			Income:      note.Income,
+			IncomeId:    note.IncomeId,
 			Title:       note.Title,
 			Note:        note.Note,
 			CreatedAt:   note.CreatedAt,
@@ -167,7 +167,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 			AuthorId:    note.AuthorId,
 			AuthorName:  note.AuthorName,
 			AuthorEmail: note.AuthorEmail,
-			Income:      note.Income,
+			IncomeId:    note.IncomeId,
 			Title:       note.Title,
 			Note:        note.Note,
 			CreatedAt:   note.CreatedAt,
@@ -218,7 +218,7 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    note.AuthorId,
 		AuthorName:  note.AuthorName,
 		AuthorEmail: note.AuthorEmail,
-		Income:      note.Income,
+		IncomeId:    note.IncomeId,
 		Title:       note.Title,
 		Note:        note.Note,
 		CreatedAt:   note.CreatedAt,
@@ -260,7 +260,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 		AuthorId:    requestPayload.AuthorId,
 		AuthorName:  requestPayload.AuthorName,
 		AuthorEmail: requestPayload.AuthorEmail,
-		Income:      requestPayload.Income,
+		IncomeId:    requestPayload.IncomeId,
 		Title:       requestPayload.Title,
 		Note:        requestPayload.Note,
 	}

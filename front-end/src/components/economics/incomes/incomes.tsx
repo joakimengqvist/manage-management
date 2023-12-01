@@ -9,12 +9,13 @@ import { ZoomInOutlined } from '@ant-design/icons';
 import { getAllIncomesByProjectId } from '../../../api/economics/incomes/getAllByProjectId';
 import { formatDateTimeToYYYYMMDDHHMM } from '../../../helpers/stringDateFormatting';
 import IncomeStatus from '../../status/IncomeStatus';
-import { IncomeObject } from '../../../interfaces/income';
+import { Income } from '../../../interfaces/income';
 import { useGetExternalCompanies, useGetLoggedInUserId } from '../../../hooks';
+import { formatNumberWithSpaces } from '../../../helpers/stringFormatting';
 
 const { Text, Title, Link } = Typography;
 
-const calculateTotalAmountAndTax = (incomes: IncomeObject[], getVendorName : (id : string) => string) => {
+const calculateTotalAmountAndTax = (incomes: Income[], getVendorName : (id : string) => string) => {
     let totalAmount = 0;
     let totalTax = 0;
     let totalIncomes = 0;
@@ -95,7 +96,7 @@ const economicsColumns = [
     },
   ];
 
-const Income = ({ project } : { project: string }) => {
+const Incomes = ({ project } : { project: string }) => {
     const loggedInUserId = useGetLoggedInUserId();
     const externalCompanies = useGetExternalCompanies();
     const [activeTab, setActiveTab] = useState<string>('incomes')
@@ -122,12 +123,12 @@ const Income = ({ project } : { project: string }) => {
       const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
       const economicsData: Array<any> = useMemo(() => {
-        const incomesListItem = incomes && incomes.map((income : IncomeObject) => {
+        const incomesListItem = incomes && incomes.map((income : Income) => {
         return {                    
             vendor: <Link href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
             description: <Text>{income.description}</Text>,
-            cost: <Text>{income.amount} {income.currency}</Text>,
-            tax: <Text>{income.tax} {income.currency}</Text>,
+            cost: <Text>{formatNumberWithSpaces(income.amount)} {income.currency}</Text>,
+            tax: <Text>{formatNumberWithSpaces(income.tax)} {income.currency}</Text>,
             status: <IncomeStatus status={income.status}/>,
             income_date: <Text>{formatDateTimeToYYYYMMDDHHMM(income.income_date)}</Text>,
             operations: <Link href={`/income/${income.id}`}><ZoomInOutlined /></Link>
@@ -170,9 +171,9 @@ const Income = ({ project } : { project: string }) => {
       summary: (
           <div>
               <div style={{padding: '24px 24px 16px 24px', display: 'flex'}}>
-                  <Text style={{paddingRight: '8px'}} strong>Total amount:</Text><Text  style={{paddingRight: '20px'}} >{totalAmount}</Text>
-                  <Text style={{paddingRight: '8px'}} strong>Total tax:</Text><Text style={{paddingRight: '20px'}}>{totalTax}</Text>
-                  <Text style={{paddingRight: '8px'}} strong>Total incomes:</Text><Text style={{paddingRight: '20px'}}>{totalIncomes}</Text>
+                  <Text style={{paddingRight: '8px'}} strong>Total amount:</Text><Text  style={{paddingRight: '20px'}} >{formatNumberWithSpaces(totalAmount)} SEK</Text>
+                  <Text style={{paddingRight: '8px'}} strong>Total tax:</Text><Text style={{paddingRight: '20px'}}>{formatNumberWithSpaces(totalTax)} SEK</Text>
+                  <Text style={{paddingRight: '8px'}} strong>Total incomes:</Text><Text style={{paddingRight: '20px'}}>{formatNumberWithSpaces(totalIncomes)}</Text>
               </div>
               <div style={{padding: '16px'}}>
                   <Column {...columnShartConfig} />
@@ -205,4 +206,4 @@ const Income = ({ project } : { project: string }) => {
 
 }
 
-export default Income;
+export default Incomes;

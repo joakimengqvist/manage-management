@@ -3,12 +3,11 @@ import { NoteAuthor } from "../../../interfaces/notes";
 
 /**
  * @param user userId, name and email
- * @param externalCompany external company id
  * @param title note title
  * @param note note text
  * @returns Resolved promise returns the created external company note ID
  */
-export const createExternalCompanyNote = async (user : NoteAuthor, externalCompany : string, title : string, note : string) : Promise<{
+export const createExternalCompanyNote = async (user : NoteAuthor, externalCompanyId : string, title : string, note : string) : Promise<{
     error: boolean,
     message: string,
     data: string
@@ -17,7 +16,7 @@ export const createExternalCompanyNote = async (user : NoteAuthor, externalCompa
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        external_company: externalCompany,
+        external_company_id: externalCompanyId,
         title: title,
         note: note
     };

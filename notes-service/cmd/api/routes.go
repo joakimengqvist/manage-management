@@ -27,8 +27,8 @@ func (app *Config) routes() http.Handler {
 	mux.Get("/notes/get-project-note-by-id", app.GetProjectNoteById)
 	mux.Post("/notes/update-project-note", app.UpdateProjectNote)
 	mux.Post("/notes/delete-project-note", app.DeleteProjectNote)
-	mux.Post("/notes/get-all-notes-by-project-id", app.GetAllProjectNotesByProjectId)
-	mux.Post("/notes/get-all-notes-by-user-id", app.GetAllProjectNotesByUserId)
+	mux.Post("/notes/get-all-project-notes-by-project-id", app.GetAllProjectNotesByProjectId)
+	mux.Post("/notes/get-all-project-notes-by-user-id", app.GetAllProjectNotesByUserId)
 
 	mux.Post("/notes/create-sub-project-note", app.CreateSubProjectNote)
 	mux.Get("/notes/get-sub-project-note-by-id", app.GetSubProjectNoteById)
@@ -57,6 +57,27 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/notes/delete-external-company-note", app.DeleteExternalCompanyNote)
 	mux.Post("/notes/get-all-external-company-notes-by-external-company-id", app.GetAllExternalCompanyNotesByExternalCompanyId)
 	mux.Post("/notes/get-all-external-company-notes-by-user-id", app.GetAllExternalCompanyNotesByUserId)
+
+	mux.Post("/notes/create-product-note", app.CreateProductNote)
+	mux.Get("/notes/get-product-note-by-id", app.GetProductNoteById)
+	mux.Post("/notes/update-product-note", app.UpdateProductNote)
+	mux.Post("/notes/get-all-product-notes-by-product-id", app.GetAllProductNotesByProductId)
+	mux.Post("/notes/get-all-product-notes-by-user-id", app.GetAllProductNotesByUserId)
+	mux.Post("/notes/delete-product-note", app.DeleteProductNote)
+
+	mux.Post("/notes/create-invoice-note", app.CreateInvoiceNote)
+	mux.Get("/notes/get-invoice-note-by-id", app.GetInvoiceNoteById)
+	mux.Post("/notes/update-invoice-note", app.UpdateInvoiceNote)
+	mux.Post("/notes/get-all-invoice-notes-by-invoice-id", app.GetAllInvoiceNotesByInvoiceId)
+	mux.Post("/notes/get-all-invoice-notes-by-user-id", app.GetAllInvoiceNotesByUserId)
+	mux.Post("/notes/delete-invoice-note", app.DeleteInvoiceNote)
+
+	mux.Post("/notes/create-invoice-item-note", app.CreateInvoiceItemNote)
+	mux.Get("/notes/get-invoice-item-note-by-id", app.GetInvoiceItemNoteById)
+	mux.Post("/notes/update-invoice-item-note", app.UpdateInvoiceItemNote)
+	mux.Post("/notes/get-all-invoice-item-notes-by-invoice-item-id", app.GetAllInvoiceItemNotesByInvoiceItemId)
+	mux.Post("/notes/get-all-invoice-item-notes-by-user-id", app.GetAllInvoiceItemNotesByUserId)
+	mux.Post("/notes/delete-invoice-item-note", app.DeleteInvoiceItemNote)
 
 	return mux
 }

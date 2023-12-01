@@ -29,33 +29,39 @@ import { getAllExpenseNotesByUserId } from "../../api/notes/expense/getAllByUser
 import { getAllIncomeNotesByUserId } from "../../api/notes/income/getAllByUserId";
 import { getAllExternalCompanyNotesByUserId } from "../../api/notes/externalCompany/getAllByUserId";
 import {
-  FundProjectionScreenOutlined,
   ProjectOutlined,
-  DollarOutlined,
+  BuildOutlined,
+  ReconciliationOutlined,
+  ExceptionOutlined,
+  TranslationOutlined,
+  BarcodeOutlined,
   FundOutlined,
   BankOutlined
 } from '@ant-design/icons';
 import { getAllSubProjectNotesByUserId } from "../../api/notes/subProject/getAllByUserId";
 import { PurpleTags } from "../tags/PurpleTags";
 import { BlueTags } from "../tags/BlueTags";
-import { ExpenseNote, ExternalCompanyNote, IncomeNote, ProjectNote, SubProjectNote, User } from "../../interfaces";
+import { ExpenseNote, ExternalCompanyNote, IncomeNote, InvoiceItemNote, InvoiceNote, ProductNote, ProjectNote, SubProjectNote, User } from "../../interfaces";
 import { getUserById } from "../../api";
-import { useGetLoggedInUser, useGetPrivileges, useGetProjects } from "../../hooks";
+import { useGetLoggedInUser, useGetLoggedInUserPrivileges, useGetPrivileges, useGetProjects } from "../../hooks";
+import { getAllProductNotesByUserId } from "../../api/notes/product/getAllByUserId";
+import { getAllInvoiceNotesByUserId } from "../../api/notes/invoice/getAllByUserId";
+import { getAllInvoiceItemNotesByUserId } from "../../api/notes/invoiceItem/getAllByUserId";
 
 const { Text, Title } = Typography;
 
 const userNotesTabList = [
   {
     key: 'project',
-    label: <FundProjectionScreenOutlined style={{paddingLeft: '12px'}} />,
-  },
-  {
-    key: 'subProject',
     label: <ProjectOutlined style={{paddingLeft: '12px'}} />,
   },
   {
+    key: 'subProject',
+    label: <BuildOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
     key: 'expense',
-    label: <DollarOutlined style={{paddingLeft: '12px'}} />,
+    label: <ReconciliationOutlined style={{paddingLeft: '12px'}} />,
   },
   {
     key: 'income',
@@ -65,6 +71,18 @@ const userNotesTabList = [
     key: 'companies',
     label: <BankOutlined style={{paddingLeft: '12px'}} />,
   },
+  {
+    key: 'products',
+    label: <BarcodeOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
+    key: 'invoices',
+    label: <ExceptionOutlined style={{paddingLeft: '12px'}} />,
+  },
+  {
+    key: 'invoiceItems',
+    label: <TranslationOutlined style={{paddingLeft: '12px'}} />,
+  },
 ];
 
 const UserDetails = () => {
@@ -73,6 +91,7 @@ const UserDetails = () => {
   const [api, contextHolder] = notification.useNotification();
   const loggedInUser = useGetLoggedInUser();
   const allProjects = useGetProjects();
+  const loggedInUserPrivileges = useGetLoggedInUserPrivileges();
   const allPrivileges = useGetPrivileges();
 
   const [projectNotes, setProjectNotes] = useState<Array<ProjectNote>>([]);
@@ -80,6 +99,9 @@ const UserDetails = () => {
   const [expenseNotes, setExpenseNotes] = useState<Array<ExpenseNote>>([]);
   const [incomeNotes, setIncomeNotes] = useState<Array<IncomeNote>>([]);
   const [externalCompaniesNotes, setExternalCompaniesNotes] = useState<Array<ExternalCompanyNote>>([]);
+  const [productNotes, setProductNotes] = useState<Array<ProductNote>>([]);
+  const [invoiceNotes, setInvoiceNotes] = useState<Array<InvoiceNote>>([]);
+  const [invoiceItemNotes, setInvoiceItemNotes] = useState<Array<InvoiceItemNote>>([]);
   const [activeNotesTab, setActiveNotesTab] = useState<string>('project');
   
   const { id } = useParams();
@@ -123,54 +145,100 @@ const UserDetails = () => {
 
   useEffect(() => {
     if (loggedInUser.id) {
-      getAllProjectNotesByUserId(loggedInUser.id, userId).then(response => {
-        if (response.data?.length) {
-          setProjectNotes(response.data);
-        } else {
-          setProjectNotes([]);
-        }
-      }).catch((error : any) => {
-        console.log('error fetching project notes', error);
-      });
 
-      getAllSubProjectNotesByUserId(loggedInUser.id, userId).then(response => {
-        if (response.data?.length) {
-          setSubProjectNotes(response.data);
-        } else {
-          setSubProjectNotes([]);
-        }
-      }).catch((error : any) => {
-        console.log('error fetching project notes', error);
-      });
-   
-      getAllExpenseNotesByUserId(loggedInUser.id, userId).then(response => {
-        if (response.data?.length) {
-          setExpenseNotes(response.data);
-        } else {
-          setExpenseNotes([]);
-        }
-      }).catch((error : any) => {
-        console.log('error fetching expense notes', error);
-      });
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.project_read)) {
+        getAllProjectNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setProjectNotes(response.data);
+          } else {
+            setProjectNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching project notes', error);
+        });
+      }
 
-      getAllIncomeNotesByUserId(loggedInUser.id, userId).then(response => {
-        if (response.data?.length) {
-          setIncomeNotes(response.data);
-        } else {
-          setIncomeNotes([]);
-        }
-      }).catch((error : any) => {
-        console.log('error fetching income notes', error);
-      });
-      getAllExternalCompanyNotesByUserId(loggedInUser.id, userId).then(response => {
-        if (response.data?.length) {
-          setExternalCompaniesNotes(response.data);
-        } else {
-          setExternalCompaniesNotes([]);
-        }
-      }).catch((error : any) => {
-        console.log('error fetching income notes', error);
-      });
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.sub_project_read)) {
+        getAllSubProjectNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setSubProjectNotes(response.data);
+          } else {
+            setSubProjectNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching project notes', error);
+        });
+      }
+
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.economics_read)) {
+        getAllExpenseNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setExpenseNotes(response.data);
+          } else {
+            setExpenseNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching expense notes', error);
+        });
+
+        getAllIncomeNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setIncomeNotes(response.data);
+          } else {
+            setIncomeNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching income notes', error);
+        });
+      }
+
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.external_company_read)) {
+        getAllExternalCompanyNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setExternalCompaniesNotes(response.data);
+          } else {
+            setExternalCompaniesNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching external company notes', error);
+        });
+      }
+
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.product_read)) {      
+        getAllProductNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setProductNotes(response.data);
+          } else {
+            setProductNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching external company notes', error);
+        });
+      }
+
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.invoice_read)) {      
+        getAllInvoiceNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setInvoiceNotes(response.data);
+          } else {
+            setInvoiceNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching external company notes', error);
+        });
+      }
+
+      if (hasPrivilege(loggedInUserPrivileges, PRIVILEGES.invoice_read)) {      
+        getAllInvoiceItemNotesByUserId(loggedInUser.id, userId).then(response => {
+          if (response.data?.length) {
+            setInvoiceItemNotes(response.data);
+          } else {
+            setInvoiceItemNotes([]);
+          }
+        }).catch((error : any) => {
+          console.log('error fetching external company notes', error);
+        });
+      }
     }
   }, [loggedInUser, activeNotesTab]);
 
@@ -265,7 +333,10 @@ const UserDetails = () => {
     subProject: <Notes notes={subProjectNotes} type={NOTE_TYPE.sub_project} userId={loggedInUser.id} generalized /> ,
     expense:  <Notes notes={expenseNotes} type={NOTE_TYPE.expense} userId={loggedInUser.id} generalized /> ,
     income: <Notes notes={incomeNotes} type={NOTE_TYPE.income} userId={loggedInUser.id} generalized /> ,
-    companies: <Notes notes={externalCompaniesNotes} type={NOTE_TYPE.external_company} userId={loggedInUser.id} generalized />
+    companies: <Notes notes={externalCompaniesNotes} type={NOTE_TYPE.external_company} userId={loggedInUser.id} generalized />,
+    products: <Notes notes={productNotes} type={NOTE_TYPE.product} userId={loggedInUser.id} generalized />,
+    invoices: <Notes notes={invoiceNotes} type={NOTE_TYPE.invoice} userId={loggedInUser.id} generalized />,
+    invoiceItems: <Notes notes={invoiceItemNotes} type={NOTE_TYPE.invoice_item} userId={loggedInUser.id} generalized />
   }
 
   if (!user) {

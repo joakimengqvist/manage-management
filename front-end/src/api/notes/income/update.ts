@@ -5,11 +5,10 @@ import { IncomeNote } from "../../../interfaces";
 /**
  * @param noteId note id
  * @param user userId, name and email
- * @param income income id
  * @param title note title
  * @param note note text
  */
-export const updateIncomeNote = async (noteId : string, user : NoteAuthor, income : string, title : string, note : string) : Promise<{
+export const updateIncomeNote = async (noteId : string, user : NoteAuthor, incomeId : string, title : string, note : string) : Promise<{
     error: boolean,
     message: string,
     data: IncomeNote
@@ -19,7 +18,7 @@ export const updateIncomeNote = async (noteId : string, user : NoteAuthor, incom
         author_id: user.id,
         author_name: user.name,
         author_email: user.email,
-        income: income,
+        income_id: incomeId,
         title: title,
         note: note
     };

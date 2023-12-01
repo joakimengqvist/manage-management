@@ -7,6 +7,10 @@ import (
 	"net/rpc"
 )
 
+type IDpayload struct {
+	ID string `json:"id"`
+}
+
 type PrivilegeCheckPayload struct {
 	UserId string `json:"userId"`
 	Action string `json:"action"`

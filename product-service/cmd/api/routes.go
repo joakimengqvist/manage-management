@@ -25,7 +25,7 @@ func (app *Config) routes() http.Handler {
 
 	mux.Post("/product/create-product", app.CreateProduct)
 	mux.Get("/product/get-all-products", app.GetAllProducts)
-	mux.Get("/product/get-product-by-id", app.GetProductById)
+	mux.Post("/product/get-product-by-id", app.GetProductById)
 	mux.Post("/product/update-product", app.UpdateProduct)
 
 	return mux

@@ -9,34 +9,34 @@ import (
 )
 
 type SubProjectNote struct {
-	ID          string    `json:"id"`
-	AuthorId    string    `json:"author_id"`
-	AuthorName  string    `json:"author_name"`
-	AuthorEmail string    `json:"author_email"`
-	SubProject  string    `json:"sub_project"`
-	Title       string    `json:"title"`
-	Note        string    `json:"note"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID           string    `json:"id"`
+	AuthorId     string    `json:"author_id"`
+	AuthorName   string    `json:"author_name"`
+	AuthorEmail  string    `json:"author_email"`
+	SubProjectId string    `json:"sub_project_id"`
+	Title        string    `json:"title"`
+	Note         string    `json:"note"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 type NewSubProjectNote struct {
-	AuthorId    string `json:"author_id"`
-	AuthorName  string `json:"author_name"`
-	AuthorEmail string `json:"author_email"`
-	SubProject  string `json:"sub_project"`
-	Title       string `json:"title"`
-	Note        string `json:"note"`
+	AuthorId     string `json:"author_id"`
+	AuthorName   string `json:"author_name"`
+	AuthorEmail  string `json:"author_email"`
+	SubProjectId string `json:"sub_project_id"`
+	Title        string `json:"title"`
+	Note         string `json:"note"`
 }
 
 type UpdateSubProjectNote struct {
-	ID          string `json:"id"`
-	AuthorId    string `json:"author_id"`
-	AuthorName  string `json:"author_name"`
-	AuthorEmail string `json:"author_email"`
-	SubProject  string `json:"sub_project"`
-	Title       string `json:"title"`
-	Note        string `json:"note"`
+	ID           string `json:"id"`
+	AuthorId     string `json:"author_id"`
+	AuthorName   string `json:"author_name"`
+	AuthorEmail  string `json:"author_email"`
+	SubProjectId string `json:"sub_project_id"`
+	Title        string `json:"title"`
+	Note         string `json:"note"`
 }
 
 type DeleteSubProjectNotePayload struct {

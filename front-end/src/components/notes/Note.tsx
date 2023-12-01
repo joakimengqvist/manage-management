@@ -20,6 +20,12 @@ import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { deleteSubProjectNote } from "../../api/notes/subProject/delete";
 import { updateSubProjectNote } from "../../api/notes/subProject/update";
 import { useGetLoggedInUser } from "../../hooks";
+import { updateProductNote } from "../../api/notes/product/update";
+import { updateInvoiceNote } from "../../api/notes/invoice/update";
+import { updateInvoiceItemNote } from "../../api/notes/invoiceItem/update";
+import { deleteProductNote } from "../../api/notes/product/delete";
+import { deleteInvoiceNote } from "../../api/notes/invoice/delete";
+import { deleteInvoiceItemNote } from "../../api/notes/invoiceItem/delete";
 
 const { Text, Link } = Typography;
 const { TextArea } = Input;
@@ -89,7 +95,7 @@ const Note = (props: NoteProps) => {
               });
         }
         if (type === NOTE_TYPE.project) {
-            deleteProjectNote(userId, note.id, note.author_id, note.project)
+            deleteProjectNote(userId, note.id, note.author_id, note.project_id)
             .then(response => {
                 noteSuccessNotification(response, 'Deleted');
               })
@@ -98,7 +104,7 @@ const Note = (props: NoteProps) => {
               });
         }
         if (type === NOTE_TYPE.sub_project) {
-          deleteSubProjectNote(userId, note.id, note.author_id, note.sub_project)
+          deleteSubProjectNote(userId, note.id, note.author_id, note.sub_project_id)
           .then(response => {
               noteSuccessNotification(response, 'Deleted');
             })
@@ -115,6 +121,33 @@ const Note = (props: NoteProps) => {
                 noteFailedNotification(error.toString(), 'Deleted')
               });
         }
+        if (type === NOTE_TYPE.product) {
+          deleteProductNote(userId, note.id)
+          .then(response => {
+              noteSuccessNotification(response, 'Deleted');
+            })
+            .catch((error) => {
+              noteFailedNotification(error.toString(), 'Deleted')
+            });
+      }
+      if (type === NOTE_TYPE.invoice) {
+        deleteInvoiceNote(userId, note.id)
+        .then(response => {
+            noteSuccessNotification(response, 'Deleted');
+          })
+          .catch((error) => {
+            noteFailedNotification(error.toString(), 'Deleted')
+          });
+    }
+    if (type === NOTE_TYPE.invoice_item) {
+      deleteInvoiceItemNote(userId, note.id)
+      .then(response => {
+          noteSuccessNotification(response, 'Deleted');
+        })
+        .catch((error) => {
+          noteFailedNotification(error.toString(), 'Deleted')
+        });
+  }
     }
 
     const onSaveUpdateNote = () => {
@@ -124,8 +157,8 @@ const Note = (props: NoteProps) => {
         email: loggedInUser.email
       }
       if (type === NOTE_TYPE.expense) {
-        if (!note.expense) return;
-        updateExpenseNote(note.id, noteAuthor, note.expense, noteTitle, noteBody)
+        if (!note.expense_id) return;
+        updateExpenseNote(note.id, noteAuthor, note.expense_id, noteTitle, noteBody)
         .then(response => {
             noteSuccessNotification(response.data, 'Updated');
           })
@@ -134,8 +167,8 @@ const Note = (props: NoteProps) => {
           });
     }
     if (type === NOTE_TYPE.income) {
-      if (!note.income) return;
-        updateIncomeNote(note.id, noteAuthor, note.income, noteTitle, noteBody)
+      if (!note.income_id) return;
+        updateIncomeNote(note.id, noteAuthor, note.income_id, noteTitle, noteBody)
         .then(response => {
             noteSuccessNotification(response.data, 'Updated');
           })
@@ -144,8 +177,8 @@ const Note = (props: NoteProps) => {
           });
     }
     if (type === NOTE_TYPE.project) {
-      if (!note.project) return;
-        updateProjectNote(note.id, noteAuthor, note.project, noteTitle, noteBody)
+      if (!note.project_id) return;
+        updateProjectNote(note.id, noteAuthor, note.project_id, noteTitle, noteBody)
         .then(response => {
             noteSuccessNotification(response.data, 'Updated');
           })
@@ -154,8 +187,8 @@ const Note = (props: NoteProps) => {
           });
     }
     if (type === NOTE_TYPE.sub_project) {
-      if (!note.project) return;
-        updateSubProjectNote(note.id, noteAuthor, note.project, noteTitle, noteBody)
+      if (!note.project_id) return;
+        updateSubProjectNote(note.id, noteAuthor, note.project_id, noteTitle, noteBody)
         .then(response => {
             noteSuccessNotification(response.data, 'Updated');
           })
@@ -164,15 +197,46 @@ const Note = (props: NoteProps) => {
           });
     }
     if (type === NOTE_TYPE.external_company) {
-      if (!note.external_company) return;
-        updateExternalCompanyNote(note.id, noteAuthor, note.external_company, noteTitle, noteBody)
+      if (!note.external_company_id) return;
+        updateExternalCompanyNote(note.id, noteAuthor, note.external_company_id, noteTitle, noteBody)
         .then(response => {
             noteSuccessNotification(response.data, 'Updated');
           })
           .catch((error) => {
             noteFailedNotification(error.toString(), 'Updated')
           });
-    }    }
+    }  
+    if (type === NOTE_TYPE.product) {
+      if (!note.product_id) return;
+        updateProductNote(note.id, noteAuthor, note.product_id, noteTitle, noteBody)
+        .then(response => {
+            noteSuccessNotification(response.data, 'Updated');
+          })
+          .catch((error) => {
+            noteFailedNotification(error.toString(), 'Updated')
+          });
+    }   
+    if (type === NOTE_TYPE.invoice) {
+      if (!note.invoice_id) return;
+        updateInvoiceNote(note.id, noteAuthor, note.invoice_id, noteTitle, noteBody)
+        .then(response => {
+            noteSuccessNotification(response.data, 'Updated');
+          })
+          .catch((error) => {
+            noteFailedNotification(error.toString(), 'Updated')
+          });
+    }   
+    if (type === NOTE_TYPE.invoice_item) {
+      if (!note.invoice_item_id) return;
+        updateInvoiceItemNote(note.id, noteAuthor, note.invoice_item_id, noteTitle, noteBody)
+        .then(response => {
+            noteSuccessNotification(response.data, 'Updated');
+          })
+          .catch((error) => {
+            noteFailedNotification(error.toString(), 'Updated')
+          });
+    }   
+  }
 
     return (
       <div style={{width: '100%', border: '1px solid rgba(5, 5, 5, 0.06)', marginBottom: '8px', marginTop: '4px', borderRadius: '4px'}}>
@@ -246,19 +310,35 @@ const LinkToDestination = (props : LinkToDestinationProps) => {
   switch (type) {
     case NOTE_TYPE.expense: 
       return (
-        <Link href={`/expense/${note.expense}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Expense</Link>
+        <Link href={`/expense/${note.expense_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Expense</Link>
       )
     case NOTE_TYPE.external_company:
       return (
-        <Link href={`/external-company/${note.external_company}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Source</Link>
+        <Link href={`/external-company/${note.external_company_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Company</Link>
       )
     case NOTE_TYPE.income:
       return (
-        <Link href={`/income/${note.income}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Source</Link>
+        <Link href={`/income/${note.income_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Income</Link>
       )
     case NOTE_TYPE.project:
       return (
-        <Link href={`/project/${note.project}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Source</Link>
+        <Link href={`/project/${note.project_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Project</Link>
+      )
+    case NOTE_TYPE.sub_project:
+        return (
+          <Link href={`/sub-project/${note.sub_project_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Sub project</Link>
+        )
+    case NOTE_TYPE.product:
+      return (
+        <Link href={`/product/${note.product_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Product</Link>
+      )
+    case NOTE_TYPE.invoice:
+      return (
+        <Link href={`/invoice/${note.invoice_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Invoice</Link>
+      )
+    case NOTE_TYPE.invoice_item:
+      return (
+        <Link href={`/invoice-item/${note.invoice_item_id}`} type="secondary" underline style={{ lineHeight: 1, marginLeft: '8px'}}>Invoice item</Link>
       )
     default:
       return null

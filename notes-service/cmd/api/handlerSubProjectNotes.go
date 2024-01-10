@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"notes-service/cmd/data"
+	"os"
 )
 
 type NewSubProjectNote struct {
@@ -89,7 +90,9 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 
 	jsonDataSubProject, _ := json.MarshalIndent(updateSubProject, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/add-sub-project-note", bytes.NewBuffer(jsonDataSubProject))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/add-sub-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataSubProject))
 
 	if err != nil {
 		fmt.Println("error note id", err)
@@ -406,7 +409,9 @@ func (app *Config) RemoveNoteFromSubProject(w http.ResponseWriter, r *http.Reque
 
 	jsonDataUser, _ := json.MarshalIndent(deleteSubProjectNote, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-sub-project-note", bytes.NewBuffer(jsonDataUser))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-sub-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
 
 	if err != nil {
 		app.errorJSON(w, err)

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"notes-service/cmd/data"
+	"os"
 )
 
 type NewProjectNote struct {
@@ -86,7 +87,9 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	jsonDataProject, _ := json.MarshalIndent(updateProject, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/add-project-note", bytes.NewBuffer(jsonDataProject))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/add-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataProject))
 
 	if err != nil {
 		app.errorJSON(w, err)
@@ -285,7 +288,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedNote,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project note by id [/notes/get-project-note-by-id]", Name: "[notes-service] - Successfuly fetched project note"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project note by id [/notes/get-project-note-by-id]", Name: "[notes-service] - Successfuly fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -332,7 +335,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedNote,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Project notes [/notes/update-project-note]", Name: "[notes-service] - Successful updated project-note"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Project notes [/notes/update-project-note]", Name: "[notes-service] - Successful updated project-note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -381,7 +384,7 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project note [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project note [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -405,7 +408,9 @@ func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request,
 
 	jsonDataUser, _ := json.MarshalIndent(deleteProjectNote, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-project-note", bytes.NewBuffer(jsonDataUser))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
 
 	if err != nil {
 		app.errorJSON(w, err)

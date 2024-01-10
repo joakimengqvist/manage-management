@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -61,11 +62,13 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	logpayload := requestPayload
 	logpayload.Password = ""
 
-	app.logItemViaRPC(w, logpayload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[broker-service] - Authenticate call recieved"})
+	// app.logItemViaRPC(w, logpayload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[broker-service] - Authenticate call recieved"})
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/authenticate", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/authenticate"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -113,13 +116,15 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create user [/auth/create-user]", Name: "[broker-service] - Create user request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create user [/auth/create-user]", Name: "[broker-service] - Create user request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/create-user", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/create-user"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -169,13 +174,15 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update user [/auth/update-user]", Name: "[broker-service] - Update user request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update user [/auth/update-user]", Name: "[broker-service] - Update user request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/update-user", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/update-user"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -225,13 +232,15 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update user settings [/auth/update-user-settings]", Name: "[broker-service] - Update user settings request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update user settings [/auth/update-user-settings]", Name: "[broker-service] - Update user settings request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/update-user-settings", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/update-user-settings"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -281,13 +290,15 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete user [/auth/delete-user]", Name: "[broker-service] - Delete user request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete user [/auth/delete-user]", Name: "[broker-service] - Delete user request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/delete-user", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/delete-user"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -342,7 +353,9 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/get-user-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/get-user-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -397,7 +410,9 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/get-user-settings-by-user-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/get-user-settings-by-user-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -441,11 +456,13 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 
 func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all users [/auth/get-all-users]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://authentication-service/auth/get-all-users", nil)
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/get-all-users"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return

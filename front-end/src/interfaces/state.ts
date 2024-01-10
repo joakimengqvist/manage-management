@@ -52,6 +52,7 @@ export interface StateInvoices {
     [key: string]: {
         id: string
         company_id: string
+        invoice_display_name: string
     }
 }
 

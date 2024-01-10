@@ -51,8 +51,7 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 		UpdatedBy:                 userId,
 		Status:                    requestPayload.Status,
 		AssignedProjects:          app.convertToPostgresArray(requestPayload.AssignedProjects),
-		InvoicePending:            app.convertToPostgresArray(requestPayload.InvoicePending),
-		InvoiceHistory:            app.convertToPostgresArray(requestPayload.InvoiceHistory),
+		Invoices:                  app.convertToPostgresArray(requestPayload.Invoices),
 		ContractualAgreements:     app.convertToPostgresArray(requestPayload.ContractualAgreements),
 	}
 
@@ -112,8 +111,7 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 		UpdatedBy:                 userId,
 		Status:                    requestPayload.Status,
 		AssignedProjects:          app.convertToPostgresArray(requestPayload.AssignedProjects),
-		InvoicePending:            app.convertToPostgresArray(requestPayload.InvoicePending),
-		InvoiceHistory:            app.convertToPostgresArray(requestPayload.InvoiceHistory),
+		Invoices:                  app.convertToPostgresArray(requestPayload.Invoices),
 		ContractualAgreements:     app.convertToPostgresArray(requestPayload.ContractualAgreements),
 	}
 
@@ -126,6 +124,78 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Updated external company %s", requestPayload.CompanyName),
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
+	var requestPayload data.InvoicePayload
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "external_company_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = data.AppendInvoiceToCompany(requestPayload.InvoiceId, requestPayload.CompanyId)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update external company: "+err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Updated external company",
+		Data:    nil,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
+	var requestPayload data.InvoicePayload
+
+	userId := r.Header.Get("X-User-Id")
+	authenticated, err := app.CheckPrivilege(w, userId, "external_company_write")
+	if err != nil {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	if !authenticated {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	err = app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = data.RemoveInvoiceFromCompany(requestPayload.InvoiceId, requestPayload.CompanyId)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not update external company: "+err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: "Updated external company",
 		Data:    nil,
 	}
 
@@ -148,7 +218,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 
 	companies, err := data.GetAllExternalCompanies()
 	if err != nil {
-		app.errorJSON(w, errors.New("Could not fetch external companies"), http.StatusUnauthorized)
+		app.errorJSON(w, errors.New("could not fetch external companies"), http.StatusUnauthorized)
 		return
 	}
 
@@ -178,8 +248,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 			UpdatedBy:                 company.UpdatedBy,
 			Status:                    company.Status,
 			AssignedProjects:          app.parsePostgresArray(company.AssignedProjects),
-			InvoicePending:            app.parsePostgresArray(company.InvoicePending),
-			InvoiceHistory:            app.parsePostgresArray(company.InvoiceHistory),
+			Invoices:                  app.parsePostgresArray(company.Invoices),
 			ContractualAgreements:     app.parsePostgresArray(company.ContractualAgreements),
 		}
 
@@ -244,8 +313,7 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 		UpdatedBy:                 company.UpdatedBy,
 		Status:                    company.Status,
 		AssignedProjects:          app.parsePostgresArray(company.AssignedProjects),
-		InvoicePending:            app.parsePostgresArray(company.InvoicePending),
-		InvoiceHistory:            app.parsePostgresArray(company.InvoiceHistory),
+		Invoices:                  app.parsePostgresArray(company.Invoices),
 		ContractualAgreements:     app.parsePostgresArray(company.ContractualAgreements),
 	}
 
@@ -255,6 +323,5 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 		Data:    returnedCompany,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get external company by id", Name: "[external-company-service] - Successfuly fetched external company"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

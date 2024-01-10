@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: economics-service-kub-deployment
+  labels:
+    app: economics-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: economics-service
+  template:
+    metadata:
+      labels:
+        app: economics-service
+    spec:
+      containers:
+        - name: economics-service
+          image: "joakimengqvist/mgmt-economics-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=economics sslmode=disable timezone=UTC connect_timeout=5"
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: economics-service-kub-service
+spec:
+  type: ClusterIP
+  selector:
+    app: economics-service
+  ports:
+    - protocol: TCP
+      name: internal-port
+      port: 80
+      targetPort: 80

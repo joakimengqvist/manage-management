@@ -76,17 +76,6 @@ const ServiceOverview = () => {
             {
                 id: '1004',
                 value: {
-                title: 'Mail-service',
-                items: [
-                    {
-                        text: 'email traffic',
-                    },
-                ],
-                },
-            },
-            {
-                id: '1005',
-                value: {
                 title: 'Project-service',
                 items: [
                     {
@@ -96,7 +85,7 @@ const ServiceOverview = () => {
                 },
             },
             {
-                id: '1006',
+                id: '1005',
                 value: {
                 title: 'Notes-service',
                 items: [
@@ -107,7 +96,7 @@ const ServiceOverview = () => {
                 },
             },
             {
-                id: '1007',
+                id: '1006',
                 value: {
                 title: 'External-company-service',
                 items: [
@@ -118,7 +107,7 @@ const ServiceOverview = () => {
                 },
             },
             {
-                id: '1008',
+                id: '1007',
                 value: {
                 title: 'Product-service',
                 items: [
@@ -129,7 +118,7 @@ const ServiceOverview = () => {
                 },
             },
             {
-                id: '1009',
+                id: '1008',
                 value: {
                 title: 'Invoice-service',
                 items: [

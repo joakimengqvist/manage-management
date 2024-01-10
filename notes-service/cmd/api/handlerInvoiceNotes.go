@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"notes-service/cmd/data"
+	"os"
 )
 
 type NewInvoiceNote struct {
@@ -249,7 +250,7 @@ func (app *Config) GetInvoiceNoteById(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedNote,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get invoice note by id [/notes/get-invoice-note-by-id]", Name: "[notes-service] - Successfuly fetched invoice note"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get invoice note by id [/notes/get-invoice-note-by-id]", Name: "[notes-service] - Successfuly fetched invoice note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -296,7 +297,7 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedNote,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Invoice notes [/notes/update-invoice-note]", Name: "[notes-service] - Successful updated invoice-note"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Invoice notes [/notes/update-invoice-note]", Name: "[notes-service] - Successful updated invoice-note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -345,7 +346,7 @@ func (app *Config) DeleteInvoiceNote(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete invoice note [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete invoice note [/auth/delete-user-note]", Name: "[authentication-service] - Successful deleted user note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -369,7 +370,9 @@ func (app *Config) RemoveNoteFromInvoice(w http.ResponseWriter, r *http.Request,
 
 	jsonDataUser, _ := json.MarshalIndent(deleteInvoiceNote, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/delete-invoice-note", bytes.NewBuffer(jsonDataUser))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/delete-invoice-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
 
 	if err != nil {
 		app.errorJSON(w, err)

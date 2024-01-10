@@ -202,6 +202,5 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedCompany,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get product by id", Name: "[product-service] - Successfuly fetched product"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

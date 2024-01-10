@@ -146,9 +146,9 @@ const Project = () => {
     return (
       <Row>
          {contextHolder}
-      <Col span={16}>
+      <Col span={16} style={{paddingRight: '8px'}}>
         <Card 
-          style={{ width: '98%', height: 'fit-content', padding: 0}}
+          style={{ height: 'fit-content', padding: 0}}
           tabList={tabList}
           activeTabKey={activeTab}
           bodyStyle={{padding: '0px'}}

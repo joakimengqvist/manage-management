@@ -28,8 +28,6 @@ const CreateProjectExpense = () => {
     const [taxIdentificationNumber, setTaxIdentificationNumber] = useState('');
     const [status, setStatus] = useState('');
     const [assignedProjects, setAssignedProjects] = useState<Array<string>>([]);
-    const [invoicePending, setInvoicePending] = useState<Array<string>>([]);
-    const [invoiceHistory, setInvoiceHistory] = useState<Array<string>>([]);
     const [contractualAgreements, setContractualAgreements] = useState<Array<string>>([]);
 
     const projectOptions = Object.keys(projects).map(projectId => ({
@@ -39,8 +37,6 @@ const CreateProjectExpense = () => {
 
     const onChangeStatus = (value : any) => setStatus(value);
     const onChangeAssignedProjects = (value: any) => setAssignedProjects(value);
-    const onChangePendingInvoices = (value : any) => setInvoicePending(value); 
-    const onChangeInvoiceHistory = (value : any) => setInvoiceHistory(value);
     const onChangeContractualAgreements = (value : any) => setContractualAgreements(value);
 
 
@@ -63,8 +59,6 @@ const CreateProjectExpense = () => {
             taxIdentificationNumber,
             status,
             assignedProjects,
-            invoicePending,
-            invoiceHistory,
             contractualAgreements,
         ).then(response => {
             if (response?.error || !response?.data) {
@@ -108,8 +102,6 @@ const CreateProjectExpense = () => {
         setBankAccountInfo(generateRandomStringIBAN());
         setTaxIdentificationNumber(generateRandomNumberString());
         setStatus('active');
-        setInvoicePending(['invoice-one', 'invoice-two'])
-        setInvoiceHistory(['invoice-one-history', 'invoice-two-history'])
         setContractualAgreements(['contractualAgreements-one', 'contractualAgreements-two'])
     }
 
@@ -246,30 +238,6 @@ const CreateProjectExpense = () => {
                             onChange={onChangeAssignedProjects}
                             value={assignedProjects}
                         />      
-                        <Text strong>Pending invoices</Text>
-                        <Select
-                            mode="multiple"
-                            style={{width: '100%'}}
-                            options={[
-                                {value: 'invoice-one', label: 'invoice-one'},
-                                {value: 'invoice-two', label: 'invoice-two'},
-                                {value: 'invoice-three', label: 'invoice-three'},
-                            ]}
-                            onChange={onChangePendingInvoices}
-                            value={invoicePending}
-                        />
-                        <Text strong>Invoice history</Text>
-                        <Select
-                            mode="multiple"
-                            style={{width: '100%'}}
-                            options={[
-                                {value: 'invoice-one-history', label: 'invoice-one-history'},
-                                {value: 'invoice-two-history', label: 'invoice-two-history'},
-                                {value: 'invoice-three-history', label: 'invoice-three-history'},
-                            ]}
-                            onChange={onChangeInvoiceHistory}
-                            value={invoiceHistory}
-                        />
                         <Text strong>Contractual agreements</Text>
                         <Select
                             mode="multiple"

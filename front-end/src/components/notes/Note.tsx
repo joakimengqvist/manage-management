@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Divider, Input, notification, Popconfirm, Typography } from "antd";
+import { Button, Card, Divider, Input, notification, Popconfirm, Typography } from "antd";
 import { Notes } from '../../interfaces/notes';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { NOTE_TYPE } from '../../enums/notes';
@@ -239,7 +239,7 @@ const Note = (props: NoteProps) => {
   }
 
     return (
-      <div style={{width: '100%', border: '1px solid rgba(5, 5, 5, 0.06)', marginBottom: '8px', marginTop: '4px', borderRadius: '4px'}}>
+      <Card style={{margin: '4px 0px 8px 0px', borderRadius: '4px'}} bodyStyle={{padding: 0}}>
         {contextHolder}
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: editing ? '0px' : '6px', margin: '0px 8px'}}>
         <div style={{width: '80%'}}>
@@ -272,7 +272,7 @@ const Note = (props: NoteProps) => {
           </div>
         </div>
         <Divider style={{marginTop: '4px', marginBottom: '8px'}} />
-        <div style={{margin: '0px 8px 8px 8px', minHeight: '50px'}}>
+        <div style={{margin: '0px 8px 8px 8px', minHeight: '30px'}}>
         {editing ? (
          <TextArea style={{marginTop: '8px', marginBottom: '4px'}} value={noteBody} onChange={onNoteBodyChange} />
         ): (
@@ -293,7 +293,7 @@ const Note = (props: NoteProps) => {
         <Link href={`/user/${note.author_id}`} type="secondary" style={{textAlign: 'right', lineHeight: 1, marginRight: '8px'}}>{note.author_email}</Link>
         </div>
         </div>
-      </div>
+      </Card>
       )
 }
 

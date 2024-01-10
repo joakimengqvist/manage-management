@@ -1,7 +1,52 @@
 {
 	"folders": [
 		{
-			"path": "front-end"
+			"path": "front-end",
+			"name": "manage-management-front-end"
+		}, 
+		{
+			"path": "authentication-service",
+			"name": "authentication-service"
+		},
+		{
+			"path": "broker-service",
+			"name": "broker-service"
+		},
+		{
+			"path": "economics-service",
+			"name": "economics-service"
+		},
+		{
+			"path": "external-company-service",
+			"name": "external-company-service"
+		},
+		{
+			"path": "invoice-service",
+			"name": "invoice-service"
+		},
+		{
+			"path": "listener-service",
+			"name": "listener-service"
+		},
+		{
+			"path": "logger-service",
+			"name": "logger-service"
+		},
+		{
+			"path": "mgmt",
+			"name": "mgmt"
+		},
+		{
+			"path": "notes-service",
+			"name": "notes-service"
+		},
+		{
+			"path": "product-service",
+			"name": "product-service"
+		},
+		{
+			"path": "project-service",
+			"name": "project-service"
 		}
 	]
 }

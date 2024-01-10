@@ -2,7 +2,6 @@ BROKER_BINARY=brokerApp
 AUTH_BINARY=authApp
 PROJECT_BINARY=projectApp
 LOGGER_BINARY=loggerApp
-MAIL_BINARY=mailerApp
 LISTENER_BINARY=listenerApp
 NOTES_BINARY=notesApp
 ECONOMICS_BINARY=economicsApp
@@ -18,13 +17,14 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_broker build_auth build_project build_notes build_economics build_external_company build_product build_invoice build_logger build_mail build_listener
+up_build: build_broker build_auth build_project build_notes build_economics build_external_company build_product build_invoice build_frontend
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
 	docker-compose up --build -d
 	@echo "Docker images built and started!"
-
+## make start_front_dev
+ 
 ## down: stop docker compose
 down:
 	@echo "Stopping docker compose..."
@@ -85,28 +85,21 @@ build_logger:
 	cd ../logger-service && env GOOS=linux CGO_ENABLED=0 go build -o ${LOGGER_BINARY} ./cmd/api
 	@echo "Done!"
 
-## build_mail: builds the mail binary as a linux executable
-build_mail:
-	@echo "Building mail binary..."
-	cd ../mail-service && env GOOS=linux CGO_ENABLED=0 go build -o ${MAIL_BINARY} ./cmd/api
-	@echo "Done!"
-
 ## build_logger: builds the listener binary as a linux executable
 build_listener:
 	@echo "Building listener binary..."
 	cd ../listener-service && env GOOS=linux CGO_ENABLED=0 go build -o ${LISTENER_BINARY} .
 	@echo "Done!"
 
-## build_front: builds the frone end binary
-build_front:
-	@echo "Building front end binary..."
+## start: starts the front end
+start_front_dev:
+	@echo "Starting front end development"
 	cd ../front-end && yarn dev
-	@echo "Done!"
 
 ## start: starts the front end
-start: build_front
-	@echo "Starting front end"
-	cd ../front-end && yarn dev
+start_front_prod:
+	@echo "Starting front end production build"
+	cd ../front-end && yarn build
 
 ## stop: stop the front end
 stop:

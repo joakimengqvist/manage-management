@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -35,6 +36,11 @@ type ExternalCompany struct {
 	ContractualAgreements     []string  `json:"contractual_agreements"`
 }
 
+type InvoiceCompanyPayload struct {
+	CompanyId string `json:"company_id"`
+	InvoiceId string `json:"invoice_id"`
+}
+
 func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ExternalCompany
 	err := app.readJSON(w, r, &requestPayload)
@@ -47,7 +53,9 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://external-company-service/create-external-company", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("EXTERNAL_COMPANY_SERVICE_SERVICE_HOST") + "/create-external-company"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -101,7 +109,9 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://external-company-service/update-external-company", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("EXTERNAL_COMPANY_SERVICE_SERVICE_HOST") + "/update-external-company"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -145,11 +155,13 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all external companies [external-company/get-all-external-companies]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all external companies [external-company/get-all-external-companies]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://external-company-service/get-all-external-companies", nil)
+	endpoint := "http://" + os.Getenv("EXTERNAL_COMPANY_SERVICE_SERVICE_HOST") + "/get-all-external-companies"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -175,7 +187,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all external companies success [external-company/get-all-external-companies]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all external companies success [external-company/get-all-external-companies]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -192,7 +204,9 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://external-company-service/get-external-company-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("EXTERNAL_COMPANY_SERVICE_SERVICE_HOST") + "/get-external-company-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -215,6 +229,120 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 		return
 	} else if response.StatusCode != http.StatusAccepted {
 		app.errorJSON(w, errors.New("error calling economics service - get project external company by id"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
+func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
+	var requestPayload InvoiceCompanyPayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	endpoint := "http://" + os.Getenv("EXTERNAL_COMPANY_SERVICE_SERVICE_HOST") + "/append-invoice"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch project external company"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - Add invoice to company"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling external company service - Add invoice to company"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
+func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
+	var requestPayload InvoiceCompanyPayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	endpoint := "http://" + os.Getenv("EXTERNAL_COMPANY_SERVICE_SERVICE_HOST") + "/remove-invoice"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch project external company"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - Remove invoice to company"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling external company service - Remove invoice to company"))
 		return
 	}
 

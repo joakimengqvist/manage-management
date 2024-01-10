@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 )
@@ -373,4 +374,85 @@ func UpdateIncomeId(incomeId string, invoiceId string) error {
 	}
 
 	return nil
+}
+
+func GetAllInvoicesByIds(ids string) ([]*InvoicePostgres, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `select
+		id,
+		company_id,
+		project_id,
+		sub_project_id,
+		income_id,
+		invoice_display_name,
+		invoice_description,
+		statistics_invoice,
+		invoice_items,
+		original_price,
+		actual_price,
+		discount_percentage,
+		discount_amount,
+		original_tax,
+		actual_tax,
+		invoice_date,
+		due_date,
+		payment_date,
+		paid,
+		status,
+		created_by,
+		created_at, 
+		updated_by, 
+		updated_at
+        from invoices
+        where id = ANY($1)
+		order by created_at asc
+    `
+
+	rows, err := db.QueryContext(ctx, query, ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var invoices []*InvoicePostgres
+
+	for rows.Next() {
+		var invoice InvoicePostgres
+		err := rows.Scan(
+			&invoice.ID,
+			&invoice.CompanyId,
+			&invoice.ProjectId,
+			&invoice.SubProjectId,
+			&invoice.IncomeId,
+			&invoice.InvoiceDisplayName,
+			&invoice.InvoiceDescription,
+			&invoice.StatisticsInvoice,
+			&invoice.InvoiceItems,
+			&invoice.OriginalPrice,
+			&invoice.ActualPrice,
+			&invoice.DiscountPercentage,
+			&invoice.DiscountAmount,
+			&invoice.OriginalTax,
+			&invoice.ActualTax,
+			&invoice.InvoiceDate,
+			&invoice.DueDate,
+			&invoice.PaymentDate,
+			&invoice.Paid,
+			&invoice.Status,
+			&invoice.CreatedBy,
+			&invoice.CreatedAt,
+			&invoice.UpdatedBy,
+			&invoice.UpdatedAt,
+		)
+		if err != nil {
+			fmt.Println("Error scanning", err)
+			return nil, err
+		}
+
+		invoices = append(invoices, &invoice)
+	}
+
+	return invoices, nil
 }

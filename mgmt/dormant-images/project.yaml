@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-service-kub-deployment
+  labels:
+    app: project-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-service
+  template:
+    metadata:
+      labels:
+        app: project-service
+    spec:
+      containers:
+        - name: project-service
+          image: "joakimengqvist/mgmt-project-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=projects sslmode=disable timezone=UTC connect_timeout=5"
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service-kub-deployment
+spec:
+  type: ClusterIP
+  selector:
+    app: project-service
+  ports:
+    - protocol: TCP
+      name: internal-port
+      port: 80
+      targetPort: 80

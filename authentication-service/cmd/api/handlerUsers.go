@@ -72,7 +72,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedUser,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[authentication-service] - Successful authentication"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/authenticate]", Name: "[authentication-service] - Successful authentication"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -169,7 +169,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedData,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -207,7 +207,7 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/update-user]", Name: "[authentication-service] - Successful updated user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -246,7 +246,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -291,7 +291,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedUser,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get user by id [/auth/get-user-by-id]", Name: "[authentication-service] - Successfuly fetched user"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get user by id [/auth/get-user-by-id]", Name: "[authentication-service] - Successfuly fetched user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -325,7 +325,7 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 		Data:    userSettings,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get user settings by user id [/auth/get-user-settings-by-user-id]", Name: "[authentication-service] - Successfuly fetched user settings"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get user settings by user id [/auth/get-user-settings-by-user-id]", Name: "[authentication-service] - Successfuly fetched user settings"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -431,6 +431,6 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, r *http.Request) {
 		Message:       "Authenticated",
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Authenticate [/auth/delete-user]", Name: "[authentication-service] - Successful deleted user"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

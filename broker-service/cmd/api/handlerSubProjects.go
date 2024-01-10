@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -73,13 +74,15 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create subProject [/project/create-sub-project]", Name: "[broker-service] - Create subProject request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create subProject [/project/create-sub-project]", Name: "[broker-service] - Create subProject request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/create-sub-project", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/create-sub-project"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -118,7 +121,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create subProject successfully [/project/create-sub-project]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create subProject successfully [/project/create-sub-project]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -130,13 +133,15 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update subProject [/project/update-sub-project]", Name: "[broker-service] - Update subProject request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update subProject [/project/update-sub-project]", Name: "[broker-service] - Update subProject request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/update-sub-project", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/update-sub-project"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -175,7 +180,7 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated subProject successfully [/project/update-sub-project]", Name: "[broker-service] - Successfully updated subProject"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated subProject successfully [/project/update-sub-project]", Name: "[broker-service] - Successfully updated subProject"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -187,13 +192,15 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete subProject [/project/delete-sub-project]", Name: "[broker-service] - Delete subProject request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete subProject [/project/delete-sub-project]", Name: "[broker-service] - Delete subProject request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-sub-project", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-sub-project"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -232,7 +239,7 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete subProject successfully [/project/delete-sub-project]", Name: "[broker-service] - Successfully deleteted subProject"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete subProject successfully [/project/delete-sub-project]", Name: "[broker-service] - Successfully deleteted subProject"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -245,13 +252,15 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get subProject by id [/project/get-sub-project-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get subProject by id [/project/get-sub-project-by-id]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/get-sub-project-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/get-sub-project-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -290,17 +299,19 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get subProject by id successfully [/project/get-sub-project-by-id]", Name: "[broker-service] - Successfully fetched subProject"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get subProject by id successfully [/project/get-sub-project-by-id]", Name: "[broker-service] - Successfully fetched subProject"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all subProjects [/project/get-all-sub-projects]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all subProjects [/project/get-all-sub-projects]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://project-service/project/get-all-sub-projects", nil)
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/get-all-sub-projects"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -326,13 +337,13 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects success [/project/get-all-sub-projects]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects success [/project/get-all-sub-projects]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all subProjects [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all subProjects [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
@@ -346,7 +357,9 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/get-sub-projects-by-ids", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/get-sub-projects-by-ids"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -372,7 +385,7 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects by ids success [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all subProjects by ids success [/project/get-all-sub-projects-by-id]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -389,7 +402,9 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/add-sub-projects-project-connection", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/add-sub-projects-project-connection"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -444,7 +459,9 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-sub-projects-project-connection", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-sub-projects-project-connection"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

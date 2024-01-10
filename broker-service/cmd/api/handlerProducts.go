@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -42,7 +43,9 @@ func (app *Config) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://product-service/product/create-product", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PRODUCT_SERVICE_SERVICE_HOST") + "/product/create-product"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -96,7 +99,9 @@ func (app *Config) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://product-service/product/update-product", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PRODUCT_SERVICE_SERVICE_HOST") + "/product/update-product"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -140,11 +145,13 @@ func (app *Config) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 func (app *Config) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all products [product/get-all-products]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all products [product/get-all-products]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://product-service/product/get-all-products", nil)
+	endpoint := "http://" + os.Getenv("PRODUCT_SERVICE_SERVICE_HOST") + "/product/get-all-products"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -170,7 +177,7 @@ func (app *Config) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all products success [product/get-all-products]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all products success [product/get-all-products]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -187,7 +194,9 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://product-service/product/get-product-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PRODUCT_SERVICE_SERVICE_HOST") + "/product/get-product-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

@@ -347,8 +347,8 @@ const UserDetails = () => {
     <>
       {contextHolder}
       <Row>
-        <Col span={16}>
-          <Card style={{ width: '98%'}}>
+        <Col span={16} style={{paddingRight: '8px'}}>
+          <Card>
           <div style={{display: 'flex', justifyContent: 'flex-start', gap: '20px'}}>
             <div style={{paddingRight: '16px'}}>
             <Title level={4}>User information</Title>
@@ -448,7 +448,7 @@ const UserDetails = () => {
         </Col>
         <Col span={8}>
         <Card 
-          style={{width: '400px', height: 'fit-content'}}
+          style={{height: 'fit-content'}}
           tabList={userNotesTabList}
           onTabChange={onHandleChangeActiveNotesTab}
           >

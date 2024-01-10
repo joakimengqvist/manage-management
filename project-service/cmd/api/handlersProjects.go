@@ -57,7 +57,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		Data:    response,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[project-service] - Successfully created new project"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[project-service] - Successfully created new project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -101,7 +101,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		Data:    updatedProject,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[project-service] - Successfully updated project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -145,7 +145,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[project-service] - Successful deleted project"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[project-service] - Successful deleted project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -167,14 +167,12 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to read JSON payload: " + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	project, err := app.Models.Project.GetProjectById(requestPayload.ID)
 	if err != nil {
-		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Failed to get project by id: " + err.Error()})
 		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
 		return
 	}
@@ -197,7 +195,7 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedProject,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Successfuly fetched project"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get project by id [/auth/get-project-by-id]", Name: "[project-service] - Successfuly fetched project"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -217,7 +215,6 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
 	projects, err := app.Models.Project.GetAllProjects()
 	if err != nil {
-		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[project-service] - Failed to read JSON payload" + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -339,7 +336,7 @@ func (app *Config) AddProjectNote(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/create-project-note]", Name: "[project-service] - Successful added project note"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/create-project-note]", Name: "[project-service] - Successful added project note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -375,6 +372,6 @@ func (app *Config) RemoveProjectNote(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/delete-project-note]", Name: "[project-service] - Successful deleted project note"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Project [/project/delete-project-note]", Name: "[project-service] - Successful deleted project note"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

@@ -12,8 +12,6 @@ import { updateIncome } from "./economics/incomes/update";
 import { getAllIncomes } from "./economics/incomes/getAll";
 import { getAllIncomesByProjectId } from "./economics/incomes/getAllByProjectId";
 
-import { sendEmail } from "./email/send";
-
 import { createExternalCompany } from "./externalCompanies/create";
 import { getExternalCompanyById } from "./externalCompanies/getById";
 import { updateExternalCompany } from "./externalCompanies/update";
@@ -21,6 +19,7 @@ import { getAllExternalCompanies } from "./externalCompanies/getAll";
 
 import { createInvoice } from "./invoices/invoice/create";
 import { getInvoiceById } from "./invoices/invoice/getById";
+import { getInvoicesByIds } from "./invoices/invoice/getAllByIds";
 import { updateInvoice } from "./invoices/invoice/update";
 import { getAllInvoices } from "./invoices/invoice/getAll";
 import { getAllInvoicesByProjectId } from "./invoices/invoice/getAllByProjectId";
@@ -43,6 +42,8 @@ import { getExternalCompanyNoteById } from "./notes/externalCompany/getById";
 import { updateExternalCompanyNote } from "./notes/externalCompany/update";
 import { getAllExternalCompanyNotesByExternalCompanyId } from "./notes/externalCompany/getAllByExternalCompanyId";
 import { getAllExternalCompanyNotesByUserId } from "./notes/externalCompany/getAllByUserId";
+import { removeInvoiceFromCompany } from "./externalCompanies/specialActions/RemoveInvoiceFromCompany";
+import { addInvoiceToCompany } from "./externalCompanies/specialActions/AddInvoiceToCompany";
 
 import { createProductNote } from "./notes/product/create";
 import { deleteProductNote } from "./notes/product/delete";
@@ -139,8 +140,6 @@ export {
     getAllIncomes,
     getAllIncomesByProjectId,
     
-    sendEmail,
-    
     createExternalCompany,
     getExternalCompanyById,
     updateExternalCompany,
@@ -148,6 +147,7 @@ export {
     
     createInvoice,
     getInvoiceById,
+    getInvoicesByIds,
     updateInvoice,
     getAllInvoices,
     getAllInvoicesByProjectId,
@@ -170,6 +170,8 @@ export {
     updateExternalCompanyNote,
     getAllExternalCompanyNotesByExternalCompanyId,
     getAllExternalCompanyNotesByUserId,
+    removeInvoiceFromCompany,
+    addInvoiceToCompany,
      
     createIncomeNote,
     deleteIncomeNote,

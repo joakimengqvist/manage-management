@@ -7,6 +7,7 @@ import { Product } from '../../interfaces/product';
 import { useEffect, useState } from 'react';
 import { getAllProducts } from '../../api';
 import { useGetLoggedInUser } from '../../hooks';
+import { formatNumberWithSpaces } from '../../helpers/stringFormatting';
 
 const { Link } = Typography;
 
@@ -68,7 +69,7 @@ const Products = () => {
             name: <Link href={ `/product/${product.id}`}>{product.name}</Link>,
             description: product.description,
             category: product.category,
-            price: product.price,
+            price: `${formatNumberWithSpaces(product.price)} SEK`,
             tax: `${product.tax_percentage}%`,
             operations: (
                 <div style={{display: 'flex', justifyContent: 'flex-end'}}>

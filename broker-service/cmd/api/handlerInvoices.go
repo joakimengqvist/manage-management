@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -64,7 +66,9 @@ func (app *Config) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/create-invoice", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/create-invoice"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -118,7 +122,9 @@ func (app *Config) CreateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/create-invoice-item", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/create-invoice-item"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -173,7 +179,9 @@ func (app *Config) GetAllInvoicesBySubProjectId(w http.ResponseWriter, r *http.R
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-all-invoices-by-sub-project-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoices-by-sub-project-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -223,7 +231,9 @@ func (app *Config) GetAllInvoicesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-all-invoices-by-project-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoices-by-project-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -273,7 +283,9 @@ func (app *Config) GetAllInvoiceItemsByProductId(w http.ResponseWriter, r *http.
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-all-invoice-items-by-product-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoice-items-by-product-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -314,7 +326,9 @@ func (app *Config) GetAllInvoices(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://invoice-service/invoice/get-all-invoices", nil)
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoices"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -347,7 +361,9 @@ func (app *Config) GetAllInvoiceItems(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://invoice-service/invoice/get-all-invoice-items", nil)
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoice-items"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -388,7 +404,9 @@ func (app *Config) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/update-invoice", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/update-invoice"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -442,7 +460,9 @@ func (app *Config) UpdateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/update-invoice-item", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/update-invoice-item"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -497,7 +517,9 @@ func (app *Config) GetInvoiceById(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-invoice-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-invoice-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -539,6 +561,65 @@ func (app *Config) GetInvoiceById(w http.ResponseWriter, r *http.Request) {
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
+func (app *Config) GetAllInvoicesByIds(w http.ResponseWriter, r *http.Request) {
+	var requestPayload IDSpayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	userId := r.Header.Get("X-User-Id")
+
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
+
+	fmt.Println("requestPayload", requestPayload)
+
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoices-by-ids"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("X-User-Id", userId)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, errors.New("could not fetch invoices"))
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("status unauthorized - get invoices by ids"))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling invoice service - get invoices by ids"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	app.writeJSON(w, http.StatusAccepted, jsonFromService)
+}
+
 func (app *Config) GetInvoiceItemById(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
@@ -552,7 +633,9 @@ func (app *Config) GetInvoiceItemById(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-invoice-item-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-invoice-item-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -607,7 +690,9 @@ func (app *Config) GetAllInvoiceItemsByIds(w http.ResponseWriter, r *http.Reques
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://invoice-service/invoice/get-all-invoice-items-by-ids", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("INVOICE_SERVICE_SERVICE_HOST") + "/invoice/get-all-invoice-items-by-ids"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

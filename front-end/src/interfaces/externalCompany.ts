@@ -16,8 +16,7 @@ export interface ExternalCompany {
 	tax_identification_number: string
 	status: string
 	assigned_projects: Array<string>
-	invoice_pending: Array<string>
-	invoice_history: Array<string>
+	invoices: Array<string>
 	contractual_agreements: Array<string>
 	created_at: string
 	created_by: string

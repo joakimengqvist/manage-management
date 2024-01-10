@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 )
 
 type PrivilegePayload struct {
@@ -28,11 +29,13 @@ type UpdatePrivilege struct {
 
 func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://authentication-service/auth/get-all-privileges", nil)
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/get-all-privileges"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -58,7 +61,7 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all privileges success [/auth/get-all-privileges]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all privileges success [/auth/get-all-privileges]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -70,13 +73,15 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create privilege [/auth/create-privilege]", Name: "[broker-service] - Create privilege request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create privilege [/auth/create-privilege]", Name: "[broker-service] - Create privilege request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/create-privilege", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/create-privilege"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -115,7 +120,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create privilege successfully [/auth/create-privilege]", Name: "[broker-service] - Successfully created privilege"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create privilege successfully [/auth/create-privilege]", Name: "[broker-service] - Successfully created privilege"})
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
@@ -129,13 +134,15 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get privilege by id [/auth/get-privilege-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get privilege by id [/auth/get-privilege-by-id]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/get-privilege-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/get-privilege-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -174,7 +181,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get privilege by id successfully [/auth/get-privilege-by-id]", Name: "[broker-service] - Successfully fetched privilege"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get privilege by id successfully [/auth/get-privilege-by-id]", Name: "[broker-service] - Successfully fetched privilege"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -186,13 +193,15 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update privilege [/auth/update-privilege]", Name: "[broker-service] - Update privilege request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update privilege [/auth/update-privilege]", Name: "[broker-service] - Update privilege request recieved"})
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/update-privilege", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/update-privilege"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -242,13 +251,15 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete user [/auth/delete-user]", Name: "[broker-service] - Delete user request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete user [/auth/delete-user]", Name: "[broker-service] - Delete user request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/delete-privilege", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/delete-privilege"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

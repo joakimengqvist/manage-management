@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/rpc"
 	"os"
 	"time"
 
@@ -102,7 +101,9 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 
 	jsonData, _ := json.MarshalIndent(payload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/check-privilege", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/check-privilege"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 
 	if err != nil {
 		return false, err
@@ -124,36 +125,4 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 	}
 
 	return true, nil
-}
-
-type RPCPayload struct {
-	Action string
-	Name   string
-	Data   string
-}
-
-type RPCLogData struct {
-	Action string
-	Name   string
-}
-
-func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
-
-	jsonData, _ := json.MarshalIndent(payload, "", "")
-
-	client, err := rpc.Dial("tcp", "logger-service:5001")
-	if err != nil {
-		return
-	}
-
-	rpcPayload := RPCPayload{
-		Action: logData.Action,
-		Name:   logData.Name,
-		Data:   string(jsonData),
-	}
-
-	err = client.Call("RPCServer.LogInfo", rpcPayload, nil)
-	if err != nil {
-		return
-	}
 }

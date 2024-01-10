@@ -90,7 +90,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 		Data:    response,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create privilege [/auth/create-privilege]", Name: "[authentication-service] - Successfuly created new privilege"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Create privilege [/auth/create-privilege]", Name: "[authentication-service] - Successfuly created new privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -122,7 +122,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 		Data:    privilege,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get privilege by id [/auth/get-privilege-by-id]", Name: "[authentication-service] - Successfuly fetched privilege"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get privilege by id [/auth/get-privilege-by-id]", Name: "[authentication-service] - Successfuly fetched privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -160,7 +160,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 		Data:    updatedPrivilege,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update privilege [/auth/update-privilege]", Name: "[authentication-service] - Successful updated privilege"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Update privilege [/auth/update-privilege]", Name: "[authentication-service] - Successful updated privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -198,6 +198,6 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete privilege [/auth/delete-privilege]", Name: "[authentication-service] - Successful deleted privilege"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete privilege [/auth/delete-privilege]", Name: "[authentication-service] - Successful deleted privilege"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"net/rpc"
+	"os"
 )
 
 type IDpayload struct {
@@ -25,7 +25,9 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 
 	jsonData, _ := json.MarshalIndent(payload, "", "")
 
-	request, err := http.NewRequest("POST", "http://authentication-service/auth/check-privilege", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("AUTHENTICATION_SERVICE_SERVICE_HOST") + "/auth/check-privilege"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 
 	if err != nil {
 		return false, err
@@ -60,6 +62,8 @@ type RPCPayload struct {
 	Data   string
 }
 
+/*
+
 func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
 
 	jsonData, _ := json.MarshalIndent(payload, "", "")
@@ -80,3 +84,5 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 		return
 	}
 }
+
+*/

@@ -18,8 +18,8 @@ const webPort = "80"
 
 var counts int64
 
-type RPCServer struct {
-	Config Config
+type IDpayload struct {
+	ID string `json:"id"`
 }
 
 type Config struct {

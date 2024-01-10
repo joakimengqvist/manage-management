@@ -232,7 +232,7 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	returnedUser := data.Income{
+	returnedIncome := data.Income{
 		ID:               income.ID,
 		ProjectID:        income.ProjectID,
 		InvoiceID:        income.InvoiceID,
@@ -254,7 +254,7 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Fetched income by id successfull: %s", income.ID),
-		Data:    returnedUser,
+		Data:    returnedIncome,
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)

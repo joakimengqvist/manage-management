@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-service-kub-deployment
+  labels:
+    app: authentication-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication-service
+  template:
+    metadata:
+      labels:
+        app: authentication-service
+    spec:
+      containers:
+        - name: authentication-service
+          image: "joakimengqvist/mgmt-authentication-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=auth sslmode=disable timezone=UTC connect_timeout=5"
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-service-kub-service
+spec:
+  type: ClusterIP
+  selector:
+    app: authentication-service
+  ports:
+    - protocol: TCP
+      name: internal-port
+      port: 80
+      targetPort: 80

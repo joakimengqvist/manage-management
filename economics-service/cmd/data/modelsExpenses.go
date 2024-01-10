@@ -210,7 +210,7 @@ func GetExpenseById(ExpenseId string) (*Expense, error) {
 		&expense.Tax,
 		&expense.Status,
 		&expense.Currency,
-		expense.PaymentMethod,
+		&expense.PaymentMethod,
 		&expense.CreatedBy,
 		&expense.CreatedAt,
 		&expense.UpdatedBy,

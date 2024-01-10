@@ -1,0 +1,125 @@
+version: "3"
+
+services:
+  postgres:
+    image: "postgres:14.2"
+    ports:
+      - "5432:5432"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: management
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+
+  rabbitmq:
+    image: rabbitmq:3.12.4-alpine
+    deploy:
+      mode: global
+
+  broker-service:
+    image: joakimengqvist/mgmt-broker-service:latest
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  listener-service:
+    image: joakimengqvist/mgmt-listener-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  authentication-service:
+    image: joakimengqvist/mgmt-authentication-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=auth sslmode=disable timezone=UTC connect_timeout=5"
+
+  project-service:
+    image: joakimengqvist/mgmt-project-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=projects sslmode=disable timezone=UTC connect_timeout=5"
+
+  notes-service:
+    image: joakimengqvist/mgmt-notes-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=notes sslmode=disable timezone=UTC connect_timeout=5"
+
+  economics-service:
+    image: joakimengqvist/mgmt-economics-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=economics sslmode=disable timezone=UTC connect_timeout=5"
+
+  external-company-service:
+    image: joakimengqvist/mgmt-external-company-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=companies sslmode=disable timezone=UTC connect_timeout=5"
+
+  product-service:
+    image: joakimengqvist/mgmt-product-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=products sslmode=disable timezone=UTC connect_timeout=5"
+
+  invoice-service:
+    image: joakimengqvist/mgmt-invoice-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=invoice sslmode=disable timezone=UTC connect_timeout=5"
+
+  logger-service:
+    image: joakimengqvist/mgmt-logger-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      
+  mongo:
+    image: "mongo:4.2.16-bionic"
+    ports:
+      - "27017:27017"
+    deploy:
+      mode: global
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db

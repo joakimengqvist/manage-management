@@ -28,6 +28,11 @@ type Models struct {
 	NewExternalCompany NewExternalCompany
 }
 
+type InvoicePayload struct {
+	CompanyId string `json:"company_id"`
+	InvoiceId string `json:"invoice_id"`
+}
+
 type ExternalCompany struct {
 	ID                        string    `json:"id"`
 	CompanyName               string    `json:"company_name" sql:"not null"`
@@ -50,8 +55,7 @@ type ExternalCompany struct {
 	UpdatedBy                 string    `json:"updated_by,omitempty"`
 	Status                    string    `json:"status"`
 	AssignedProjects          []string  `json:"assigned_projects"`
-	InvoicePending            []string  `json:"invoice_pending"`
-	InvoiceHistory            []string  `json:"invoice_history"`
+	Invoices                  []string  `json:"invoices"`
 	ContractualAgreements     []string  `json:"contractual_agreements"`
 }
 
@@ -77,8 +81,7 @@ type ExternalCompanyPostgres struct {
 	UpdatedBy                 string    `json:"updated_by"`
 	Status                    string    `json:"status"`
 	AssignedProjects          string    `json:"assigned_projects"`
-	InvoicePending            string    `json:"invoice_pending"`
-	InvoiceHistory            string    `json:"invoice_history"`
+	Invoices                  string    `json:"invoices"`
 	ContractualAgreements     string    `json:"contractual_agreements"`
 }
 
@@ -103,8 +106,7 @@ type NewExternalCompany struct {
 	UpdatedBy                 string    `json:"updated_by"`
 	Status                    string    `json:"status"`
 	AssignedProjects          string    `json:"assigned_projects"`
-	InvoicePending            string    `json:"invoice_pending"`
-	InvoiceHistory            string    `json:"invoice_history"`
+	Invoices                  string    `json:"invoices"`
 	ContractualAgreements     string    `json:"contractual_agreements"`
 }
 
@@ -114,8 +116,8 @@ func InsertExternalCompany(company NewExternalCompany) (string, error) {
 
 	var newID string
 
-	stmt := `insert into external_companies (company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+	stmt := `insert into external_companies (company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoices, contractual_agreements)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $23)
 		RETURNING id`
 
 	err := db.QueryRowContext(ctx, stmt,
@@ -139,8 +141,7 @@ func InsertExternalCompany(company NewExternalCompany) (string, error) {
 		company.CreatedBy,
 		company.Status,
 		company.AssignedProjects,
-		company.InvoicePending,
-		company.InvoiceHistory,
+		company.Invoices,
 		company.ContractualAgreements,
 	).Scan(&newID)
 
@@ -174,10 +175,9 @@ func UpdateExternalCompany(p ExternalCompanyPostgres) error {
 		updated_by = $16,
 		status = $17,
 		assigned_projects = $18,
-		invoice_pending = $19,
-		invoice_history = $20,
-		contractual_agreements = $21
-		where id = $22
+		invoices = $19,
+		contractual_agreements = $20
+		where id = $21
 	`
 
 	_, err := db.ExecContext(ctx, stmt,
@@ -199,8 +199,7 @@ func UpdateExternalCompany(p ExternalCompanyPostgres) error {
 		p.UpdatedBy,
 		p.Status,
 		p.AssignedProjects,
-		p.InvoicePending,
-		p.InvoiceHistory,
+		p.Invoices,
 		p.ContractualAgreements,
 		p.ID,
 	)
@@ -217,7 +216,7 @@ func GetAllExternalCompanies() ([]*ExternalCompanyPostgres, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements
+	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoices, contractual_agreements
 	from external_companies order by updated_at desc`
 
 	rows, err := db.QueryContext(ctx, query)
@@ -252,8 +251,7 @@ func GetAllExternalCompanies() ([]*ExternalCompanyPostgres, error) {
 			&company.UpdatedBy,
 			&company.Status,
 			&company.AssignedProjects,
-			&company.InvoicePending,
-			&company.InvoiceHistory,
+			&company.Invoices,
 			&company.ContractualAgreements,
 		)
 		if err != nil {
@@ -271,7 +269,7 @@ func GetExternalCompanyById(id string) (*ExternalCompanyPostgres, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoice_pending, invoice_history, contractual_agreements from external_companies where id = $1`
+	query := `select id, company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoices, contractual_agreements from external_companies where id = $1`
 
 	var company ExternalCompanyPostgres
 	row := db.QueryRowContext(ctx, query, id)
@@ -298,8 +296,7 @@ func GetExternalCompanyById(id string) (*ExternalCompanyPostgres, error) {
 		&company.UpdatedBy,
 		&company.Status,
 		&company.AssignedProjects,
-		&company.InvoicePending,
-		&company.InvoiceHistory,
+		&company.Invoices,
 		&company.ContractualAgreements,
 	)
 
@@ -308,4 +305,34 @@ func GetExternalCompanyById(id string) (*ExternalCompanyPostgres, error) {
 	}
 
 	return &company, nil
+}
+
+func AppendInvoiceToCompany(invoiceId string, companyId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update external_companies set invoices = array(SELECT DISTINCT unnest(array_append(invoices, $1))) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, invoiceId, companyId)
+
+	if err != nil {
+		fmt.Println("Error updating sub project", err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveInvoiceFromCompany(invoiceId string, companyId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `update external_companies set invoices = array_remove(invoices, $1) where id = $2`
+
+	_, err := db.ExecContext(ctx, stmt, invoiceId, companyId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

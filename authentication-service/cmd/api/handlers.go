@@ -1,13 +1,7 @@
 package main
 
-import (
-	"encoding/json"
-	"net/http"
-	"net/rpc"
-)
-
-type IDpayload struct {
-	ID string `json:"id"`
+type RPCServer struct {
+	Config Config
 }
 
 type RPCLogData struct {
@@ -21,6 +15,7 @@ type RPCPayload struct {
 	Data   string
 }
 
+/*
 func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
 
 	jsonData, _ := json.MarshalIndent(payload, "", "")
@@ -42,4 +37,6 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 		app.errorJSON(w, err)
 		return
 	}
+
 }
+*/

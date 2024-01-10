@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -57,7 +58,9 @@ func (app *Config) CreateInvoiceItemNote(w http.ResponseWriter, r *http.Request)
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/create-invoice-item-note", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/create-invoice-item-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -111,7 +114,9 @@ func (app *Config) UpdateInvoiceItemNote(w http.ResponseWriter, r *http.Request)
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/update-invoice-item-note", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/update-invoice-item-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -166,7 +171,9 @@ func (app *Config) GetInvoiceItemNoteById(w http.ResponseWriter, r *http.Request
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-invoice-item-note-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/get-invoice-item-note-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -221,7 +228,9 @@ func (app *Config) GetAllInvoiceItemNotesByInvoiceItemId(w http.ResponseWriter, 
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-invoice-item-notes-by-invoice-item-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/get-all-invoice-item-notes-by-invoice-item-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -271,7 +280,9 @@ func (app *Config) GetAllInvoiceItemNotesByUserId(w http.ResponseWriter, r *http
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-invoice-item-notes-by-user-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/get-all-invoice-item-notes-by-user-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -320,7 +331,9 @@ func (app *Config) DeleteInvoiceItemNote(w http.ResponseWriter, r *http.Request)
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/delete-invoice-item-note", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/delete-invoice-item-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

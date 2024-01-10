@@ -135,7 +135,6 @@ func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 		Data:    expensesSlice,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get all privileges [/auth/get-all-privileges]", Name: "[authentication-service] - Successfuly fetched all privileges"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -222,13 +221,18 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("requestPayload.ID", requestPayload.ID)
+
 	expense, err := data.GetExpenseById(requestPayload.ID)
 	if err != nil {
+		fmt.Println("GetExpenseById - expense error", err)
 		app.errorJSON(w, errors.New("failed to get expense by id"), http.StatusBadRequest)
 		return
 	}
 
-	returnedUser := data.Expense{
+	fmt.Println(expense)
+
+	returnedExpense := data.Expense{
 		ID:              expense.ID,
 		ProjectID:       expense.ProjectID,
 		ExpenseDate:     expense.ExpenseDate,
@@ -249,7 +253,7 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Fetched expense by id successfull: %s", expense.ID),
-		Data:    returnedUser,
+		Data:    returnedExpense,
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)

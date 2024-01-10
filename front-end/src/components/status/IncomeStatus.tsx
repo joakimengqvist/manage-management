@@ -23,7 +23,7 @@ export const IncomeStatus = ({status} : {status : string}) => {
         case 'closed':
             return <Badge status="default" text="Closed" />;
         default:
-            return <Badge status="default" text="Pending" />;
+            return <Badge status="default" text="None" />;
     }
 }
 

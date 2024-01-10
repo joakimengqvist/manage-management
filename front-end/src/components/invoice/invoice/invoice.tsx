@@ -155,7 +155,7 @@ const InvoiceDetails = () => {
         {invoice && (
             <Row>
                 <Col span={16} style={{paddingRight: '8px'}}>
-                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '4px', marginBottom: '4px'}}>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '4px', marginBottom: '6px'}}>
                         <Button onClick={() => setEditing(!editing)}>
                             {editing ? 'Cancel editing' : 'Edit invoice info'}
                         </Button>

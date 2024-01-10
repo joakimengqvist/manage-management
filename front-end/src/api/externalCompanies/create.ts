@@ -21,8 +21,6 @@ export const createExternalCompany = async (
 	tax_identification_number: string,
 	status: string,
 	assigned_projects: Array<string>,
-	invoice_pending: Array<string>,
-	invoice_history: Array<string>,
 	contractual_agreements: Array<string>
 ) : Promise<{
     error: boolean,
@@ -46,8 +44,6 @@ export const createExternalCompany = async (
         tax_identification_number,
         status,
         assigned_projects,
-        invoice_pending,
-        invoice_history,
         contractual_agreements
     };
 

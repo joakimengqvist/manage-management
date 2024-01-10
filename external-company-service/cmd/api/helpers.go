@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -90,29 +89,4 @@ func (app *Config) convertToPostgresArray(arrayElements []string) string {
 	postgresArray := strings.Join(arrayElements, ",")
 	postgresArray = "{" + postgresArray + "}"
 	return postgresArray
-}
-
-func (app *Config) convertToPostgresArrayInteger(arrayElements []int) string {
-	arrayString := ""
-	for i, id := range arrayElements {
-		arrayString += strconv.Itoa(id)
-		if i < (len(arrayElements) - 1) {
-			arrayString += ","
-		}
-	}
-	postgresArray := "{" + arrayString + "}"
-	return postgresArray
-}
-
-func (app *Config) parsePostgresArrayInteger(postgresArray string) []int {
-	postgresArray = strings.Trim(postgresArray, "{}")
-	arrayElements := strings.Split(postgresArray, ",")
-
-	var arrayInt []int
-	for _, id := range arrayElements {
-		intId, _ := strconv.Atoi(id)
-		arrayInt = append(arrayInt, intId)
-	}
-
-	return arrayInt
 }

@@ -1,11 +1,5 @@
 package main
 
-import (
-	"encoding/json"
-	"net/http"
-	"net/rpc"
-)
-
 type RPCPayload struct {
 	Action string
 	Name   string
@@ -16,6 +10,8 @@ type RPCLogData struct {
 	Action string
 	Name   string
 }
+
+/*
 
 func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPCLogData) {
 
@@ -35,6 +31,8 @@ func (app *Config) logItemViaRPC(w http.ResponseWriter, payload any, logData RPC
 		return
 	}
 }
+
+*/
 
 // -------------------------------------------
 // ------  Unused old rabbitMQ Funtion  ------

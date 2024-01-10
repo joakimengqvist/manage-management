@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -45,13 +46,15 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[broker-service] - Create project request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project [/project/create-project]", Name: "[broker-service] - Create project request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/create-project", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/create-project"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -90,7 +93,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create project successfully [/project/create-project]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create project successfully [/project/create-project]", Name: "[broker-service]"})
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
@@ -103,13 +106,15 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[broker-service] - Update project request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project [/project/update-project]", Name: "[broker-service] - Update project request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/update-project", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/update-project"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -148,7 +153,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated project successfully [/project/update-project]", Name: "[broker-service] - Successfully updated project"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated project successfully [/project/update-project]", Name: "[broker-service] - Successfully updated project"})
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
@@ -161,13 +166,15 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[broker-service] - Delete project request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Delete project [/project/delete-project]", Name: "[broker-service] - Delete project request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-project", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-project"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -206,7 +213,7 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete project successfully [/project/delete-project]", Name: "[broker-service] - Successfully deleteted project"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Delete project successfully [/project/delete-project]", Name: "[broker-service] - Successfully deleteted project"})
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
@@ -220,13 +227,15 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/project/get-project-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project by id [/project/get-project-by-id]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/get-project-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/get-project-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -265,17 +274,19 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project by id successfully [/project/get-project-by-id]", Name: "[broker-service] - Successfully fetched project"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project by id successfully [/project/get-project-by-id]", Name: "[broker-service] - Successfully fetched project"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/project/get-all-projects]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/project/get-all-projects]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://project-service/project/get-all-projects", nil)
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/get-all-projects"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -301,13 +312,13 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all projects success [/project/get-all-projects]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all projects success [/project/get-all-projects]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
 func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
-	app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/project/get-all-projects-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/project/get-all-projects-by-id]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
@@ -321,7 +332,9 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/get-projects-by-ids", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/get-projects-by-ids"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -347,7 +360,7 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all projects by ids success [/project/get-all-projects-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get all projects by ids success [/project/get-all-projects-by-id]", Name: "[broker-service]"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -364,7 +377,9 @@ func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *htt
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/add-projects-sub-project-connection", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/add-projects-sub-project-connection"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -419,7 +434,9 @@ func (app *Config) AddSubProjectsSubProjectConnection(w http.ResponseWriter, r *
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/add-sub-projects-project-connection", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/add-sub-projects-project-connection"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -474,7 +491,9 @@ func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://project-service/project/delete-projects-sub-project-connection", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-projects-sub-project-connection"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

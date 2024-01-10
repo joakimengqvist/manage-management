@@ -183,6 +183,7 @@ export const staticDataSlice = createSlice({
         stateObject[invoice.id] = {
           id: invoice.id,
           company_id: invoice.company_id,
+          invoice_display_name: invoice.invoice_display_name,
         }
       });
       state.invoices = stateObject;

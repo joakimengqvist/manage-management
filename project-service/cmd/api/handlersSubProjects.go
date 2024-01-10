@@ -77,7 +77,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 		Data:    response,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Create subProject [/sub-project/create-subProject]", Name: "[subProject-service] - Successfully created new subProject"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Create subProject [/sub-project/create-subProject]", Name: "[subProject-service] - Successfully created new subProject"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -126,7 +126,7 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 		Data:    updatedSubProject,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Update subProject [/sub-project/update-subProject]", Name: "[subProject-service] - Successfully updated subProject"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Update subProject [/sub-project/update-subProject]", Name: "[subProject-service] - Successfully updated subProject"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -170,7 +170,7 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 		Data:    nil,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete subProject [/sub-project/delete-subProject]", Name: "[subProject-service] - Successful deleted subProject"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Delete subProject [/sub-project/delete-subProject]", Name: "[subProject-service] - Successful deleted subProject"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -192,14 +192,12 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get subProject by id [/auth/get-sub-project-by-id]", Name: "[subProject-service] - Failed to read JSON payload: " + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	subProject, err := app.Models.SubProject.GetSubProjectById(requestPayload.ID)
 	if err != nil {
-		app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get subProject by id [/auth/get-sub-project-by-id]", Name: "[subProject-service] - Failed to get subProject by id: " + err.Error()})
 		app.errorJSON(w, errors.New("failed to get subProject by id"), http.StatusBadRequest)
 		return
 	}
@@ -230,7 +228,7 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 		Data:    returnedSubProject,
 	}
 
-	app.logItemViaRPC(w, payload, RPCLogData{Action: "Get subProject by id [/auth/get-sub-project-by-id]", Name: "[subProject-service] - Successfuly fetched subProject"})
+	// app.logItemViaRPC(w, payload, RPCLogData{Action: "Get subProject by id [/auth/get-sub-project-by-id]", Name: "[subProject-service] - Successfuly fetched subProject"})
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
@@ -250,7 +248,6 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	projects, err := app.Models.SubProject.GetAllSubProjects()
 	if err != nil {
-		app.logItemViaRPC(w, nil, RPCLogData{Action: "Get all projects [/auth/get-all-projects]", Name: "[subProject-service] - Failed to read JSON payload" + err.Error()})
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -84,7 +85,9 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/create-expense", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/create-expense"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -138,7 +141,9 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/create-income", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/create-income"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -193,7 +198,9 @@ func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-all-expenses-by-project-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/get-all-expenses-by-project-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -243,7 +250,9 @@ func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Reque
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-all-incomes-by-project-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/get-all-incomes-by-project-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -284,7 +293,9 @@ func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://economics-service/economics/get-all-expenses", nil)
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/get-all-expenses"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -317,7 +328,9 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	userId := r.Header.Get("X-User-Id")
 
-	request, err := http.NewRequest("GET", "http://economics-service/economics/get-all-incomes", nil)
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/get-all-incomes"
+
+	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -358,7 +371,9 @@ func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/update-expense", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/update-expense"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -412,7 +427,9 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/update-income", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/update-income"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -467,7 +484,9 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-expense-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/get-expense-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -522,7 +541,9 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://economics-service/economics/get-income-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("ECONOMICS_SERVICE_SERVICE_HOST") + "/economics/get-income-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return

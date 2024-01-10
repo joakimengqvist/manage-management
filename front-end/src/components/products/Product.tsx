@@ -91,7 +91,7 @@ const ProductDetails = () => {
       <Row>
          {contextHolder}
       <Col span={16}  style={{paddingRight: '8px'}}>
-        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginBottom: '4px'}}>
+        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginBottom: '6px'}}>
             {editing ? (
                 <Button onClick={() => setEditing(false)}>Cancel</Button>
             ) : (

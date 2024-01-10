@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -53,6 +53,7 @@ func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header
 	w.WriteHeader(status)
 	_, err = w.Write(out)
 	if err != nil {
+		fmt.Print(err)
 		log.Println("WRITE HEADER", err)
 		return err
 	}
@@ -90,31 +91,6 @@ func (app *Config) convertToPostgresArray(arrayElements []string) string {
 	postgresArray := strings.Join(arrayElements, ",")
 	postgresArray = "{" + postgresArray + "}"
 	return postgresArray
-}
-
-func (app *Config) convertToPostgresArrayInteger(arrayElements []int) string {
-	arrayString := ""
-	for i, id := range arrayElements {
-		arrayString += strconv.Itoa(id)
-		if i < (len(arrayElements) - 1) {
-			arrayString += ","
-		}
-	}
-	postgresArray := "{" + arrayString + "}"
-	return postgresArray
-}
-
-func (app *Config) parsePostgresArrayInteger(postgresArray string) []int {
-	postgresArray = strings.Trim(postgresArray, "{}")
-	arrayElements := strings.Split(postgresArray, ",")
-
-	var arrayInt []int
-	for _, id := range arrayElements {
-		intId, _ := strconv.Atoi(id)
-		arrayInt = append(arrayInt, intId)
-	}
-
-	return arrayInt
 }
 
 func (app *Config) containsString(slice []string, target string) bool {

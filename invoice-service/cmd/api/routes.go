@@ -29,6 +29,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/invoice/get-invoice-by-id", app.GetInvoiceById)
 	mux.Post("/invoice/get-all-invoices-by-project-id", app.GetAllInvoicesByProjectId)
 	mux.Post("/invoice/get-all-invoices-by-sub-project-id", app.GetAllInvoicesBySubProjectId)
+	mux.Post("/invoice/get-all-invoices-by-ids", app.GetAllInvoicesByIds)
 
 	mux.Post("/invoice/create-invoice-item", app.CreateInvoiceItem)
 	mux.Get("/invoice/get-all-invoice-items", app.GetAllInvoiceItems)

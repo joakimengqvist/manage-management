@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -53,13 +54,15 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project note [/notes/create-sub-project-note]", Name: "[broker-service] - Create project note request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Create project note [/notes/create-sub-project-note]", Name: "[broker-service] - Create project note request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/create-sub-project-note", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/create-sub-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -98,7 +101,7 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create project note successfully [/notes/create-sub-project-note]", Name: "[broker-service] - Successfully created project note"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Create project note successfully [/notes/create-sub-project-note]", Name: "[broker-service] - Successfully created project note"})
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
@@ -111,13 +114,15 @@ func (app *Config) UpdateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project note [/notes/update-sub-project-note]", Name: "[broker-service] - Update project note request recieved"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Update project note [/notes/update-sub-project-note]", Name: "[broker-service] - Update project note request recieved"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/update-sub-project-note", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/update-sub-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -156,7 +161,7 @@ func (app *Config) UpdateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated project note successfully [/notes/update-sub-project-note]", Name: "[broker-service] - Successfully updated project note"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Updated project note successfully [/notes/update-sub-project-note]", Name: "[broker-service] - Successfully updated project note"})
 
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
@@ -170,13 +175,15 @@ func (app *Config) GetSubProjectNoteById(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-sub-project-note-by-id]", Name: "[broker-service]"})
+	// app.logItemViaRPC(w, requestPayload, RPCLogData{Action: "Get project note by id [/notes/get-sub-project-note-by-id]", Name: "[broker-service]"})
 
 	userId := r.Header.Get("X-User-Id")
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-sub-project-note-by-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/get-sub-project-note-by-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -215,7 +222,7 @@ func (app *Config) GetSubProjectNoteById(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-sub-project-note-by-id]", Name: "[broker-service] - Successfully fetched project note"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-sub-project-note-by-id]", Name: "[broker-service] - Successfully fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }
 
@@ -232,7 +239,9 @@ func (app *Config) GetAllSubProjectNotesBySubProjectId(w http.ResponseWriter, r 
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-sub-project-notes-by-sub-project-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/get-all-sub-project-notes-by-sub-project-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -282,7 +291,9 @@ func (app *Config) GetAllSubProjectNotesByUserId(w http.ResponseWriter, r *http.
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/get-all-sub-project-notes-by-user-id", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/get-all-sub-project-notes-by-user-id"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -331,7 +342,9 @@ func (app *Config) DeleteSubProjectNote(w http.ResponseWriter, r *http.Request) 
 
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "")
 
-	request, err := http.NewRequest("POST", "http://notes-service/notes/delete-sub-project-note", bytes.NewBuffer(jsonData))
+	endpoint := "http://" + os.Getenv("NOTES_SERVICE_SERVICE_HOST") + "/notes/delete-sub-project-note"
+
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -365,6 +378,6 @@ func (app *Config) DeleteSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-sub-project-id]", Name: "[broker-service] - Successfully fetched project note"})
+	// app.logItemViaRPC(w, jsonFromService, RPCLogData{Action: "Get project note by id successfully [/notes/get-all-notes-by-sub-project-id]", Name: "[broker-service] - Successfully fetched project note"})
 	app.writeJSON(w, http.StatusAccepted, jsonFromService)
 }

@@ -132,6 +132,8 @@ func (app *Config) routes() http.Handler {
 	mux.Get("/external-company/get-all-external-companies", app.GetAllExternalCompanies)
 	mux.Post("/external-company/get-external-company-by-id", app.GetExternalCompanyById)
 	mux.Post("/external-company/update-external-company", app.UpdateExternalCompany)
+	mux.Post("/external-company/append-invoice", app.AddInvoiceToCompany)
+	mux.Post("/external-company/remove-invoice", app.RemoveInvoiceToCompany)
 
 	mux.Post("/product/create-product", app.CreateProduct)
 	mux.Get("/product/get-all-products", app.GetAllProducts)
@@ -144,6 +146,7 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/invoice/get-invoice-by-id", app.GetInvoiceById)
 	mux.Post("/invoice/get-all-invoices-by-project-id", app.GetAllInvoicesByProjectId)
 	mux.Post("/invoice/get-all-invoices-by-sub-project-id", app.GetAllInvoicesBySubProjectId)
+	mux.Post("/invoice/get-all-invoices-by-ids", app.GetAllInvoicesByIds)
 
 	mux.Post("/invoice/create-invoice-item", app.CreateInvoiceItem)
 	mux.Get("/invoice/get-all-invoice-items", app.GetAllInvoiceItems)
@@ -151,8 +154,6 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/invoice/get-invoice-item-by-id", app.GetInvoiceItemById)
 	mux.Post("/invoice/get-all-invoice-items-by-product-id", app.GetAllInvoiceItemsByProductId)
 	mux.Post("/invoice/get-all-invoice-items-by-ids", app.GetAllInvoiceItemsByIds)
-
-	mux.Post("/email/send", app.SendEmail)
 
 	return mux
 }

@@ -6,8 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 type jsonResponse struct {
@@ -72,47 +70,4 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) er
 	payload.Message = err.Error()
 
 	return app.writeJSON(w, statusCode, payload)
-}
-
-func (app *Config) parsePostgresArray(postgresArray string) []string {
-	postgresArray = strings.Trim(postgresArray, "{}")
-
-	if len(postgresArray) < 4 {
-		return []string{}
-	}
-
-	arrayElements := strings.Split(postgresArray, ",")
-
-	return arrayElements
-}
-
-func (app *Config) convertToPostgresArray(arrayElements []string) string {
-	postgresArray := strings.Join(arrayElements, ",")
-	postgresArray = "{" + postgresArray + "}"
-	return postgresArray
-}
-
-func (app *Config) convertToPostgresArrayInteger(arrayElements []int) string {
-	arrayString := ""
-	for i, id := range arrayElements {
-		arrayString += strconv.Itoa(id)
-		if i < (len(arrayElements) - 1) {
-			arrayString += ","
-		}
-	}
-	postgresArray := "{" + arrayString + "}"
-	return postgresArray
-}
-
-func (app *Config) parsePostgresArrayInteger(postgresArray string) []int {
-	postgresArray = strings.Trim(postgresArray, "{}")
-	arrayElements := strings.Split(postgresArray, ",")
-
-	var arrayInt []int
-	for _, id := range arrayElements {
-		intId, _ := strconv.Atoi(id)
-		arrayInt = append(arrayInt, intId)
-	}
-
-	return arrayInt
 }

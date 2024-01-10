@@ -28,8 +28,8 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/get-external-company-by-id", app.GetExternalCompanyById)
 	mux.Post("/update-external-company", app.UpdateExternalCompany)
 
-	mux.Post("/append-invoice", app.GetExternalCompanyById)
-	mux.Post("/remove-invoice", app.GetExternalCompanyById)
+	mux.Post("/append-invoice", app.AddInvoiceToCompany)
+	mux.Post("/remove-invoice", app.RemoveInvoiceToCompany)
 
 	return mux
 }

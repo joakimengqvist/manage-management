@@ -102,7 +102,7 @@ const Users = () => {
             })
     };
 
-    const usersData: Array<any> = users.map((user : User) => {
+    const usersData: Array<any> = users && users.length ? users.map((user : User) => {
         return {                    
             first_name: <Link href={ `/user/${user.id}`}>{user.first_name}</Link>,
             last_name: user.last_name,
@@ -126,7 +126,7 @@ const Users = () => {
                 </div>
             )
         }
-    });
+    }) : [];
 
     return (<>
         {contextHolder}

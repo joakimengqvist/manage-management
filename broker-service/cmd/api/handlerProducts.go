@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -35,6 +36,7 @@ func (app *Config) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewProduct
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -47,6 +49,7 @@ func (app *Config) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -57,6 +60,7 @@ func (app *Config) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -75,6 +79,7 @@ func (app *Config) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -91,6 +96,7 @@ func (app *Config) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	var requestPayload Product
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -103,6 +109,7 @@ func (app *Config) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -113,6 +120,7 @@ func (app *Config) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -131,6 +139,7 @@ func (app *Config) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -153,6 +162,7 @@ func (app *Config) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("GET - GetAllProducts", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -163,6 +173,7 @@ func (app *Config) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllProducts", err)
 		app.errorJSON(w, errors.New("could not fetch products"))
 		return
 	}
@@ -173,6 +184,7 @@ func (app *Config) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllProducts", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -186,6 +198,7 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProductById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -198,6 +211,7 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetProductById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -208,6 +222,7 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetProductById", err)
 		app.errorJSON(w, errors.New("could not fetch product"))
 		return
 	}
@@ -226,6 +241,7 @@ func (app *Config) GetProductById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetProductById", err)
 		app.errorJSON(w, err)
 		return
 	}

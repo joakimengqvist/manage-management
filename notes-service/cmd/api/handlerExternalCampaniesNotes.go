@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 )
@@ -36,17 +37,20 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - CreateExternalCompanyNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -62,6 +66,7 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	noteId, err := app.Models.ExternalCompanyNote.InsertExternalCompanyNote(newNote)
 	if err != nil {
+		log.Println("postgres - InsertExternalCompanyNote", err)
 		app.errorJSON(w, errors.New("could not create external company note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -82,23 +87,27 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllExternalCompanyNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllExternalCompanyNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExternalCompanyNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.ExternalCompanyNote.GetExternalCompanyNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetExternalCompanyNotesByAuthorId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -136,6 +145,7 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -143,17 +153,20 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllExternalCompanyNotesByExternalCompanyId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	notes, err := app.Models.ExternalCompanyNote.GetExternalCompanyNotesByExternalCompanyId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -192,23 +205,27 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetExternalCompanyNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.ExternalCompanyNote.GetExternalCompanyNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, errors.New("failed to get external company note by id"), http.StatusBadRequest)
 		return
 	}
@@ -240,17 +257,20 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateExternalCompanyNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -267,6 +287,7 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	err = returnedNote.UpdateExternalCompanyNote()
 	if err != nil {
+		log.Println("postgres - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, errors.New("could not update external company note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -286,23 +307,27 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteExternalCompanyNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.DeleteExternalCompanyNote(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}

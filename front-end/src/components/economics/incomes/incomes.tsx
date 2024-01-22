@@ -107,7 +107,7 @@ const Incomes = ({ project } : { project: string }) => {
     useEffect(() => {
         if (loggedInUserId && project === 'all') {
             getAllIncomes(loggedInUserId).then(response => {
-                setIncomes(response.data)
+                setIncomes(response.data || [])
             }).catch(error => {
                 console.log('error fetching', error)
             })
@@ -123,7 +123,7 @@ const Incomes = ({ project } : { project: string }) => {
       const onHandleChangeActiveTab = (tab : string) => setActiveTab(tab);
 
       const economicsData: Array<any> = useMemo(() => {
-        const incomesListItem = incomes && incomes.map((income : Income) => {
+        const incomesListItem = incomes && incomes.length && incomes.map((income : Income) => {
         return {                    
             vendor: <Link href={`/external-company/${income.vendor}`}>{getVendorName(income.vendor)}</Link>,
             description: <Text>{income.description}</Text>,
@@ -134,12 +134,10 @@ const Incomes = ({ project } : { project: string }) => {
             operations: <Link href={`/income/${income.id}`}><ZoomInOutlined /></Link>
           }
         })
-        return incomesListItem;
+        return incomesListItem ? incomesListItem : [];
     }, [project, incomes]);
 
-    if (!economicsData) return null;
-
-    const {pieGraphTaxData, pieGraphData, columnGraphData, totalIncomes, totalAmount, totalTax} = calculateTotalAmountAndTax(incomes, getVendorName)
+    const { pieGraphTaxData, pieGraphData, columnGraphData, totalIncomes, totalAmount, totalTax } = calculateTotalAmountAndTax(incomes, getVendorName)
 
     const columnShartConfig = {
       data: columnGraphData,

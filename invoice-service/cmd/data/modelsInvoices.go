@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 )
@@ -447,7 +446,7 @@ func GetAllInvoicesByIds(ids string) ([]*InvoicePostgres, error) {
 			&invoice.UpdatedAt,
 		)
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 

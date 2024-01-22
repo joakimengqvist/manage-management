@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"invoice-service/cmd/data"
+	"log"
 	"net/http"
 )
 
@@ -12,11 +13,13 @@ func (app *Config) CreateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "invoice_write")
 	if err != nil {
+		log.Println("authenticated - CreateInvoiceItem", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - CreateInvoiceItem")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -25,6 +28,7 @@ func (app *Config) CreateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateInvoiceItem", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -41,11 +45,9 @@ func (app *Config) CreateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 		ActualTax:          requestPayload.ActualTax,
 	}
 
-	fmt.Println("newInvoiceItem", newInvoiceItem)
-
 	response, err := data.InsertInvoiceItem(newInvoiceItem, userId)
 	if err != nil {
-		fmt.Println("error creating invoice item", err)
+		log.Println("postgres - CreateInvoiceItem", err)
 		app.errorJSON(w, errors.New("could not create invoice item: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -64,11 +66,13 @@ func (app *Config) UpdateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "invoice_write")
 	if err != nil {
+		log.Println("authenticated - UpdateInvoiceItem", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateInvoiceItem")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -77,6 +81,7 @@ func (app *Config) UpdateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateInvoiceItem", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -96,6 +101,7 @@ func (app *Config) UpdateInvoiceItem(w http.ResponseWriter, r *http.Request) {
 
 	err = data.UpdateInvoiceItem(invoiceItem, userId)
 	if err != nil {
+		log.Println("postgres - UpdateInvoiceItem", err)
 		app.errorJSON(w, errors.New("could not update invoice item: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -114,20 +120,20 @@ func (app *Config) GetAllInvoiceItems(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "invoice_read")
 	if err != nil {
-		fmt.Println("GetAllInvoices - authenticated error", err)
+		log.Println("authenticated - GetAllnvoiceItems", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
-		fmt.Println("GetAllInvoices - not authenticated")
+		log.Println("!authenticated - GetAllnvoiceItems")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	invoiceItems, err := data.GetAllInvoiceItems()
 	if err != nil {
-		fmt.Println("GetAllProjectInvoices - invoices error", err)
+		log.Println("postgres - GetAllInvoiceItems", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -172,23 +178,27 @@ func (app *Config) GetAllInvoiceItemsByIds(w http.ResponseWriter, r *http.Reques
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "invoice_read")
 	if err != nil {
+		log.Println("authenticated - GetAllInvoiceItemsByIds", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllInvoiceItemsByIds")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllInvoiceItemsByIds", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	invoiceItems, err := data.GetAllInvoiceItemsByIds(app.convertToPostgresArray(requestPayload.IDs))
 	if err != nil {
+		log.Println("postgres - GetAllInvoiceItemsByIds", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -233,23 +243,27 @@ func (app *Config) GetAllInvoiceItemsByProductId(w http.ResponseWriter, r *http.
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "invoice_read")
 	if err != nil {
+		log.Println("authenticated - GetAllInvoiceItemsByProductId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllInvoiceItemsByProductId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllInvoiceItemsByProductId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	invoiceItems, err := data.GetAllInvoiceItemsByProductId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllInvoiceItemsByProductId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -293,23 +307,27 @@ func (app *Config) GetInvoiceItemById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "invoice_read")
 	if err != nil {
+		log.Println("authenticated - GetInvoiceItemById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetInvoiceItemById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetInvoiceItemById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	invoiceItem, err := data.GetInvoiceItemById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetInvoiceItemById", err)
 		app.errorJSON(w, errors.New("failed to get invoice by id"), http.StatusBadRequest)
 		return
 	}

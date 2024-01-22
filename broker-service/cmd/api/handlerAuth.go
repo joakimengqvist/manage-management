@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -52,9 +53,11 @@ type UpdateUserSettingsPayload struct {
 }
 
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
+
 	var requestPayload AuthPayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - Authenticate", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -70,6 +73,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - Authenticate", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -78,6 +82,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - Authenticate", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -96,6 +101,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - Authenticate", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -112,6 +118,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewUser
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -126,6 +133,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -136,6 +144,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -154,6 +163,7 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -170,6 +180,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UserUpdatePayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -184,6 +195,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -194,6 +206,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -212,6 +225,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -228,6 +242,7 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateUserSettingsPayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateUserSettings", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -242,6 +257,7 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateUserSettings", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -252,6 +268,7 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateUserSettings", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -270,6 +287,7 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateUserSettings", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -286,6 +304,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -300,6 +319,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -310,6 +330,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -328,6 +349,7 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteUser", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -345,6 +367,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetUserById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -357,6 +380,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetUserById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -367,6 +391,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetUserById", err)
 		app.errorJSON(w, errors.New("could not fetch user"))
 		return
 	}
@@ -385,6 +410,7 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetUserById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -402,6 +428,7 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetUserSettingsByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -414,6 +441,7 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetUserSettingsByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -424,6 +452,7 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetUserSettingsByUserId", err)
 		app.errorJSON(w, errors.New("could not fetch user settings"))
 		return
 	}
@@ -442,6 +471,7 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetUserSettingsByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -464,6 +494,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("POST - GetAllUsers", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -474,6 +505,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllUsers", err)
 		app.errorJSON(w, errors.New("could not fetch users"))
 		return
 	}
@@ -484,7 +516,7 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
-
+		log.Println("json.NewDecoder - GetAllUsers", err)
 		app.errorJSON(w, err)
 		return
 	}

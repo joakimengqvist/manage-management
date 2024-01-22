@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -70,6 +71,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewSubProject
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -84,6 +86,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -94,6 +97,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -112,6 +116,7 @@ func (app *Config) CreateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -129,6 +134,7 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateSubProject
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -143,6 +149,7 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -153,6 +160,7 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -171,6 +179,7 @@ func (app *Config) UpdateSubProject(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -188,6 +197,7 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -202,6 +212,7 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -212,6 +223,7 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -230,6 +242,7 @@ func (app *Config) DeleteSubProject(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteSubProject", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -248,6 +261,7 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetSubProjectById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -262,6 +276,7 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetSubProjectById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -272,6 +287,7 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetSubProjectById", err)
 		app.errorJSON(w, errors.New("could not fetch subProject"))
 		return
 	}
@@ -290,6 +306,7 @@ func (app *Config) GetSubProjectById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetSubProjectById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -313,6 +330,7 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("GET - GetAllSubProjects", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -323,6 +341,7 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllSubProjects", err)
 		app.errorJSON(w, errors.New("could not fetch subProjects"))
 		return
 	}
@@ -333,6 +352,7 @@ func (app *Config) GetAllSubProjects(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllSubProjects", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -351,6 +371,7 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetSubProjectsByIds", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -361,6 +382,7 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetSubProjectsByIds", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -371,6 +393,7 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetSubProjectsByIds", err)
 		app.errorJSON(w, errors.New("could not fetch subProjects by ids"))
 		return
 	}
@@ -381,6 +404,7 @@ func (app *Config) GetSubProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetSubProjectsByIds", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -394,6 +418,7 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -406,6 +431,7 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -416,6 +442,7 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, errors.New("could not update sub project"))
 		return
 	}
@@ -434,6 +461,7 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -451,6 +479,7 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -463,6 +492,7 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -473,6 +503,7 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, errors.New("could not update sub project"))
 		return
 	}
@@ -491,6 +522,7 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, err)
 		return
 	}

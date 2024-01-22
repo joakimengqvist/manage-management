@@ -24,7 +24,7 @@ func main() {
 
 	app := Config{}
 
-	log.Println("Starting broker service on port:", webPort)
+	log.Println("[ -- Starting broker service on port: ", webPort, " -- ]")
 
 	// define http server
 	srv := &http.Server{
@@ -48,7 +48,7 @@ func connect() (*amqp.Connection, error) {
 	for {
 		c, err := amqp.Dial("amqp://guest:guest@rabbitmq")
 		if err != nil {
-			fmt.Println("Rabbitmq not yet ready...")
+			log.Println("Rabbitmq not yet ready...")
 			counts++
 		} else {
 			log.Println("Connected to rabbitMQ")
@@ -57,7 +57,7 @@ func connect() (*amqp.Connection, error) {
 		}
 
 		if counts > 5 {
-			fmt.Println(err)
+			log.Println(err)
 			return nil, err
 		}
 

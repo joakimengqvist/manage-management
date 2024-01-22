@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 )
@@ -106,7 +105,7 @@ func UpdateProduct(product Product) error {
 	)
 
 	if err != nil {
-		fmt.Println("Error updating product", err)
+		log.Println("Error updating product", err)
 		return err
 	}
 
@@ -177,7 +176,7 @@ func GetProductById(id string) (*Product, error) {
 	)
 
 	if err != nil {
-		fmt.Println("GetProductById model", err)
+		log.Println("GetProductById model", err)
 		return nil, err
 	}
 

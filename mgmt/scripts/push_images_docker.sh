@@ -6,10 +6,8 @@ microservices=(
     "authentication"
     "project"
     "external-company"
-    "logger"
     "economics"
     "notes"
-    "listener"
     "invoice"
     "product"
     )

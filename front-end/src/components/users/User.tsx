@@ -19,7 +19,7 @@ import { getAllProjectNotesByUserId } from '../../api/notes/project/getAllByUser
 import { useEffect, useState } from "react";
 import { updateUser } from "../../api/users/update";
 import { QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
-import { updateUserState, popUser } from "../../redux/applicationDataSlice";
+import { popUser } from "../../redux/applicationDataSlice";
 import { deleteUser } from "../../api/users/delete";
 import { hasPrivilege } from "../../helpers/hasPrivileges";
 import { PRIVILEGES } from "../../enums/privileges";
@@ -274,7 +274,6 @@ const UserDetails = () => {
           placement: "bottom",
           duration: 1.2,
         });
-        dispatch(updateUserState(response.data));
       })
       .catch((error) => {
         api.error({
@@ -325,7 +324,7 @@ const UserDetails = () => {
 
   const privilegesOptions = Object.keys(allPrivileges).map(privilegeId => ({ 
       label: allPrivileges[privilegeId].name, 
-      value: allPrivileges[privilegeId].id
+      value: allPrivileges[privilegeId].name
   }));
 
   const notesContentList: Record<string, React.ReactNode> = {
@@ -342,6 +341,9 @@ const UserDetails = () => {
   if (!user) {
     return <div>Loading...</div>;
   }
+
+  console.log('privileges', privileges);
+  console.log('privilegesOptions', privilegesOptions);
 
   return (
     <>

@@ -1,0 +1,107 @@
+version: "3"
+
+services:
+  mgmt-frontend-service:
+    tty: true
+    image: joakimengqvist/mgmt-frontend:latest
+    depends_on:
+      - mgmt-broker-service
+    ports:
+      - "80:80"
+
+  mgmt-broker-service:
+    image: joakimengqvist/mgmt-broker-service:latest
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      NOTES_SERVICE_SERVICE_HOST: "mgmt-notes-service"
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      PROJECT_SERVICE_SERVICE_HOST: "mgmt-project-service"
+      EXTERNAL_COMPANY_SERVICE_SERVICE_HOST: "mgmt-external-company-service"
+      ECONOMICS_SERVICE_SERVICE_HOST: "mgmt-economics-service"
+      INVOICE_SERVICE_SERVICE_HOST: "mgmt-invoice-service"
+      PRODUCT_SERVICE_SERVICE_HOST: "mgmt-product-service"
+
+  mgmt-authentication-service:
+    image: joakimengqvist/mgmt-authentication-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-project-service:
+    image: joakimengqvist/mgmt-project-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-notes-service:
+    image: joakimengqvist/mgmt-notes-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      INVOICE_SERVICE_SERVICE_HOST: "mgmt-invoice-service"
+      PRODUCT_SERVICE_SERVICE_HOST: "mgmt-product-service"
+      PROJECT_SERVICE_SERVICE_HOST: "mgmt-project-service"
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-economics-service:
+    image: joakimengqvist/mgmt-economics-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-external-company-service:
+    image: joakimengqvist/mgmt-external-company-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-product-service:
+    image: joakimengqvist/mgmt-product-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-invoice-service:
+    image: joakimengqvist/mgmt-invoice-service:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - postgres
+    environment:
+      EXTERNAL_COMPANY_SERVICE_SERVICE_HOST: "mgmt-external-company-service"
+      ECONOMICS_SERVICE_SERVICE_HOST: "mgmt-economics-service"
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"

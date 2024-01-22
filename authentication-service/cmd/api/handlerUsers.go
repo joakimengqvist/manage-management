@@ -4,6 +4,7 @@ import (
 	"authentication/cmd/data"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -35,12 +36,14 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - Authenticate", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := app.Models.User.GetUserByEmail(requestPayload.Email)
 	if err != nil {
+		log.Println("GetUserByEmail - Authenticate", err)
 		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
 		return
 	}
@@ -82,12 +85,14 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_write")
 	if err != nil {
+		log.Println("CheckUserPrivilege - CreateUser", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateUser", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -103,12 +108,14 @@ func (app *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	response, err := app.Models.User.InsertUser(newUser)
 	if err != nil {
+		log.Println("postgres - CreateUser", err)
 		app.errorJSON(w, errors.New("could not create user: "+err.Error()), http.StatusBadRequest)
 		return
 	}
 
 	err = data.InsertUserSettings(newUser.ID)
 	if err != nil {
+		log.Println("postgres - CreateUser", err)
 		app.errorJSON(w, errors.New("could not create user: "+err.Error()), http.StatusBadRequest)
 		newUser.DeleteUser()
 		return
@@ -129,12 +136,14 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_write")
 	if err != nil {
+		log.Println("CheckUserPrivilege - UpdateUser", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateUser", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -150,6 +159,7 @@ func (app *Config) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = updatedUser.UpdateUser()
 	if err != nil {
+		log.Println("postgres - UpdateUser", err)
 		app.errorJSON(w, errors.New("could not update user: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -179,12 +189,14 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_write")
 	if err != nil {
+		log.Println("CheckUserPrivilege - UpdateUserSettings", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateUserSettings", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -197,6 +209,7 @@ func (app *Config) UpdateUserSettings(w http.ResponseWriter, r *http.Request) {
 
 	err = data.UpdateUserSettings(updatedUserSettings, userId)
 	if err != nil {
+		log.Println("postgres - UpdateUserSettings", err)
 		app.errorJSON(w, errors.New("could not update user settings: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -218,24 +231,28 @@ func (app *Config) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_sudo")
 	if err != nil {
+		log.Println("CheckUserPrivilege - DeleteUser", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteUser", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := app.Models.User.GetUserById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - DeleteUser", err)
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = user.DeleteUser()
 	if err != nil {
+		log.Println("postgres - DeleteUser", err)
 		app.errorJSON(w, errors.New("could not delete user: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -256,18 +273,21 @@ func (app *Config) GetUserById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_read")
 	if err != nil {
+		log.Println("CheckUserPrivilege - GetUserById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetUserById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := app.Models.User.GetUserById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetUserById", err)
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return
 	}
@@ -301,20 +321,21 @@ func (app *Config) GetUserSettingsByUserId(w http.ResponseWriter, r *http.Reques
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_read")
 	if err != nil {
+		log.Println("CheckUserPrivilege - GetUserSettingsByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetUserSettingsByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("USER ID ", requestPayload.ID)
 	userSettings, err := data.GetUserSettingsByUserId(requestPayload.ID)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("postgres - GetUserSettingsByUserId", err)
 		app.errorJSON(w, errors.New("failed to get user settings by user id"), http.StatusBadRequest)
 		return
 	}
@@ -334,13 +355,14 @@ func (app *Config) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "user_read")
 	if err != nil {
+		log.Println("CheckUserPrivilege - GetAllUsers", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	users, err := app.Models.User.GetAllUsers()
 	if err != nil {
-
+		log.Println("postgres - GetAllUsers", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -378,6 +400,7 @@ func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId string, acti
 
 	user, err := app.Models.User.GetUserById(userId)
 	if err != nil {
+		log.Println("postgres - CheckUserPrivilege", err)
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return err
 	}
@@ -386,6 +409,7 @@ func (app *Config) CheckUserPrivilege(w http.ResponseWriter, userId string, acti
 	isAuthenticated := app.containsString(privileges, action)
 
 	if !isAuthenticated {
+		log.Println("postgres - !isAuthenticated", err)
 		app.errorJSON(w, errors.New("Unauthorized"), http.StatusUnauthorized)
 		return errors.New("Unauthorized")
 	}
@@ -408,12 +432,14 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CheckPrivilege", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := app.Models.User.GetUserById(requestPayload.UserId)
 	if err != nil {
+		log.Println("postgres - CheckPrivilege", err)
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return
 	}
@@ -422,6 +448,7 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := app.containsString(privileges, requestPayload.Action)
 
 	if !isAuthenticated {
+		log.Println("postgres - !isAuthenticated", err)
 		app.errorJSON(w, errors.New("Unauthorized"), http.StatusUnauthorized)
 		return
 	}

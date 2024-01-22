@@ -1,0 +1,488 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-broker-service-deployment
+  labels:
+    app: mgmt-broker-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-broker-service
+      tier: mgmt-broker-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-broker-service
+        tier: mgmt-broker-service-deployment
+    spec:
+      containers:
+        - name: mgmt-broker-service
+          image: "joakimengqvist/mgmt-broker-service:latest"
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+          - name: NOTES_SERVICE_SERVICE_HOST
+            value: "mgmt-notes-service"
+          - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+            value: "mgmt-authentication-service"
+          - name: PROJECT_SERVICE_SERVICE_HOST
+            value: "mgmt-project-service"
+          - name: EXTERNAL_COMPANY_SERVICE_SERVICE_HOST
+            value: "mgmt-external-company-service"
+          - name: ECONOMICS_SERVICE_SERVICE_HOST
+            value: "mgmt-economics-service"
+          - name: INVOICE_SERVICE_SERVICE_HOST
+            value: "mgmt-invoice-service"
+          - name: PRODUCT_SERVICE_SERVICE_HOST
+            value: "mgmt-product-service"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-broker-service
+  labels:
+    app: mgmt-broker-service
+spec:
+  selector:
+    app: mgmt-broker-service
+    tier: mgmt-broker-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-authentication-service-deployment
+  labels:
+    app: mgmt-authentication-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-authentication-service
+      tier: mgmt-authentication-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-authentication-service
+        tier: mgmt-authentication-service-deployment
+    spec:
+      containers:
+        - name: mgmt-authentication-service
+          image: "joakimengqvist/mgmt-authentication-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=auth sslmode=disable timezone=UTC connect_timeout=5"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-authentication-service
+  labels:
+    app: mgmt-authentication-service
+spec:
+  selector:
+    app: mgmt-authentication-service
+    tier: mgmt-authentication-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-economics-service-deployment
+  labels:
+    app: mgmt-economics-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-economics-service
+      tier: mgmt-economics-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-economics-service
+        tier: mgmt-economics-service-deployment
+    spec:
+      containers:
+        - name: mgmt-economics-service
+          image: "joakimengqvist/mgmt-economics-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=economics sslmode=disable timezone=UTC connect_timeout=5"
+            - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+              value: "mgmt-authentication-service"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-economics-service
+  labels: 
+    app: mgmt-economics-service
+spec:
+  selector:
+    app: mgmt-economics-service
+    tier: mgmt-economics-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-external-company-service-deployment
+  labels:
+    app: mgmt-external-company-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-external-company-service
+      tier: mgmt-external-company-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-external-company-service
+        tier: mgmt-external-company-service-deployment
+    spec:
+      containers:
+        - name: mgmt-external-company-service
+          image: "joakimengqvist/mgmt-external-company-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=companies sslmode=disable timezone=UTC connect_timeout=5"
+            - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+              value: "mgmt-authentication-service"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-external-company-service
+  labels: 
+    app: mgmt-external-company-service
+spec:
+  selector:
+    app: mgmt-external-company-service
+    tier: mgmt-external-company-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-invoice-service-deployment
+  labels: 
+    app: mgmt-invoice-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-invoice-service
+      tier: mgmt-invoice-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-invoice-service
+        tier: mgmt-invoice-service-deployment
+    spec:
+      containers:
+        - name: mgmt-invoice-service
+          image: "joakimengqvist/mgmt-invoice-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=invoice sslmode=disable timezone=UTC connect_timeout=5"
+            - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+              value: "mgmt-authentication-service"
+            - name: EXTERNAL_COMPANY_SERVICE_SERVICE_HOST
+              value: "mgmt-external-company-service"
+            - name: ECONOMICS_SERVICE_SERVICE_HOST
+              value: "mgmt-economics-service"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-invoice-service
+  labels: 
+    app: mgmt-invoice-service
+spec:
+  selector:
+      app: mgmt-invoice-service
+      tier: mgmt-invoice-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-notes-service-deployment
+  labels: 
+    app: mgmt-notes-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-notes-service
+      tier: mgmt-notes-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-notes-service
+        tier: mgmt-notes-service-deployment
+    spec:
+      containers:
+        - name: mgmt-notes-service
+          image: "joakimengqvist/mgmt-notes-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=notes sslmode=disable timezone=UTC connect_timeout=5"
+            - name: INVOICE_SERVICE_SERVICE_HOST
+              value: "mgmt-invoice-service"
+            - name: PRODUCT_SERVICE_SERVICE_HOST
+              value: "mgmt-product-service"
+            - name: PROJECT_SERVICE_SERVICE_HOST
+              value: "mgmt-project-service"
+            - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+              value: "mgmt-authentication-service"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-notes-service
+  labels: 
+    app: mgmt-notes-service
+spec:
+  selector:
+    app: mgmt-notes-service
+    tier: mgmt-notes-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-product-service-deployment
+  labels: 
+    app: mgmt-product-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-product-service
+      tier: mgmt-product-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-product-service
+        tier: mgmt-product-service-deployment
+    spec:
+      containers:
+        - name: mgmt-product-service
+          image: "joakimengqvist/mgmt-product-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=products sslmode=disable timezone=UTC connect_timeout=5"
+            - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+              value: "mgmt-authentication-service"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-product-service
+  labels: 
+    app: mgmt-product-service
+spec:
+  selector:
+    app: mgmt-product-service
+    tier: mgmt-product-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-project-service-deployment
+  labels: 
+    app: mgmt-project-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mgmt-project-service
+      tier: mgmt-project-service-deployment
+  template:
+    metadata:
+      labels:
+        app: mgmt-project-service
+        tier: mgmt-project-service-deployment
+    spec:
+      containers:
+        - name: mgmt-project-service
+          image: "joakimengqvist/mgmt-project-service:latest"
+          env:
+            - name: DSN
+              value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=projects sslmode=disable timezone=UTC connect_timeout=5"
+            - name: AUTHENTICATION_SERVICE_SERVICE_HOST
+              value: "mgmt-authentication-service"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-project-service
+  labels: 
+    app: mgmt-project-service
+spec:
+  selector:
+    app: mgmt-project-service
+    tier: mgmt-project-service-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mgmt-frontend-service
+  labels: 
+    app: mgmt-frontend-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: mgmt-broker-service
+     tier: mgmt-frontend-service
+  template:
+    metadata:
+      labels:
+        app: mgmt-broker-service
+        tier: mgmt-frontend-service
+    spec:
+      containers:
+        - name: nginx
+          image: "joakimengqvist/mgmt-frontend:latest"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25" 
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgmt-frontend-service
+  labels: 
+    app: mgmt-frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: mgmt-broker-service
+    tier: mgmt-frontend-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

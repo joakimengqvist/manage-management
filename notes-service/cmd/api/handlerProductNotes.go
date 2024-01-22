@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 	"os"
@@ -50,17 +51,20 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateProductNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - CreateProductNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateProductNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -76,6 +80,7 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	noteId, err := app.Models.ProductNote.InsertProductNote(newNote)
 	if err != nil {
+		log.Println("postgres - InsertProductNote", err)
 		app.errorJSON(w, errors.New("could not create product note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -92,33 +97,30 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetAllProductNotesByProductId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
-	fmt.Println("GetAllNotesByProductId")
-
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		fmt.Println("Readjson", err)
+		log.Println("readJSON - GetAllProductNotesByProductId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Print("requestPayload", requestPayload)
-
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
-		fmt.Print("authenticated", err)
+		log.Println("authenticated - GetAllProductNotesByProductId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllProductNotesByProductId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	notes, err := app.Models.ProductNote.GetProductNotesByProductId(requestPayload.ID)
 	if err != nil {
-		fmt.Print("update call", err)
+		log.Println("postgres - GetProductNotesByProductId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -158,23 +160,27 @@ func (app *Config) GetAllProductNotesByUserId(w http.ResponseWriter, r *http.Req
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllProductNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllProductNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProductNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.ProductNote.GetProductNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetProductNotesByAuthorId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -213,23 +219,27 @@ func (app *Config) GetProductNoteById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetProductNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetProductNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProductNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.ProductNote.GetProductNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetProductNoteById", err)
 		app.errorJSON(w, errors.New("failed to get product note by id"), http.StatusBadRequest)
 		return
 	}
@@ -262,17 +272,20 @@ func (app *Config) UpdateProductNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateProductNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateProductNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateProductNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -289,6 +302,7 @@ func (app *Config) UpdateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	err = returnedNote.UpdateProductNote()
 	if err != nil {
+		log.Println("postgres - UpdateProductNote", err)
 		app.errorJSON(w, errors.New("could not update product note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -309,35 +323,41 @@ func (app *Config) DeleteProductNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteProductNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteProductNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteProductNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.ProductNote.GetProductNoteById(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - GetProductNoteById", err)
 		app.errorJSON(w, errors.New("failed to get product note by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = app.RemoveNoteFromProduct(w, r, note.ID, requestPayload.ProductId)
 	if err != nil {
+		log.Println("RemoveNoteFromProduct", err)
 		app.errorJSON(w, err)
 		return
 	}
 
 	err = data.DeleteProductNote(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - DeleteProductNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -361,11 +381,13 @@ func (app *Config) RemoveNoteFromProduct(w http.ResponseWriter, r *http.Request,
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - RemoveNoteFromProduct", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return err
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveNoteFromProduct")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return errors.New("status unauthorized")
 	}
@@ -375,8 +397,8 @@ func (app *Config) RemoveNoteFromProduct(w http.ResponseWriter, r *http.Request,
 	endpoint := "http://" + os.Getenv("PRODUCT_SERVICE_SERVICE_HOST") + "/product/delete-product-note"
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
-
 	if err != nil {
+		log.Println("POST - RemoveNoteFromProduct", err)
 		app.errorJSON(w, err)
 		return err
 	}
@@ -387,6 +409,7 @@ func (app *Config) RemoveNoteFromProduct(w http.ResponseWriter, r *http.Request,
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - RemoveNoteFromProduct", err)
 		app.errorJSON(w, err)
 		return err
 	}

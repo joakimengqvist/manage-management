@@ -4,6 +4,7 @@ import (
 	"errors"
 	"external-company-service/cmd/data"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -17,17 +18,20 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "external_company_write")
 	if err != nil {
+		log.Println("authenticated - CreateExternalCompany", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - CreateExternalCompany")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateExternalCompany", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -57,7 +61,7 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	response, err := data.InsertExternalCompany(newCompany)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("postgres - CreateExternalCompany", err)
 		app.errorJSON(w, errors.New("could not create external company: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -77,17 +81,20 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "external_company_write")
 	if err != nil {
+		log.Println("authenticated - UpdateExternalCompany", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateExternalCompany")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateExternalCompany", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -117,6 +124,7 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	err = data.UpdateExternalCompany(updatedCompany)
 	if err != nil {
+		log.Println("postgres - UpdateExternalCompany", err)
 		app.errorJSON(w, errors.New("could not update external company: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -136,23 +144,27 @@ func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "external_company_write")
 	if err != nil {
+		log.Println("authenticated - AddInvoiceToCompany", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - AddInvoiceToCompany")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - AddInvoiceToCompany", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.AppendInvoiceToCompany(requestPayload.InvoiceId, requestPayload.CompanyId)
 	if err != nil {
+		log.Println("postgres - AddInvoiceToCompany", err)
 		app.errorJSON(w, errors.New("could not update external company: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -172,23 +184,27 @@ func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "external_company_write")
 	if err != nil {
+		log.Println("authenticated - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveInvoiceToCompany")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.RemoveInvoiceFromCompany(requestPayload.InvoiceId, requestPayload.CompanyId)
 	if err != nil {
+		log.Println("postgres - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, errors.New("could not update external company: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -207,17 +223,20 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "external_company_read")
 	if err != nil {
+		log.Println("authenticated - GetAllExternalCompanies", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllExternalCompanies")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	companies, err := data.GetAllExternalCompanies()
 	if err != nil {
+		log.Println("postgres - GetAllExternalCompanies", err)
 		app.errorJSON(w, errors.New("could not fetch external companies"), http.StatusUnauthorized)
 		return
 	}
@@ -270,23 +289,27 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "external_company_read")
 	if err != nil {
+		log.Println("authenticated - GetExternalCompanyById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetExternalCompanyById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetExternalCompanyById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	company, err := data.GetExternalCompanyById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetExternalCompanyById", err)
 		app.errorJSON(w, errors.New("failed to get user by id"), http.StatusBadRequest)
 		return
 	}

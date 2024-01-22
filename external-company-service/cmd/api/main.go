@@ -27,7 +27,7 @@ type Config struct {
 
 func main() {
 
-	log.Println("Starting external-company service]")
+	log.Println("[ -- Starting external-company service -- ]")
 
 	conn := connectToDB()
 	if conn == nil {
@@ -106,6 +106,7 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 
 	if err != nil {
+		log.Println("POST - CheckPrivilege", err)
 		return false, err
 	}
 
@@ -113,6 +114,7 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CheckPrivilege", err)
 		return false, err
 	}
 

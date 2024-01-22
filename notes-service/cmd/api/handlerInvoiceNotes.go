@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 	"os"
@@ -50,17 +51,20 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - CreateInvoiceNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -76,6 +80,7 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	noteId, err := app.Models.InvoiceNote.InsertInvoiceNote(newNote)
 	if err != nil {
+		log.Println("postgres - InsertInvoiceNote", err)
 		app.errorJSON(w, errors.New("could not create invoice note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -92,31 +97,30 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetAllInvoiceNotesByInvoiceId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
-	fmt.Println("GetAllNotesByInvoiceId")
-
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		fmt.Println("Readjson", err)
+		log.Println("readJSON - GetAllInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Print("requestPayload", requestPayload)
-
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllInvoiceNotesByInvoiceId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	notes, err := app.Models.InvoiceNote.GetInvoiceNotesByInvoiceId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -156,23 +160,27 @@ func (app *Config) GetAllInvoiceNotesByUserId(w http.ResponseWriter, r *http.Req
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllInvoiceNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllInvoiceNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllInvoiceNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.InvoiceNote.GetInvoiceNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetInvoiceNotesByAuthorId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -211,23 +219,27 @@ func (app *Config) GetInvoiceNoteById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetInvoiceNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetInvoiceNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetInvoiceNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.InvoiceNote.GetInvoiceNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetInvoiceNoteById", err)
 		app.errorJSON(w, errors.New("failed to get invoice note by id"), http.StatusBadRequest)
 		return
 	}
@@ -260,17 +272,20 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateInvoiceNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -287,6 +302,7 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	err = returnedNote.UpdateInvoiceNote()
 	if err != nil {
+		log.Println("postgres - UpdateInvoiceNote", err)
 		app.errorJSON(w, errors.New("could not update invoice note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -307,35 +323,41 @@ func (app *Config) DeleteInvoiceNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteInvoiceNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.InvoiceNote.GetInvoiceNoteById(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - GetInvoiceNoteById", err)
 		app.errorJSON(w, errors.New("failed to get invoice note by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = app.RemoveNoteFromInvoice(w, r, note.ID, requestPayload.InvoiceId)
 	if err != nil {
+		log.Println("RemoveNoteFromInvoice", err)
 		app.errorJSON(w, err)
 		return
 	}
 
 	err = data.DeleteInvoiceNote(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - DeleteInvoiceNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -359,11 +381,13 @@ func (app *Config) RemoveNoteFromInvoice(w http.ResponseWriter, r *http.Request,
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - RemoveNoteFromInvoice", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return err
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveNoteFromInvoice")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return errors.New("status unauthorized")
 	}
@@ -375,6 +399,7 @@ func (app *Config) RemoveNoteFromInvoice(w http.ResponseWriter, r *http.Request,
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
 
 	if err != nil {
+		log.Println("POST - RemoveNoteFromInvoice", err)
 		app.errorJSON(w, err)
 		return err
 	}
@@ -385,6 +410,7 @@ func (app *Config) RemoveNoteFromInvoice(w http.ResponseWriter, r *http.Request,
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - RemoveNoteFromInvoice", err)
 		app.errorJSON(w, err)
 		return err
 	}

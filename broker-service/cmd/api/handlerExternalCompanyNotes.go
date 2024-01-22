@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -44,6 +45,7 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	var requestPayload NewExternalCompanyNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -56,6 +58,7 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -66,6 +69,7 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -84,6 +88,7 @@ func (app *Config) CreateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -100,6 +105,7 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	var requestPayload UpdateExternalCompanyNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -112,6 +118,7 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -122,6 +129,7 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -140,6 +148,7 @@ func (app *Config) UpdateExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -157,6 +166,7 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -169,6 +179,7 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -179,6 +190,7 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, errors.New("could not fetch external company note"))
 		return
 	}
@@ -197,6 +209,7 @@ func (app *Config) GetExternalCompanyNoteById(w http.ResponseWriter, r *http.Req
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetExternalCompanyNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -214,6 +227,7 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -226,6 +240,7 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -236,6 +251,7 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, errors.New("could not fetch external company note"))
 		return
 	}
@@ -254,6 +270,7 @@ func (app *Config) GetAllExternalCompanyNotesByExternalCompanyId(w http.Response
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllExternalCompanyNotesByExternalCompanyId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -271,6 +288,7 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExternalCompanyNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -283,6 +301,7 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllExternalCompanyNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -293,6 +312,7 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllExternalCompanyNotesByUserId", err)
 		app.errorJSON(w, errors.New("could not fetch external company note"))
 		return
 	}
@@ -311,6 +331,7 @@ func (app *Config) GetAllExternalCompanyNotesByUserId(w http.ResponseWriter, r *
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllExternalCompanyNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -322,6 +343,7 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -334,6 +356,7 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -344,6 +367,7 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, errors.New("could not delete external company note"))
 		return
 	}
@@ -362,6 +386,7 @@ func (app *Config) DeleteExternalCompanyNote(w http.ResponseWriter, r *http.Requ
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteExternalCompanyNote", err)
 		app.errorJSON(w, err)
 		return
 	}

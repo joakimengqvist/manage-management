@@ -29,7 +29,7 @@ type Config struct {
 
 func main() {
 
-	log.Println("Starting authentication service]")
+	log.Println("[ -- Starting authentication service -- ]")
 
 	conn := connectToDB()
 	if conn == nil {
@@ -55,11 +55,13 @@ func main() {
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
+		log.Println("sql.Open - openDB", err)
 		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
+		log.Println("db.Ping - openDB", err)
 		return nil, err
 	}
 

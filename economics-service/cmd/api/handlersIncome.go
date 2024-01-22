@@ -4,6 +4,7 @@ import (
 	"economics-service/cmd/data"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -12,11 +13,13 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_write")
 	if err != nil {
+		log.Println("authenticated - CreateIncome", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - CreateIncome")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -25,15 +28,14 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateIncome", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("requestPayload", requestPayload)
-
 	response, err := data.InsertIncome(requestPayload, userId)
 	if err != nil {
-		fmt.Println("could not create income: ", err.Error())
+		log.Println("InsertIncome - CreateIncome", err)
 		app.errorJSON(w, errors.New("could not create income: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -52,11 +54,13 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_write")
 	if err != nil {
+		log.Println("authenticated - UpdateIncome", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateIncome")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -65,12 +69,14 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &income)
 	if err != nil {
+		log.Println("readJSON - UpdateIncome", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = income.UpdateIncome(userId)
 	if err != nil {
+		log.Println("UpdateIncome - UpdateIncome", err)
 		app.errorJSON(w, errors.New("could not update income: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -89,20 +95,20 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_read")
 	if err != nil {
-		fmt.Println("GetAllExpenses - authenticated error", err)
+		log.Println("authenticated, GetAllExpenses", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
-		fmt.Println("GetAllProjectExpenses - not authenticated")
+		log.Println("!authenticated - GetAllProjectExpenses")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	incomes, err := data.GetAllIncomes()
 	if err != nil {
-		fmt.Println("GetAllExpenses - incomes error", err)
+		log.Println("postgres - GetAllExpenses", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -148,23 +154,27 @@ func (app *Config) GetAllProjectIncomesByProjectId(w http.ResponseWriter, r *htt
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_read")
 	if err != nil {
+		log.Println("authenticated - GetAllProjectExpenses", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllProjectExpenses")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProjectExpenses", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	incomes, err := data.GetAllProjectIncomesByProjectId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllProjectExpenses", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -210,24 +220,27 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "economics_read")
 	if err != nil {
+		log.Println("authenticated - GetIncomeById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetIncomeById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetIncomeById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	income, err := data.GetIncomeById(requestPayload.ID)
 	if err != nil {
-		fmt.Println("income err", err)
+		log.Println("postgres - GetIncomeById", err)
 		app.errorJSON(w, errors.New("failed to get income by id"), http.StatusBadRequest)
 		return
 	}

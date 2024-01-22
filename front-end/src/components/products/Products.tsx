@@ -64,7 +64,7 @@ const Products = () => {
         })
     }, [api, loggedInUser.id])
 
-    const productsData: Array<any> = products.map((product : Product) => {
+    const productsData: Array<any> = products && products.length ? products.map((product : Product) => {
         return {                    
             name: <Link href={ `/product/${product.id}`}>{product.name}</Link>,
             description: product.description,
@@ -90,7 +90,7 @@ const Products = () => {
                 </div>
             )
         }
-    });
+    }) : [];
 
     return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={productsData} /></>
 }

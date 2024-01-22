@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 	"os"
@@ -50,17 +51,20 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - CreateSubProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -74,11 +78,9 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 		Note:         requestPayload.Note,
 	}
 
-	fmt.Println("creating note", err)
-
 	noteId, err := app.Models.SubProjectNote.InsertSubProjectNote(newNote)
 	if err != nil {
-		fmt.Println("error note id", err)
+		log.Println("postgres - CreateSubProjectNote", err)
 		app.errorJSON(w, errors.New("could not create subProject note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -95,7 +97,7 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataSubProject))
 
 	if err != nil {
-		fmt.Println("error note id", err)
+		log.Println("Post - CreateSubProjectNote", err)
 		app.errorJSON(w, err)
 		data.DeleteSubProjectNote(noteId)
 		return
@@ -107,6 +109,7 @@ func (app *Config) CreateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 
 	subProjectUpdateResponse, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateSubProjectNote", err)
 		app.errorJSON(w, err)
 		data.DeleteSubProjectNote(noteId)
 		return
@@ -136,7 +139,7 @@ func (app *Config) GetAllSubProjectNotesBySubProjectId(w http.ResponseWriter, r 
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		fmt.Println("Readjson", err)
+		log.Println("readJSON - GetAllSubProjectNotesBySubProjectId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -144,18 +147,20 @@ func (app *Config) GetAllSubProjectNotesBySubProjectId(w http.ResponseWriter, r 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllSubProjectNotesBySubProjectId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllSubProjectNotesBySubProjectId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	notes, err := app.Models.SubProjectNote.GetSubProjectNotesBySubProjectId(requestPayload.ID)
 	if err != nil {
-		fmt.Print("GetSubProjectNotesBySubProjectId", err)
+		log.Println("postgres - GetAllSubProjectNotesBySubProjectId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -195,23 +200,27 @@ func (app *Config) GetAllSubProjectNotesByUserId(w http.ResponseWriter, r *http.
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllSubProjectNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllSubProjectNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllSubProjectNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.SubProjectNote.GetSubProjectNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllSubProjectNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -250,23 +259,27 @@ func (app *Config) GetSubProjectNoteById(w http.ResponseWriter, r *http.Request)
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetSubProjectNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetSubProjectNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetSubProjectNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.SubProjectNote.GetSubProjectNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetSubProjectNoteById", err)
 		app.errorJSON(w, errors.New("failed to get subProject note by id"), http.StatusBadRequest)
 		return
 	}
@@ -298,17 +311,20 @@ func (app *Config) UpdateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateSubProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -325,6 +341,7 @@ func (app *Config) UpdateSubProjectNote(w http.ResponseWriter, r *http.Request) 
 
 	err = returnedNote.UpdateSubProjectNote()
 	if err != nil {
+		log.Println("postgres - UpdateSubProjectNote", err)
 		app.errorJSON(w, errors.New("could not update subProject note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -344,36 +361,41 @@ func (app *Config) DeleteSubProjectNote(w http.ResponseWriter, r *http.Request) 
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteSubProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.SubProjectNote.GetSubProjectNoteById(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - DeleteSubProjectNote", err)
 		app.errorJSON(w, errors.New("failed to get subProject note by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = app.RemoveNoteFromSubProject(w, r, note.ID, requestPayload.SubProjectId)
 	if err != nil {
-		fmt.Println("error removing note from subProject: ", err)
+		log.Println("RemoveNoteFromSubProject - DeleteSubProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
 
 	err = data.DeleteSubProjectNote(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - DeleteSubProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -393,16 +415,16 @@ func (app *Config) RemoveNoteFromSubProject(w http.ResponseWriter, r *http.Reque
 		SubProjectId: subProjectId,
 	}
 
-	fmt.Println("deleteSubProjectNote: ", deleteSubProjectNote)
-
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - RemoveNoteFromSubProject", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return err
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveNoteFromSubProject")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return errors.New("status unauthorized")
 	}
@@ -412,8 +434,8 @@ func (app *Config) RemoveNoteFromSubProject(w http.ResponseWriter, r *http.Reque
 	endpoint := "http://" + os.Getenv("PROJECT_SERVICE_SERVICE_HOST") + "/project/delete-sub-project-note"
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
-
 	if err != nil {
+		log.Println("POST - RemoveNoteFromSubProject", err)
 		app.errorJSON(w, err)
 		return err
 	}
@@ -424,6 +446,7 @@ func (app *Config) RemoveNoteFromSubProject(w http.ResponseWriter, r *http.Reque
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - RemoveNoteFromSubProject", err)
 		app.errorJSON(w, err)
 		return err
 	}

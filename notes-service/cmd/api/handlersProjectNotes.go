@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 	"os"
@@ -50,17 +51,20 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - CreateProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -76,6 +80,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	noteId, err := app.Models.ProjectNote.InsertProjectNote(newNote)
 	if err != nil {
+		log.Println("postgres - CreateProjectNote", err)
 		app.errorJSON(w, errors.New("could not create project note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -92,6 +97,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataProject))
 
 	if err != nil {
+		log.Println("POST - CreateProjectNote", err)
 		app.errorJSON(w, err)
 		data.DeleteProjectNote(noteId)
 		return
@@ -103,6 +109,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	projectUpdateResponse, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateProjectNote", err)
 		app.errorJSON(w, err)
 		data.DeleteProjectNote(noteId)
 		return
@@ -130,31 +137,32 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 
-	fmt.Println("GetAllNotesByProjectId")
+	log.Println("GetAllNotesByProjectId")
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		fmt.Println("Readjson", err)
+		log.Println("readJSON - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Print("requestPayload", requestPayload)
-
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllProjectNotesByProjectId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	notes, err := app.Models.ProjectNote.GetProjectNotesByProjectId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -194,23 +202,27 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllProjectNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.ProjectNote.GetProjectNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -249,23 +261,27 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetProjectNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetProjectNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProjectNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.ProjectNote.GetProjectNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetProjectNoteById", err)
 		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
 		return
 	}
@@ -298,17 +314,20 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -325,6 +344,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	err = returnedNote.UpdateProjectNote()
 	if err != nil {
+		log.Println("postgres - UpdateProjectNote", err)
 		app.errorJSON(w, errors.New("could not update project note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -345,35 +365,41 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.ProjectNote.GetProjectNoteById(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - DeleteProjectNote", err)
 		app.errorJSON(w, errors.New("failed to get project note by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = app.RemoveNoteFromProject(w, r, note.ID, requestPayload.ProjectId)
 	if err != nil {
+		log.Println("RemoveNoteFromProject - DeleteProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
 
 	err = data.DeleteProjectNote(requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - DeleteProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -397,11 +423,13 @@ func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request,
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - RemoveNoteFromProject", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return err
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveNoteFromProject")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return errors.New("status unauthorized")
 	}
@@ -413,6 +441,7 @@ func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request,
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonDataUser))
 
 	if err != nil {
+		log.Println("POST - RemoveNoteFromProject", err)
 		app.errorJSON(w, err)
 		return err
 	}
@@ -423,6 +452,7 @@ func (app *Config) RemoveNoteFromProject(w http.ResponseWriter, r *http.Request,
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - RemoveNoteFromProject", err)
 		app.errorJSON(w, err)
 		return err
 	}

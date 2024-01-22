@@ -65,7 +65,7 @@ func (n *SubProjectNote) GetSubProjectNotesBySubProjectId(id string) ([]*SubProj
 		)
 
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 
@@ -181,7 +181,7 @@ func (u *SubProjectNote) InsertSubProjectNote(note SubProjectNote) (string, erro
 	).Scan(&newID)
 
 	if err != nil {
-		fmt.Println("Error inserting sub project note", err)
+		log.Println("Error inserting sub project note", err)
 		return "", err
 	}
 

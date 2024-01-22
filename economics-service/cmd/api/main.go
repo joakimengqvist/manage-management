@@ -25,7 +25,7 @@ type Config struct {
 
 func main() {
 
-	log.Println("Starting project service]")
+	log.Println("[ -- Starting project service -- ]")
 
 	conn := connectToDB()
 	if conn == nil {

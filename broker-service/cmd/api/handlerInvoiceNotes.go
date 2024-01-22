@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -50,6 +51,7 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewInvoiceNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -62,6 +64,7 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("http.NewRequest - CreateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -72,6 +75,7 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -90,6 +94,7 @@ func (app *Config) CreateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -106,6 +111,7 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateInvoiceNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -118,6 +124,7 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -128,6 +135,7 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -146,6 +154,7 @@ func (app *Config) UpdateInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -163,6 +172,7 @@ func (app *Config) GetInvoiceNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetInvoiceNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -175,6 +185,7 @@ func (app *Config) GetInvoiceNoteById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetInvoiceNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -185,6 +196,7 @@ func (app *Config) GetInvoiceNoteById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetInvoiceNoteById", err)
 		app.errorJSON(w, errors.New("could not fetch invoice note"))
 		return
 	}
@@ -203,6 +215,7 @@ func (app *Config) GetInvoiceNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetInvoiceNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -220,6 +233,7 @@ func (app *Config) GetAllInvoiceNotesByInvoiceId(w http.ResponseWriter, r *http.
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -232,6 +246,7 @@ func (app *Config) GetAllInvoiceNotesByInvoiceId(w http.ResponseWriter, r *http.
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -242,6 +257,7 @@ func (app *Config) GetAllInvoiceNotesByInvoiceId(w http.ResponseWriter, r *http.
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, errors.New("could not fetch invoice note"))
 		return
 	}
@@ -260,6 +276,7 @@ func (app *Config) GetAllInvoiceNotesByInvoiceId(w http.ResponseWriter, r *http.
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllInvoiceNotesByInvoiceId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -272,6 +289,7 @@ func (app *Config) GetAllInvoiceNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllInvoiceNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -284,6 +302,7 @@ func (app *Config) GetAllInvoiceNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllInvoiceNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -294,6 +313,7 @@ func (app *Config) GetAllInvoiceNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllInvoiceNotesByUserId", err)
 		app.errorJSON(w, errors.New("could not fetch invoice note"))
 		return
 	}
@@ -312,6 +332,7 @@ func (app *Config) GetAllInvoiceNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllInvoiceNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -323,6 +344,7 @@ func (app *Config) DeleteInvoiceNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -335,6 +357,7 @@ func (app *Config) DeleteInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -345,6 +368,7 @@ func (app *Config) DeleteInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteInvoiceNote", err)
 		app.errorJSON(w, errors.New("could not delete invoice note"))
 		return
 	}
@@ -363,6 +387,7 @@ func (app *Config) DeleteInvoiceNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteInvoiceNote", err)
 		app.errorJSON(w, err)
 		return
 	}

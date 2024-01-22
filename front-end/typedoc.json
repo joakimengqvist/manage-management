@@ -1,4 +1,4 @@
 {
     "entryPoints": ["src/api/index.ts", "src/interfaces/index.ts", "src/enums/index.ts", "src/hooks/index.ts"],
-    "out": "src/documentation",
+    "out": "public/fe-docs",
 }

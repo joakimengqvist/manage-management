@@ -4,6 +4,7 @@ import (
 	"authentication/cmd/data"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -23,12 +24,14 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_read")
 	if err != nil {
+		log.Println("CheckUserPrivilege - GetAllPrivileges", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	privileges, err := app.Models.Privilege.GetAllPrivileges()
 	if err != nil {
+		log.Println("postgres - GetAllPrivileges", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -63,12 +66,14 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_write")
 	if err != nil {
+		log.Println("CheckUserPrivilege - CreatePrivilege", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreatePrivilege", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -80,6 +85,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	response, err := app.Models.Privilege.InsertPrivilege(newPrivilege)
 	if err != nil {
+		log.Println("postgres - CreatePrivilege", err)
 		app.errorJSON(w, errors.New("could not create privilege: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -100,18 +106,21 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_read")
 	if err != nil {
+		log.Println("CheckUserPrivilege - GetPrivilegeById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetPrivilegeById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	privilege, err := app.Models.Privilege.GetPrivilegeById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetPrivilegeById", err)
 		app.errorJSON(w, errors.New("failed to get privilege by id"), http.StatusBadRequest)
 		return
 	}
@@ -132,12 +141,14 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_write")
 	if err != nil {
+		log.Println("CheckUserPrivilege - UpdatePrivilege", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdatePrivilege", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -150,6 +161,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	err = updatedPrivilege.UpdatePrivilege()
 	if err != nil {
+		log.Println("postgres - UpdatePrivilege", err)
 		app.errorJSON(w, errors.New("could not update privilege: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -170,24 +182,28 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	err := app.CheckUserPrivilege(w, userId, "privilege_sudo")
 	if err != nil {
+		log.Println("CheckUserPrivilege - DeletePrivilege", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeletePrivilege", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	privilege, err := app.Models.Privilege.GetPrivilegeById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - DeletePrivilege", err)
 		app.errorJSON(w, errors.New("failed to get privilege by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = privilege.DeletePrivilege()
 	if err != nil {
+		log.Println("postgres - DeletePrivilege", err)
 		app.errorJSON(w, errors.New("could not delete privilege: "+err.Error()), http.StatusBadRequest)
 		return
 	}

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 )
@@ -37,6 +38,7 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("http.NewRequest - GetAllPrivileges", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -47,6 +49,7 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllPrivileges", err)
 		app.errorJSON(w, errors.New("could not fetch privileges"))
 		return
 	}
@@ -57,6 +60,7 @@ func (app *Config) GetAllPrivileges(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllPrivileges", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -69,6 +73,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewPrivilege
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -83,6 +88,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -93,6 +99,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -111,6 +118,7 @@ func (app *Config) CreatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -130,6 +138,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetPrivilegeById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -144,6 +153,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetPrivilegeById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -154,6 +164,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetPrivilegeById", err)
 		app.errorJSON(w, errors.New("could not fetch privilege"))
 		return
 	}
@@ -172,6 +183,7 @@ func (app *Config) GetPrivilegeById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetPrivilegeById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -189,6 +201,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdatePrivilege
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -203,6 +216,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -213,6 +227,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -231,6 +246,7 @@ func (app *Config) UpdatePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdatePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -247,6 +263,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeletePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -261,6 +278,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeletePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -271,6 +289,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeletePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -289,6 +308,7 @@ func (app *Config) DeletePrivilege(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeletePrivilege", err)
 		app.errorJSON(w, err)
 		return
 	}

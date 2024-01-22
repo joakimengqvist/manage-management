@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 
@@ -34,6 +35,7 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 
 	if err != nil {
+		log.Println("POST - CheckPrivilege", err)
 		return false, err
 	}
 
@@ -41,6 +43,7 @@ func (app *Config) CheckPrivilege(w http.ResponseWriter, userId string, privileg
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CheckPrivilege", err)
 		return false, err
 	}
 

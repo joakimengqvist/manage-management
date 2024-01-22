@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 )
@@ -182,7 +181,7 @@ func (u *Expense) UpdateExpense(updatedByUserId string) error {
 	)
 
 	if err != nil {
-		fmt.Println("Error updating project", err)
+		log.Println("Error updating project", err)
 		return err
 	}
 

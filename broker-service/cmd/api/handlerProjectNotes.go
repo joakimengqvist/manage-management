@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -50,6 +51,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewProjectNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -64,6 +66,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -74,6 +77,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -92,6 +96,7 @@ func (app *Config) CreateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -110,6 +115,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateProjectNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -124,6 +130,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -134,6 +141,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -152,6 +160,7 @@ func (app *Config) UpdateProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -171,6 +180,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProjectNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -185,6 +195,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetProjectNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -195,6 +206,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetProjectNoteById", err)
 		app.errorJSON(w, errors.New("could not fetch project note"))
 		return
 	}
@@ -213,6 +225,7 @@ func (app *Config) GetProjectNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetProjectNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -231,6 +244,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -245,6 +259,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -255,6 +270,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, errors.New("could not fetch project note"))
 		return
 	}
@@ -273,6 +289,7 @@ func (app *Config) GetAllProjectNotesByProjectId(w http.ResponseWriter, r *http.
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllProjectNotesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -286,6 +303,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -300,6 +318,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -310,6 +329,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, errors.New("could not fetch project note"))
 		return
 	}
@@ -328,6 +348,7 @@ func (app *Config) GetAllProjectNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllProjectNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -340,6 +361,7 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload DeleteProjectNotePayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -352,6 +374,7 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -362,6 +385,7 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteProjectNote", err)
 		app.errorJSON(w, errors.New("could not delete project note"))
 		return
 	}
@@ -380,6 +404,7 @@ func (app *Config) DeleteProjectNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteProjectNote", err)
 		app.errorJSON(w, err)
 		return
 	}

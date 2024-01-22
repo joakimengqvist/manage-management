@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -45,6 +46,7 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 	var requestPayload ExternalCompany
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -57,6 +59,7 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -67,6 +70,7 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -85,6 +89,7 @@ func (app *Config) CreateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -101,6 +106,7 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 	var requestPayload ExternalCompany
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -113,6 +119,7 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -123,6 +130,7 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -141,6 +149,7 @@ func (app *Config) UpdateExternalCompany(w http.ResponseWriter, r *http.Request)
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateExternalCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -163,6 +172,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("GET - GetAllExternalCompanies", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -173,6 +183,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllExternalCompanies", err)
 		app.errorJSON(w, errors.New("could not fetch external companies"))
 		return
 	}
@@ -183,6 +194,7 @@ func (app *Config) GetAllExternalCompanies(w http.ResponseWriter, r *http.Reques
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllExternalCompanies", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -196,6 +208,7 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetExternalCompanyById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -208,6 +221,7 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetExternalCompanyById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -218,6 +232,7 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetExternalCompanyById", err)
 		app.errorJSON(w, errors.New("could not fetch project external company"))
 		return
 	}
@@ -236,6 +251,7 @@ func (app *Config) GetExternalCompanyById(w http.ResponseWriter, r *http.Request
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetExternalCompanyById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -253,6 +269,7 @@ func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - AddInvoiceToCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -265,6 +282,7 @@ func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - AddInvoiceToCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -275,6 +293,7 @@ func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - AddInvoiceToCompany", err)
 		app.errorJSON(w, errors.New("could not fetch project external company"))
 		return
 	}
@@ -293,6 +312,7 @@ func (app *Config) AddInvoiceToCompany(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - AddInvoiceToCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -310,6 +330,7 @@ func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -322,6 +343,7 @@ func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -332,6 +354,7 @@ func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, errors.New("could not fetch project external company"))
 		return
 	}
@@ -350,6 +373,7 @@ func (app *Config) RemoveInvoiceToCompany(w http.ResponseWriter, r *http.Request
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - RemoveInvoiceToCompany", err)
 		app.errorJSON(w, err)
 		return
 	}

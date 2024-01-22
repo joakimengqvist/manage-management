@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -44,7 +44,7 @@ func (u *SubProject) GetAllSubProjects() ([]*PostgresSubProject, error) {
 			&subProject.Expenses,
 		)
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 
@@ -123,7 +123,7 @@ func (p *PostgresSubProject) UpdateSubProject(updatedByUserId string) error {
 	)
 
 	if err != nil {
-		fmt.Println("Error updating sub project", err)
+		log.Println("Error updating sub project", err)
 		return err
 	}
 
@@ -196,13 +196,13 @@ func DeleteSubProjectNote(subProjectId string, noteId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	fmt.Println("Deleting note", noteId, "from sub project", subProjectId)
+	log.Println("Deleting note", noteId, "from sub project", subProjectId)
 
 	stmt := `update sub_projects set notes = array_remove(notes, $1) where id = $2`
 
 	_, err := db.ExecContext(ctx, stmt, noteId, subProjectId)
 	if err != nil {
-		fmt.Println("Error deleting note from sub project", err)
+		log.Println("Error deleting note from sub project", err)
 		return err
 	}
 
@@ -335,7 +335,7 @@ func GetSubProjectsByIds(ids string) ([]*PostgresSubProject, error) {
 			&subProject.Expenses,
 		)
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 

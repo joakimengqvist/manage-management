@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -50,6 +51,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewIncomeNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -62,6 +64,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -72,6 +75,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -90,6 +94,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -106,6 +111,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateIncomeNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -118,6 +124,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -128,6 +135,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -146,6 +154,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -163,6 +172,7 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetIncomeNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -175,6 +185,7 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetIncomeNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -185,6 +196,7 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetIncomeNoteById", err)
 		app.errorJSON(w, errors.New("could not fetch income note"))
 		return
 	}
@@ -203,6 +215,7 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetIncomeNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -220,6 +233,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllIncomeNotesByIncomeId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -232,6 +246,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllIncomeNotesByIncomeId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -242,6 +257,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllIncomeNotesByIncomeId", err)
 		app.errorJSON(w, errors.New("could not fetch income note"))
 		return
 	}
@@ -260,6 +276,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllIncomeNotesByIncomeId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -272,6 +289,7 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllIncomeNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -284,6 +302,7 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllIncomeNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -294,6 +313,7 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllIncomeNotesByUserId", err)
 		app.errorJSON(w, errors.New("could not fetch income note"))
 		return
 	}
@@ -312,6 +332,7 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllIncomeNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -323,6 +344,7 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload IDpayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -335,6 +357,7 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -345,6 +368,7 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteIncomeNote", err)
 		app.errorJSON(w, errors.New("could not delete income note"))
 		return
 	}
@@ -363,6 +387,7 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteIncomeNote", err)
 		app.errorJSON(w, err)
 		return
 	}

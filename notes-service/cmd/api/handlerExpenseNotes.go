@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 )
@@ -36,17 +37,20 @@ func (app *Config) CreateExpenseNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateExpenseNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - CreateExpenseNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateExpenseNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -62,6 +66,7 @@ func (app *Config) CreateExpenseNote(w http.ResponseWriter, r *http.Request) {
 
 	noteId, err := app.Models.ExpenseNote.InsertExpenseNote(newNote)
 	if err != nil {
+		log.Println("postgres - CreateExpenseNote", err)
 		app.errorJSON(w, errors.New("could not create expense note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -82,23 +87,27 @@ func (app *Config) GetAllExpenseNotesByUserId(w http.ResponseWriter, r *http.Req
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllExpenseNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - GetAllExpenseNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExpenseNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.ExpenseNote.GetExpenseNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllExpenseNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -136,6 +145,7 @@ func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExpenseNotesByExpenseId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -143,6 +153,7 @@ func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllExpenseNotesByExpenseId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -154,6 +165,7 @@ func (app *Config) GetAllExpenseNotesByExpenseId(w http.ResponseWriter, r *http.
 
 	notes, err := app.Models.ExpenseNote.GetExpenseNotesByExpenseId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetAllExpenseNotesByExpenseId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -192,23 +204,27 @@ func (app *Config) GetExpenseNoteById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetExpenseNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetExpenseNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetExpenseNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.ExpenseNote.GetExpenseNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetExpenseNoteById", err)
 		app.errorJSON(w, errors.New("failed to get expense note by id"), http.StatusBadRequest)
 		return
 	}
@@ -240,17 +256,20 @@ func (app *Config) UpdateExpenseNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateExpenseNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateExpenseNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateExpenseNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -267,6 +286,7 @@ func (app *Config) UpdateExpenseNote(w http.ResponseWriter, r *http.Request) {
 
 	err = returnedNote.UpdateExpenseNote()
 	if err != nil {
+		log.Println("postgres - UpdateExpenseNote", err)
 		app.errorJSON(w, errors.New("could not update Expense note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -286,23 +306,27 @@ func (app *Config) DeleteExpenseNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteExpenseNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteExpenseNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteExpenseNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.DeleteExpenseNote(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - DeleteExpenseNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}

@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 )
@@ -117,7 +116,7 @@ func InsertExternalCompany(company NewExternalCompany) (string, error) {
 	var newID string
 
 	stmt := `insert into external_companies (company_name, company_registration_number, contact_person, contact_email, contact_phone, address, city, state_province, country, postal_code, payment_terms, billing_currency, bank_account_info, tax_identification_number, created_at, created_by, updated_at, updated_by, status, assigned_projects, invoices, contractual_agreements)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $23)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
 		RETURNING id`
 
 	err := db.QueryRowContext(ctx, stmt,
@@ -205,7 +204,7 @@ func UpdateExternalCompany(p ExternalCompanyPostgres) error {
 	)
 
 	if err != nil {
-		fmt.Println("Error updating sub project", err)
+		log.Println("Error updating sub project", err)
 		return err
 	}
 
@@ -316,7 +315,7 @@ func AppendInvoiceToCompany(invoiceId string, companyId string) error {
 	_, err := db.ExecContext(ctx, stmt, invoiceId, companyId)
 
 	if err != nil {
-		fmt.Println("Error updating sub project", err)
+		log.Println("Error updating sub project", err)
 		return err
 	}
 

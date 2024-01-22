@@ -10,6 +10,8 @@ dist
 dist-ssr
 *.local
 
+fe-docs
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -95,18 +97,27 @@ mgmt/db-data/
 
 # Binary micro service app files
 authentication-service/authApp
+authApp
 broker-service/brokerApp
+brokerApp
 listener-service/listenerApp
+listenerApp
 logger-service/loggerApp
+loggerApp
 mail-service/mailerApp
+mailerApp
 project-service/projectApp
+projectApp
 notes-service/notesApp
+notesApp
 economics-service/economicsApp
+economicsApp
 product-service/productApp
+productApp
 invoice-service/invoiceApp
+invoiceApp
 external-company-service/externalCompanyApp
-
-todo.txt
+externalCompanyApp
 
 # Editor directories and files
 .vscode/*

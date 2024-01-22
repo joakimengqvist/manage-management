@@ -64,7 +64,7 @@ const Expenses = ({ project } : { project: string }) => {
       }, [loggedInUserId]);
 
       const externalCompanyData: Array<any> = useMemo(() => {
-        const expensesListItem = externalCompanies && externalCompanies.map((company : ExternalCompany) => {
+        const expensesListItem = externalCompanies && externalCompanies.length && externalCompanies.map((company : ExternalCompany) => {
         return {                    
             name: <Link href={`/external-company/${company.id}`}>{company.company_name}</Link>,
             registration_number: <Text>{company.company_registration_number}</Text>,
@@ -75,10 +75,8 @@ const Expenses = ({ project } : { project: string }) => {
             operations: <Link href={`/external-company/${company.id}`}><ZoomInOutlined /></Link>
           }
         })
-        return expensesListItem;
+        return expensesListItem || [];
     }, [project, externalCompanies])
-
-    if (!externalCompanies) return null;
 
     return  (
         <Card 

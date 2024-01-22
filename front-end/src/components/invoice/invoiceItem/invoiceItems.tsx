@@ -71,7 +71,7 @@ const InvoiceItems = () => {
             operations: <Link href={`/invoice-item/${invoiceItem.id}`}><ZoomInOutlined /></Link>
           }
         })
-        return invoiceIteamsListItem;
+        return invoiceIteamsListItem ? invoiceIteamsListItem : [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [invoiceItems]);
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -50,6 +51,7 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewProductNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -64,6 +66,7 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -74,6 +77,7 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -92,6 +96,7 @@ func (app *Config) CreateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -110,6 +115,7 @@ func (app *Config) UpdateProductNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload UpdateProductNote
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -124,6 +130,7 @@ func (app *Config) UpdateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -134,6 +141,7 @@ func (app *Config) UpdateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -152,6 +160,7 @@ func (app *Config) UpdateProductNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -171,6 +180,7 @@ func (app *Config) GetProductNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProductNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -185,6 +195,7 @@ func (app *Config) GetProductNoteById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetProductNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -195,6 +206,7 @@ func (app *Config) GetProductNoteById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetProductNoteById", err)
 		app.errorJSON(w, errors.New("could not fetch product note"))
 		return
 	}
@@ -213,6 +225,7 @@ func (app *Config) GetProductNoteById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetProductNoteById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -231,6 +244,7 @@ func (app *Config) GetAllProductNotesByProductId(w http.ResponseWriter, r *http.
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProductNotesByProductId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -245,6 +259,7 @@ func (app *Config) GetAllProductNotesByProductId(w http.ResponseWriter, r *http.
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllProductNotesByProductId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -255,6 +270,7 @@ func (app *Config) GetAllProductNotesByProductId(w http.ResponseWriter, r *http.
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllProductNotesByProductId", err)
 		app.errorJSON(w, errors.New("could not fetch product note"))
 		return
 	}
@@ -273,6 +289,7 @@ func (app *Config) GetAllProductNotesByProductId(w http.ResponseWriter, r *http.
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllProductNotesByProductId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -286,6 +303,7 @@ func (app *Config) GetAllProductNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllProductNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -300,6 +318,7 @@ func (app *Config) GetAllProductNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllProductNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -310,6 +329,7 @@ func (app *Config) GetAllProductNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllProductNotesByUserId", err)
 		app.errorJSON(w, errors.New("could not fetch product note"))
 		return
 	}
@@ -328,6 +348,7 @@ func (app *Config) GetAllProductNotesByUserId(w http.ResponseWriter, r *http.Req
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllProductNotesByUserId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -340,6 +361,7 @@ func (app *Config) DeleteProductNote(w http.ResponseWriter, r *http.Request) {
 	var requestPayload DeleteProductNotePayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -352,6 +374,7 @@ func (app *Config) DeleteProductNote(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - DeleteProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -362,6 +385,7 @@ func (app *Config) DeleteProductNote(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - DeleteProductNote", err)
 		app.errorJSON(w, errors.New("could not delete product note"))
 		return
 	}
@@ -380,6 +404,7 @@ func (app *Config) DeleteProductNote(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - DeleteProductNote", err)
 		app.errorJSON(w, err)
 		return
 	}

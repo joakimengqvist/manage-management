@@ -1,15 +1,4 @@
-// 192.168.49.2:30002
-/*
-console.log('process.env', process?.env);
-const domain = process?.env?.DEVELOPMENT_DOCKER_COMPOSE ? 
-"http://localhost:8080" : 
-`http://${process.env.BROKER_SERVICE_SERVICE_HOST}`;
-*/
-
-
-const domain = "http://localhost:8080";
-
-
+const domain = import.meta.env.VITE_API_DEV_API_MODE ? 'http://localhost:8080' : '/api';
 
 export const ENDPOINTS = {
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -77,6 +78,7 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewExpense
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -89,6 +91,7 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -99,6 +102,7 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -117,6 +121,7 @@ func (app *Config) CreateExpense(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -133,6 +138,7 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 	var requestPayload NewIncome
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -145,6 +151,7 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - CreateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -155,6 +162,7 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - CreateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -173,6 +181,7 @@ func (app *Config) CreateIncome(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - CreateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -190,6 +199,7 @@ func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllExpensesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -202,6 +212,7 @@ func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllExpensesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -212,6 +223,7 @@ func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllExpensesByProjectId", err)
 		app.errorJSON(w, errors.New("could not fetch expense"))
 		return
 	}
@@ -230,6 +242,7 @@ func (app *Config) GetAllExpensesByProjectId(w http.ResponseWriter, r *http.Requ
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllExpensesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -242,6 +255,7 @@ func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Reque
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllIncomesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -254,6 +268,7 @@ func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Reque
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetAllIncomesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -264,6 +279,7 @@ func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Reque
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllIncomesByProjectId", err)
 		app.errorJSON(w, errors.New("could not fetch incomes"))
 		return
 	}
@@ -282,6 +298,7 @@ func (app *Config) GetAllIncomesByProjectId(w http.ResponseWriter, r *http.Reque
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllIncomesByProjectId", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -297,6 +314,7 @@ func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("GET - GetAllExpenses", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -307,6 +325,7 @@ func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllExpenses", err)
 		app.errorJSON(w, errors.New("could not fetch expenses"))
 		return
 	}
@@ -317,6 +336,7 @@ func (app *Config) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllExpenses", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -332,6 +352,7 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
+		log.Println("GET - GetAllIncomes", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -342,6 +363,7 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetAllIncomes", err)
 		app.errorJSON(w, errors.New("could not fetch incomes"))
 		return
 	}
@@ -352,6 +374,7 @@ func (app *Config) GetAllIncomes(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetAllIncomes", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -363,6 +386,7 @@ func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	var requestPayload Expense
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -375,6 +399,7 @@ func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -385,6 +410,7 @@ func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -403,6 +429,7 @@ func (app *Config) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateExpense", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -419,6 +446,7 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 	var requestPayload Income
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -431,6 +459,7 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - UpdateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -441,6 +470,7 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - UpdateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -459,6 +489,7 @@ func (app *Config) UpdateIncome(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - UpdateIncome", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -476,6 +507,7 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetExpenseById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -488,6 +520,7 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetExpenseById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -498,6 +531,7 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetExpenseById", err)
 		app.errorJSON(w, errors.New("could not fetch project expense"))
 		return
 	}
@@ -516,6 +550,7 @@ func (app *Config) GetExpenseById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetExpenseById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -533,6 +568,7 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetIncomeById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -545,6 +581,7 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
+		log.Println("POST - GetIncomeById", err)
 		app.errorJSON(w, err)
 		return
 	}
@@ -555,6 +592,7 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 
 	response, err := client.Do(request)
 	if err != nil {
+		log.Println("client.Do - GetIncomeById", err)
 		app.errorJSON(w, errors.New("could not fetch income"))
 		return
 	}
@@ -573,6 +611,7 @@ func (app *Config) GetIncomeById(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
+		log.Println("json.NewDecoder - GetIncomeById", err)
 		app.errorJSON(w, err)
 		return
 	}

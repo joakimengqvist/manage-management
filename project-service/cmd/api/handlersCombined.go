@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"net/http"
 	"project-service/cmd/data"
 )
@@ -22,11 +22,13 @@ func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *htt
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "sub_project_write")
 	if err != nil {
+		log.Println("authenticated - AddProjectsSubProjectConnection", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - AddProjectsSubProjectConnection")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -35,14 +37,14 @@ func (app *Config) AddProjectsSubProjectConnection(w http.ResponseWriter, r *htt
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		fmt.Println("ERROR readJSON", err)
+		log.Println("readJSON - AddProjectsSubProjectConnection", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.AppendProjectsToSubProject(requestPayload.ProjectIds, requestPayload.SubProjectId)
 	if err != nil {
-		fmt.Println("ERROR AppendProjectsToSubProject", err)
+		log.Println("postgres - AddProjectsSubProjectConnection", err)
 		app.errorJSON(w, errors.New("failed to add project to subProject"), http.StatusBadRequest)
 		return
 	}
@@ -62,24 +64,27 @@ func (app *Config) RemoveProjectsSubProjectConnection(w http.ResponseWriter, r *
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "sub_project_write")
 	if err != nil {
+		log.Println("authenticated - RemoveProjectsSubProjectConnection", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveProjectsSubProjectConnection")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - RemoveProjectsSubProjectConnection", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.DeleteProjectsFromSubProject(requestPayload.ProjectIds, requestPayload.SubProjectId)
 	if err != nil {
-		fmt.Println("ERROR DeleteProjectsFromSubProject", err)
+		log.Println("postgres - RemoveProjectsSubProjectConnection", err)
 		app.errorJSON(w, errors.New("failed to remove project from sub project"), http.StatusBadRequest)
 		return
 	}
@@ -99,23 +104,27 @@ func (app *Config) AddSubProjectsProjectConnection(w http.ResponseWriter, r *htt
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "sub_project_write")
 	if err != nil {
+		log.Println("authenticated - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - AddSubProjectsProjectConnection")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.AppendSubProjectsToProject(requestPayload.ProjectId, requestPayload.SubProjectIds)
 	if err != nil {
+		log.Println("postgres - AddSubProjectsProjectConnection", err)
 		app.errorJSON(w, errors.New("failed to add sub project to project"), http.StatusBadRequest)
 		return
 	}
@@ -135,23 +144,27 @@ func (app *Config) RemoveSubProjectsProjectConnection(w http.ResponseWriter, r *
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "sub_project_write")
 	if err != nil {
+		log.Println("authenticated - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveSubProjectsProjectConnection")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.DeleteSubProjectsFromProject(requestPayload.ProjectId, requestPayload.SubProjectIds)
 	if err != nil {
+		log.Println("postgres - RemoveSubProjectsProjectConnection", err)
 		app.errorJSON(w, errors.New("failed to add sub project to project"), http.StatusBadRequest)
 		return
 	}

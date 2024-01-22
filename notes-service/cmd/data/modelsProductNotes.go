@@ -72,7 +72,7 @@ func (n *ProductNote) GetProductNotesByProductId(id string) ([]*ProductNote, err
 		notes = append(notes, &note)
 	}
 
-	fmt.Println("notes appended", notes)
+	log.Println("notes appended", notes)
 
 	return notes, nil
 }

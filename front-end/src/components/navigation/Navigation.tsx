@@ -13,7 +13,7 @@ import {
   DollarOutlined,
   TranslationOutlined,
   FundOutlined,
-  ClusterOutlined,
+ // ClusterOutlined,
   BuildOutlined,
   BankOutlined,
   ReadOutlined,
@@ -67,8 +67,8 @@ const Navigation = (props : {
       /* getItem('Expenses', 'sub3-2', <ReconciliationOutlined />, () => navigate("/expenses")), */
   ]),
     getItem('External companies', '5', <BankOutlined />, () => navigate("/external-companies")),
-    getItem('Services', '6', <ClusterOutlined />, () => navigate("/services")),
-    getItem('Frontend docs', '7', <ReadOutlined />, () => navigate("/documentation")),
+    getItem('Frontend docs', '6', <ReadOutlined />, () => navigate("/documentation")),
+    // getItem('Services', '6', <ClusterOutlined />, () => navigate("/services")),
 // eslint-disable-next-line react-hooks/exhaustive-deps
 ]), [isCollapsed])
 

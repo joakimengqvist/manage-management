@@ -25,16 +25,24 @@ Go micro services
 
 In the make file inside the projects folder you can find the scripts to run the go micro services
 
-### Golang micro services
+## services
+
+### Used services
+
+- Frontend-service (vite app running through Nginx)
 
 - Broker-service (API service)
 
 - Authentication-service
 - Project-service
 - External-companies-service
-- Logger-service
 - Economics-service
 - Notes-service
-- Listener-service
 - Invoice-service
 - Product-service
+
+### Unused services
+
+- Logger-service
+- Listener-service
+- Mail-service

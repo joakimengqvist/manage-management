@@ -123,8 +123,8 @@ const Projects = () => {
     }
 
    
-    const getProjectName = (id : string) => projects.find((project : Project) => project.id === id)?.name;
-    const getSubProjectName = (id : string) => subProjects.find((subProject : SubProject) => subProject.id === id)?.name;
+    const getProjectName = (id : string) => projects && projects.find((project : Project) => project.id === id)?.name;
+    const getSubProjectName = (id : string) => subProjects && subProjects.find((subProject : SubProject) => subProject.id === id)?.name;
 
     useEffect(() => {
         getAllProjects(loggedInUser.id).then(response => {
@@ -254,7 +254,7 @@ const Projects = () => {
             })
     };
 
-    const projectsData: Array<any> = projects.map((project : Project) => {
+    const projectsData: Array<any> = projects && projects.length ? projects.map((project : Project) => {
         return {      
             id: project.id,              
             name: <Link id={project.id} href={`/project/${project.id}`}>{project.name}</Link>,
@@ -280,7 +280,7 @@ const Projects = () => {
                 }
             </div>),
         }
-    })
+    }) : [];
 
     const expandableProps = useMemo(() => {
         const onClickdeleteSubProject = async (id : string) => {
@@ -316,7 +316,7 @@ const Projects = () => {
             if (!subProjects || subProjects.length === 0) return [];
 
             const subProjectForProject = subProjects.filter((subProject : SubProject) => subProject.projects.includes(projectId));
-            const subProjectsDataReturned = subProjectForProject.map((subProject : any) => {
+            const subProjectsDataReturned = subProjectForProject && subProjectForProject.length ? subProjectForProject.map((subProject : any) => {
                 return {
                     name: <Link href={`/sub-project/${subProject.id}`}>{subProject.name}</Link>,
                     status: <ProjectStatus status={subProject.status} />,
@@ -339,7 +339,7 @@ const Projects = () => {
                         }
                     </div>),
                 }
-            });
+            }) : [];
             return subProjectsDataReturned
         }
 
@@ -484,7 +484,7 @@ const Projects = () => {
       }
     );
 
-    const modalSelectedProject = projects.find(project => project.id === modalSelectedProjectId);
+    const modalSelectedProject = projects && projects.length ? projects.find(project => project.id === modalSelectedProjectId) : null;
     const subProjectsRemoveOptions = modalSelectedProject ? modalSelectedProject.sub_projects.map((subProjectId : string) => {
         return { label: getSubProjectName(subProjectId), value: subProjectId }
     }) : [];

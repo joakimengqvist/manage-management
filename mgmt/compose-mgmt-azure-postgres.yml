@@ -1,0 +1,84 @@
+version: "3"
+
+services:
+  mgmt-frontend-service:
+    tty: true
+    build:
+      context: ./../front-end
+      dockerfile: ./../front-end/dockerfile
+    ports:
+      - "80:80"
+  mgmt-broker-service:
+    build:
+      context: ./../broker-service
+      dockerfile: ./../broker-service/broker-service.dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      NOTES_SERVICE_SERVICE_HOST: "mgmt-notes-service"
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      PROJECT_SERVICE_SERVICE_HOST: "mgmt-project-service"
+      EXTERNAL_COMPANY_SERVICE_SERVICE_HOST: "mgmt-external-company-service"
+      ECONOMICS_SERVICE_SERVICE_HOST: "mgmt-economics-service"
+      INVOICE_SERVICE_SERVICE_HOST: "mgmt-invoice-service"
+      PRODUCT_SERVICE_SERVICE_HOST: "mgmt-product-service"
+
+  mgmt-authentication-service:
+    build:
+      context: ./../authentication-service
+      dockerfile: ./../authentication-service/authentication-service.dockerfile
+    environment:
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-project-service:
+    build:
+      context: ./../project-service
+      dockerfile: ./../project-service/project-service.dockerfile
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-notes-service:
+    build:
+      context: ./../notes-service
+      dockerfile: ./../notes-service/notes-service.dockerfile
+    environment:
+      INVOICE_SERVICE_SERVICE_HOST: "mgmt-invoice-service"
+      PRODUCT_SERVICE_SERVICE_HOST: "mgmt-product-service"
+      PROJECT_SERVICE_SERVICE_HOST: "mgmt-project-service"
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-economics-service:
+    build:
+      context: ./../economics-service
+      dockerfile: ./../economics-service/economics-service.dockerfile
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-external-company-service:
+    build:
+      context: ./../external-company-service
+      dockerfile: ./../external-company-service/external-company-service.dockerfile
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-product-service:
+    build:
+      context: ./../product-service
+      dockerfile: ./../product-service/product-service.dockerfile
+    environment:
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"
+
+  mgmt-invoice-service:
+    build:
+      context: ./../invoice-service
+      dockerfile: ./../invoice-service/invoice-service.dockerfile
+    environment:
+      EXTERNAL_COMPANY_SERVICE_SERVICE_HOST: "mgmt-external-company-service"
+      ECONOMICS_SERVICE_SERVICE_HOST: "mgmt-economics-service"
+      AUTHENTICATION_SERVICE_SERVICE_HOST: "mgmt-authentication-service"
+      DSN: "host=host port=5432 user=user password=password dbname=db sslmode=require timezone=UTC connect_timeout=5"

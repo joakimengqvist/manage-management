@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 )
@@ -267,7 +266,7 @@ func GetAllInvoiceItemsByIds(ids string) ([]*InvoiceItem, error) {
 			&invoiceItem.UpdatedAt,
 		)
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 

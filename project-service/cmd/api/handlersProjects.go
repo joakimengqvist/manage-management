@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"project-service/cmd/data"
 )
@@ -23,11 +24,13 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "project_write")
 	if err != nil {
+		log.Println("authenticated - CreateProject", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - CreateProject")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -36,6 +39,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateProject", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -47,6 +51,7 @@ func (app *Config) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	response, err := app.Models.Project.InsertProject(Project, userId)
 	if err != nil {
+		log.Println("postgres - CreateProject", err)
 		app.errorJSON(w, errors.New("could not create project: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -66,11 +71,13 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "project_write")
 	if err != nil {
+		log.Println("authenticated - UpdateProject", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateProject")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -79,6 +86,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateProject", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -91,6 +99,7 @@ func (app *Config) UpdateProject(w http.ResponseWriter, r *http.Request) {
 
 	err = updatedProject.UpdateProject(userId)
 	if err != nil {
+		log.Println("postgres - UpdateProject", err)
 		app.errorJSON(w, errors.New("could not update project: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -110,11 +119,13 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "project_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteProject", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteProject")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -123,18 +134,21 @@ func (app *Config) DeleteProject(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteProject", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	project, err := app.Models.Project.GetProjectById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - DeleteProject", err)
 		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
 		return
 	}
 
 	err = project.DeleteProject()
 	if err != nil {
+		log.Println("DeleteProject - DeleteProject", err)
 		app.errorJSON(w, errors.New("could not delete project: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -154,11 +168,13 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "project_read")
 	if err != nil {
+		log.Println("authenticated - GetProjectById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetProjectById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -167,12 +183,14 @@ func (app *Config) GetProjectById(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProjectById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	project, err := app.Models.Project.GetProjectById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetProjectById", err)
 		app.errorJSON(w, errors.New("failed to get project by id"), http.StatusBadRequest)
 		return
 	}
@@ -204,17 +222,20 @@ func (app *Config) GetAllProjects(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "project_read")
 	if err != nil {
+		log.Println("authenticated - GetAllProjects", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllProjects")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	projects, err := app.Models.Project.GetAllProjects()
 	if err != nil {
+		log.Println("postgres - GetAllProjects", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -252,11 +273,13 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "project_read")
 	if err != nil {
+		log.Println("authenticated - GetProjectsByIds", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetProjectsByIds")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -265,12 +288,14 @@ func (app *Config) GetProjectsByIds(w http.ResponseWriter, r *http.Request) {
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetProjectsByIds", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	projects, err := data.GetProjectsByIds(app.convertToPostgresArray(requestPayload.Ids))
 	if err != nil {
+		log.Println("postgres - GetProjectsByIds", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -309,23 +334,27 @@ func (app *Config) AddProjectNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - AddProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - AddProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - AddProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.AppendProjectNote(requestPayload.ProjectId, requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - AddProjectNote", err)
 		app.errorJSON(w, errors.New("failed to append note to project"), http.StatusBadRequest)
 		return
 	}
@@ -346,22 +375,26 @@ func (app *Config) RemoveProjectNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - RemoveProjectNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - RemoveProjectNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - RemoveProjectNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 	err = data.DeleteProjectNote(requestPayload.ProjectId, requestPayload.NoteId)
 	if err != nil {
+		log.Println("postgres - RemoveProjectNote", err)
 		app.errorJSON(w, errors.New("failed to delete note from project"), http.StatusBadRequest)
 		return
 	}

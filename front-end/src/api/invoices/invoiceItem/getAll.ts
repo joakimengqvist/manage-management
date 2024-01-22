@@ -7,6 +7,8 @@ export const getAllInvoiceItems = async (loggedInUserId : string) : Promise<{
     data: Array<InvoiceItem>
 }> => {
 
+    console.log('ENDPOINTS.GetAllInvoiceItems', ENDPOINTS.GetAllInvoiceItems);
+
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("X-user-id", loggedInUserId);

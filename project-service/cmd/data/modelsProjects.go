@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -35,7 +35,7 @@ func (u *Project) GetAllProjects() ([]*PostgresProject, error) {
 			&project.UpdatedBy,
 		)
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 
@@ -78,7 +78,7 @@ func GetProjectsByIds(ids string) ([]*PostgresProject, error) {
 			&project.UpdatedBy,
 		)
 		if err != nil {
-			fmt.Println("Error scanning", err)
+			log.Println("Error scanning", err)
 			return nil, err
 		}
 
@@ -137,7 +137,7 @@ func (u *PostgresProject) UpdateProject(updatedByUserId string) error {
 	)
 
 	if err != nil {
-		fmt.Println("Error updating project", err)
+		log.Println("Error updating project", err)
 		return err
 	}
 

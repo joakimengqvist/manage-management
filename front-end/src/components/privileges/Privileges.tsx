@@ -84,7 +84,7 @@ const Privileges = () => {
             })
     };
 
-    const privilegesData: Array<any> = privileges.map((privilege : any) => {
+    const privilegesData: Array<any> = privileges && privileges.length ? privileges.map((privilege : any) => {
         return {                    
             name: <Link style={{cursor: 'pointer'}} href={`/privilege/${privilege.id}`}><BlueTag label={privilege.name} /></Link>,
             description: privilege.description,
@@ -105,7 +105,7 @@ const Privileges = () => {
                 }
             </div>)
         }
-    })
+    }) : [];
 
     return  <>{contextHolder}<Table size="small" bordered columns={columns} dataSource={privilegesData} /></>
 }

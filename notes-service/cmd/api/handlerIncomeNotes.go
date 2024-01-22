@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"notes-service/cmd/data"
 )
@@ -36,17 +37,20 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_write")
 	if err != nil {
+		log.Println("authenticated - CreateIncomeNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - CreateIncomeNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - CreateIncomeNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -62,6 +66,7 @@ func (app *Config) CreateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	noteId, err := app.Models.IncomeNote.InsertIncomeNote(newNote)
 	if err != nil {
+		log.Println("postgres - CreateIncomeNote", err)
 		app.errorJSON(w, errors.New("could not create income note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -82,23 +87,27 @@ func (app *Config) GetAllIncomeNotesByUserId(w http.ResponseWriter, r *http.Requ
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllIncomeNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("authenticated - GetAllIncomeNotesByUserId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllIncomeNotesByUserId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	notes, err := app.Models.IncomeNote.GetIncomeNotesByAuthorId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetIncomeNotesByAuthorId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -136,6 +145,7 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetAllIncomeNotesByIncomeId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -143,17 +153,20 @@ func (app *Config) GetAllIncomeNotesByIncomeId(w http.ResponseWriter, r *http.Re
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetAllIncomeNotesByIncomeId", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetAllIncomeNotesByIncomeId")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	notes, err := app.Models.IncomeNote.GetIncomeNotesByIncomeId(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetIncomeNotesByIncomeId", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -192,23 +205,27 @@ func (app *Config) GetIncomeNoteById(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - GetIncomeNoteById", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - GetIncomeNoteById")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - GetIncomeNoteById", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	note, err := app.Models.IncomeNote.GetIncomeNoteById(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - GetIncomeNoteById", err)
 		app.errorJSON(w, errors.New("failed to get income note by id"), http.StatusBadRequest)
 		return
 	}
@@ -240,17 +257,20 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_read")
 	if err != nil {
+		log.Println("authenticated - UpdateIncomeNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - UpdateIncomeNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - UpdateIncomeNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
@@ -267,6 +287,7 @@ func (app *Config) UpdateIncomeNote(w http.ResponseWriter, r *http.Request) {
 
 	err = returnedNote.UpdateIncomeNote()
 	if err != nil {
+		log.Println("postgres - UpdateIncomeNote", err)
 		app.errorJSON(w, errors.New("could not update Income note: "+err.Error()), http.StatusBadRequest)
 		return
 	}
@@ -286,23 +307,27 @@ func (app *Config) DeleteIncomeNote(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("X-User-Id")
 	authenticated, err := app.CheckPrivilege(w, userId, "note_sudo")
 	if err != nil {
+		log.Println("authenticated - DeleteIncomeNote", err)
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	if !authenticated {
+		log.Println("!authenticated - DeleteIncomeNote")
 		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	err = app.readJSON(w, r, &requestPayload)
 	if err != nil {
+		log.Println("readJSON - DeleteIncomeNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	err = data.DeleteIncomeNote(requestPayload.ID)
 	if err != nil {
+		log.Println("postgres - DeleteIncomeNote", err)
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
